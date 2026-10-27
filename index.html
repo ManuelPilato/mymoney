@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="theme-color" content="#0c0e13">
+<meta name="theme-color" content="#070b15">
 <meta name="color-scheme" content="dark">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -13,105 +13,370 @@
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="apple-touch-icon" href="icon-180.png">
 <link rel="icon" href="icon-192.png" type="image/png">
-<title>MyMoney · Local</title>
-<style>/* Dark-only mobile layout with large touch targets and local system fonts. */
-:root{color-scheme:dark;--bg:#0c0e13;--surface:#151820;--surface2:#1d212c;--line:#2a2f3c;--text:#f3f4f8;--muted:#a0a8bb;--accent:#c3efd9;--accent-text:#18352b;--violet:#beb0fa;--amber:#f5cd8b;--red:#ffabb0;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;font-synthesis:none;font-size:16px;background:var(--bg);color:var(--text)}
-*{box-sizing:border-box}body{margin:0;background:radial-gradient(ellipse at 80% 0,#1b213038,transparent 42%),var(--bg);min-height:100dvh}button,input,select,textarea{font:inherit}button,a,input,textarea,select{-webkit-tap-highlight-color:transparent}button{cursor:pointer;touch-action:manipulation}button:disabled{opacity:.45;cursor:default}button:focus-visible,a:focus-visible,input:focus-visible,textarea:focus-visible,select:focus-visible{outline:2px solid var(--accent);outline-offset:4px}button{min-height:44px;display:inline-flex;align-items:center;justify-content:center;gap:9px;padding:12px 17px;border:1px solid transparent;border-radius:14px;background:var(--accent);color:var(--accent-text);font-weight:650;font-size:14px}button.ghost{background:var(--surface2);border-color:var(--line);color:var(--text)}button.quiet{background:none;color:var(--muted);padding:8px 0}button.danger{background:#3b222a;color:var(--red);border-color:#59313b}button.icon-button{width:46px;padding:10px;background:var(--surface2);border:1px solid var(--line);color:var(--text)}button.icon-button svg{width:20px;height:20px}svg{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round;flex-shrink:0}a{color:var(--accent)}.app{max-width:760px;margin:0 auto;padding:calc(env(safe-area-inset-top) + 22px) 22px 120px}.header{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:28px}.brand{display:flex;gap:10px;align-items:center}.brandmark{width:34px;height:34px;background:var(--accent);color:var(--accent-text);border-radius:11px;display:grid;place-items:center}.brand h1{font-size:19px;letter-spacing:-.5px;margin:0}.brand small{display:block;font-size:10px;color:var(--muted);letter-spacing:1.5px;margin-top:3px;text-transform:uppercase}.pill{font-size:11px;color:var(--accent);border:1px solid #355344;border-radius:24px;padding:6px 9px;white-space:nowrap;display:inline-flex;align-items:center;gap:5px}.pill svg{width:12px;height:12px}.eyebrow{font-size:11px;font-weight:650;letter-spacing:1.25px;text-transform:uppercase;color:var(--muted)}.muted{font-size:13px;color:var(--muted);line-height:1.6}.tiny{font-size:11px;color:var(--muted);line-height:1.5}h2{font-size:19px;letter-spacing:-.4px;margin:0 0 14px}h3{font-size:15px;margin:0 0 10px}p{line-height:1.6;margin:10px 0}strong{font-weight:650}.card{background:var(--surface);border:1px solid var(--line);border-radius:23px;padding:21px;margin-bottom:16px}.hero{padding:4px 0 20px}.hero .balance{font-size:clamp(36px,7vw,50px);letter-spacing:-2px;font-weight:650;font-variant-numeric:tabular-nums;margin:7px 0}.hero .muted{margin:0}.section-heading{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:27px 0 12px}.section-heading h2{margin:0;font-size:16px}.section-heading button{font-size:12px;min-height:32px}.budget-card{background:linear-gradient(130deg,#222737,#191e2b);border-color:#343b50;padding:21px}.budget-top{display:flex;align-items:center;justify-content:space-between;gap:12px}.budget-number{font-size:31px;font-weight:650;letter-spacing:-1px;margin:7px 0 2px}.budget-number.negative{color:var(--red)}.budget-symbol{color:var(--violet);width:40px;height:40px;border:1px solid #484359;background:#2b293c;border-radius:50%;display:grid;place-items:center}.track{height:5px;border-radius:99px;background:#3d4352;overflow:hidden;margin:16px 0 12px}.track div{height:100%;background:var(--violet);border-radius:99px;transition:width .25s ease}.split{display:flex;justify-content:space-between;gap:12px}.mini-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:15px}.mini{padding:15px;border:1px solid var(--line);border-radius:17px;background:var(--surface)}.mini .value{display:block;margin-top:6px;font-weight:600;font-size:18px;letter-spacing:-.3px}.composer{border-color:#3a4845}.composer-head{display:flex;align-items:center;gap:9px;margin-bottom:10px}.composer-head svg{color:var(--accent)}.composer h2{font-size:16px;margin:0}.composer textarea{width:100%;background:none;border:0;resize:vertical;min-height:90px;padding:8px 0;line-height:1.6;color:var(--text);font-size:16px}.composer textarea::placeholder{color:#788297}.composer textarea:focus{outline:none}.composer-controls{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-top:6px}.composer-controls .submit{min-width:140px}.hint{margin:11px 0 0}.notice{font-size:12px;line-height:1.6;border:1px solid #6a563c;background:#2b251c;color:var(--amber);padding:12px 14px;border-radius:13px;margin:12px 0}.notice.error{border-color:#68404a;background:#2c1f27;color:var(--red)}.notice.good{border-color:#365146;background:#1c2b24;color:var(--accent)}[hidden]{display:none!important}.row{width:100%;text-align:left;padding:14px 0;background:none;color:var(--text);border:0;border-radius:0;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;gap:12px;align-items:center;font-weight:400}.row:last-child{border-bottom:0}.row-left{display:flex;gap:12px;align-items:center;min-width:0}.cat-icon{background:var(--surface2);border:1px solid var(--line);color:var(--violet);border-radius:14px;width:42px;height:42px;display:grid;place-items:center;flex-shrink:0}.cat-icon.green{color:var(--accent)}.row-title{font-size:14px;font-weight:600;display:block;overflow-wrap:anywhere;line-height:1.4}.row-sub{font-size:11px;color:var(--muted);line-height:1.55;display:block;margin-top:4px}.row-money{font-size:15px;white-space:nowrap;font-weight:600;text-align:right;font-variant-numeric:tabular-nums}.row-money.income{color:var(--accent)}.row-money small{display:block;font-size:10px;font-weight:500;color:var(--muted);margin-top:6px}.row-money .planned{color:var(--amber)}.empty{color:var(--muted);text-align:center;padding:25px 12px;font-size:13px;line-height:1.7}.nav{position:fixed;bottom:0;left:0;right:0;z-index:5;padding:10px 15px calc(env(safe-area-inset-bottom) + 11px);background:#10131bf2;border-top:1px solid #292f3d;backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px)}.nav-inner{max-width:540px;margin:auto;display:flex;justify-content:space-between;gap:6px}.nav button{background:none;flex:1;flex-direction:column;gap:5px;padding:6px;color:#8992a7;font-size:10px;border-radius:12px;min-height:50px}.nav button svg{height:21px;width:21px}.nav button.active{color:var(--accent);background:#1c2925}.view-title{margin:4px 0 7px;font-size:27px;letter-spacing:-1px}.toolbar{display:flex;gap:8px;align-items:center;margin:15px 0}.toolbar select,.toolbar input{min-width:0}.toolbar .grow{flex:1}.segmented{display:flex;gap:4px;padding:4px;background:var(--bg);border-radius:12px}.segmented button{min-height:35px;font-size:12px;flex:1;background:none;color:var(--muted);padding:7px}.segmented button.active{background:var(--surface2);color:var(--text)}label{display:block;color:var(--muted);font-size:12px;margin-bottom:7px}input,select,textarea.field{color:var(--text);border:1px solid #363c4b;border-radius:12px;padding:12px;background:#10141d;min-height:46px;font-size:16px;width:100%;min-width:0;max-width:100%}input[type=checkbox]{width:18px;min-height:18px;height:18px;accent-color:var(--accent);flex-shrink:0}input[type=date]{-webkit-appearance:none;min-width:0}input::placeholder{color:#6f788a}.field-group{margin:15px 0}.fields{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:12px}.check-label{display:flex;gap:9px;align-items:flex-start;font-size:12px;line-height:1.6;color:var(--text);margin:12px 0}.check-label input{margin-top:2px}details{margin:15px 0}summary{cursor:pointer;font-size:13px;color:var(--muted);padding:8px 0}details p{font-size:12px;color:var(--muted)}.actions{display:flex;flex-wrap:wrap;gap:9px;margin-top:14px}.actions button{flex-grow:1}.line-item{display:flex;justify-content:space-between;gap:12px;font-size:13px;padding:8px 0;color:var(--muted)}.line-item strong{color:var(--text)}.line-item.total{border-top:1px solid var(--line);margin-top:6px;padding-top:14px}.tag{display:inline-block;border:1px solid var(--line);padding:4px 7px;border-radius:8px;color:var(--muted);font-size:10px}.dialog{width:min(650px,100%);max-width:calc(100vw - 32px);max-height:90dvh;padding:0;border:1px solid var(--line);background:var(--surface);color:var(--text);border-radius:25px;overflow:auto;box-shadow:0 20px 100px #0008}.dialog::backdrop{background:#05070bba;backdrop-filter:blur(5px)}.dialog-head{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:20px 21px 12px;position:sticky;top:0;z-index:1;background:var(--surface);border-bottom:1px solid var(--line)}.dialog-head h2{margin:0;font-size:18px}.dialog-head button{background:var(--surface2);color:var(--text);border-radius:50%;min-width:38px;min-height:38px;padding:8px}.dialog-body{padding:6px 21px 20px}.draft{padding:15px 0;border-bottom:1px solid var(--line)}.draft:last-child{border:0}.draft .reason{font-size:11px;color:var(--muted);line-height:1.6;margin:6px 0}.dialog-footer{background:var(--surface);border-top:1px solid var(--line);padding:16px 21px calc(env(safe-area-inset-bottom) + 16px);display:flex;gap:10px;position:sticky;bottom:0}.dialog-footer button{flex:1}.toast{position:fixed;bottom:100px;left:50%;transform:translateX(-50%);padding:13px 18px;background:var(--accent);color:var(--accent-text);border-radius:14px;z-index:20;width:max-content;max-width:90%;font-size:13px;box-shadow:0 8px 40px #0007}.report-bar{height:4px;background:var(--surface2);border-radius:9px;overflow:hidden;margin-top:7px}.report-bar div{height:100%;background:var(--violet)}.week-label{font-size:11px;text-transform:uppercase;letter-spacing:1px;color:var(--muted);margin:22px 0 4px}.welcome .big-title{font-size:30px;line-height:1.2;letter-spacing:-1px;max-width:290px;margin:18px 0}.welcome .brandmark{height:52px;width:52px;border-radius:17px}.setup-button{width:100%;margin-top:12px}.mic-listening{border-color:var(--red)!important;color:var(--red)!important}.bottom-note{text-align:center;color:#778195;font-size:11px;line-height:1.7;margin:24px 0}.install-hint{border-color:#3b4a4b;background:#172125;color:#b6d7cc}.divider{height:1px;background:var(--line);margin:16px 0}.category-summary{margin-bottom:17px}
-@media(min-width:680px){.app{padding-top:35px}.home-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;align-items:start}.home-grid .full{grid-column:1/-1}.hero{padding:4px 0 15px}.mini-grid{margin-top:0}.composer{margin-top:0}.balance{line-height:1.2}.nav-inner{max-width:540px}.budget-card{min-height:190px}}
-@media(max-width:420px){.app{padding-left:17px;padding-right:17px}.card{padding:18px}.header{margin-bottom:22px}.budget-number{font-size:29px}.dialog{margin:auto 0 0;max-height:93dvh;width:100%;border-bottom:0;border-radius:24px 24px 0 0}.dialog-head{padding:17px}.dialog-body{padding:3px 17px 18px}.dialog-footer{padding-left:17px;padding-right:17px}.row-title{font-size:13px}.row-money{font-size:14px}}
-@media(prefers-reduced-motion:reduce){*{transition:none!important;scroll-behavior:auto!important}}
+<title>MyMoney</title>
+<style>/* iPhone first. One quiet surface; everything else appears on intent. */
+:root{color-scheme:dark;--bg:oklch(13% .025 265);--surface:oklch(18% .024 265);--raised:oklch(22% .025 265);--line:oklch(32% .023 265 / .7);--text:oklch(95% .008 245);--muted:oklch(70% .023 250);--accent:oklch(86% .07 220);--ink:oklch(21% .035 250);--red:oklch(78% .12 22);--amber:oklch(82% .09 75);--ease:cubic-bezier(.22,1,.36,1);--drawer:cubic-bezier(.32,.72,0,1);font-family:-apple-system,BlinkMacSystemFont,'Helvetica Neue',sans-serif;font-synthesis:none;background:var(--bg);color:var(--text);--vv-height:100dvh;--keyboard-bottom:0px}
+*{box-sizing:border-box}html,body{margin:0;width:100%;height:100%;overflow:hidden;overscroll-behavior:none}body{-webkit-text-size-adjust:100%}button,input,textarea,select{font:inherit}button{cursor:pointer;touch-action:manipulation;-webkit-tap-highlight-color:transparent;display:inline-flex;justify-content:center;align-items:center;gap:9px;min-height:48px;padding:13px 19px;border:1px solid transparent;border-radius:16px;background:var(--accent);color:var(--ink);font-size:15px;font-weight:550;transition:transform 140ms var(--ease),background 160ms ease,color 160ms ease}button:active{transform:scale(.97)}button:disabled{opacity:.45;cursor:default}button:focus-visible,input:focus-visible,textarea:focus-visible,select:focus-visible,summary:focus-visible{outline:2px solid var(--accent);outline-offset:4px}button.quiet{background:none;color:var(--muted);font-size:13px;padding:10px 5px}button.ghost{background:var(--raised);color:var(--text);border-color:var(--line)}button.danger{background:oklch(25% .035 20);color:var(--red)}button.icon-button{width:44px;min-height:44px;height:44px;padding:12px;background:transparent;color:var(--muted);border-radius:50%;flex-shrink:0}svg{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:1.65;stroke-linecap:round;stroke-linejoin:round;flex-shrink:0}[data-icon]{display:inline-flex;align-items:center;justify-content:center}[hidden]{display:none!important}h1,h2,h3,p{margin:0}h2{font-size:22px;font-weight:500;letter-spacing:-.7px}h3{font-size:15px;font-weight:500;letter-spacing:-.2px}p{font-size:14px;line-height:1.6;max-width:70ch;margin:12px 0}strong{font-weight:550}.tiny,.muted{font-size:12px;color:var(--muted);line-height:1.7}.label{font-size:13px;color:var(--muted)}.sr-only{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;padding:0;border:0}.full-width{width:100%}.grow{flex:1;min-width:0}
+#experience{position:fixed;inset:0;isolation:isolate;overflow:hidden;background:var(--bg)}#orb-canvas{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:-2}.scene-shade{position:absolute;inset:0;background:radial-gradient(ellipse at 50% 47%,oklch(9% .015 265 / .05),transparent 45%,oklch(8% .02 265 / .22));pointer-events:none;z-index:-1}#touch-surface{position:absolute;inset:0;border:0;border-radius:0;background:none;width:100%;height:100%;padding:0;touch-action:none;-webkit-touch-callout:none;user-select:none;-webkit-user-select:none}#touch-surface:active{transform:none}#touch-surface:focus-visible{outline-offset:-7px}.wordmark{position:absolute;top:47%;left:50%;transform:translate(-50%,-50%);font-size:41px;font-weight:400;letter-spacing:-2.2px;line-height:1.2;color:oklch(97% .009 240);pointer-events:none;text-shadow:0 2px 35px oklch(9% .02 265 / .3);transition:opacity 250ms var(--ease),filter 300ms var(--ease);white-space:nowrap}.wordmark-point{color:var(--accent);font-weight:300}.data-handle{position:absolute;left:50%;bottom:calc(env(safe-area-inset-bottom,0px) + 16px);transform:translateX(-50%);width:76px;height:48px;border-radius:30px;background:none;padding:18px}.data-handle:active{transform:translateX(-50%) scale(.95)}.data-handle span{width:28px;height:3px;background:oklch(88% .02 245 / .5);border-radius:4px;transition:width 180ms ease}.focus-action{position:fixed;top:calc(env(safe-area-inset-top,0px) + 15px);left:16px;opacity:0;pointer-events:none}.focus-action:focus-visible{opacity:1;pointer-events:auto;z-index:50}.hold-ring{position:absolute;left:50%;top:47%;width:220px;height:220px;border:1px solid oklch(85% .06 220 / .4);border-radius:50%;transform:translate(-50%,-50%) scale(.9);opacity:0;pointer-events:none;transition:transform 400ms var(--ease),opacity 180ms ease}html[data-scene=pressing] .hold-ring{opacity:.5;transform:translate(-50%,-50%) scale(1.06)}html[data-scene=data] .wordmark,html[data-scene=modal] .wordmark,html[data-scene=listening] .wordmark{opacity:.14;filter:blur(5px)}html:not([data-scene=idle]) .data-handle{opacity:0;pointer-events:none}
+/* A single floating material keeps each task connected to the fluid scene. */
+dialog {
+  --line: oklch(81% .028 235 / .13);
+  --raised: oklch(79% .04 235 / .075);
+  --surface: oklch(19% .026 255 / .82);
+  --accent: oklch(92% .035 220);
+  --panel-exit: translateY(28px) scale(.985);
+  --data-exit: translateY(40px) scale(.99);
+  color: var(--text);
+  padding: 0;
+  border: 1px solid oklch(89% .035 230 / .18);
+  background: linear-gradient(135deg, oklch(83% .065 220 / .08), transparent 47%, oklch(64% .05 250 / .04)), var(--surface);
+  box-shadow: 0 24px 90px oklch(5% .02 260 / .35), inset 0 1px 0 oklch(97% .015 230 / .07), inset 0 -1px 0 oklch(80% .03 230 / .025);
+  backdrop-filter: blur(28px) saturate(1.18);
+  -webkit-backdrop-filter: blur(28px) saturate(1.18);
+}
+dialog::backdrop {
+  background: oklch(8% .02 265 / .18);
+  backdrop-filter: blur(3px);
+  -webkit-backdrop-filter: blur(3px);
+}
+.dialog,.data-sheet {
+  position: fixed;
+  inset: auto 0 calc(var(--keyboard-bottom) + max(10px,env(safe-area-inset-bottom,0px)));
+  margin: 0 auto;
+  width: calc(100% - 20px);
+  max-width: 480px;
+  max-height: calc(var(--vv-height) - max(24px,env(safe-area-inset-bottom,0px) + 14px));
+  border-radius: 36px;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+  transform-origin: 50% 100%;
+}
+.dialog::-webkit-scrollbar,.data-scroll::-webkit-scrollbar { display: none; }
+.dialog[open] { animation: sheet-in 240ms var(--ease) both; }
+.data-sheet[open] { display: flex; flex-direction: column; animation: data-in 280ms var(--drawer) both; }
+.dialog.is-closing,.data-sheet.is-closing { pointer-events: none; animation: none; }
+.data-sheet { height: min(87dvh,850px); --surface: oklch(18% .025 255 / .87); }
+@keyframes sheet-in { from { opacity: 0; transform: translateY(28px) scale(.985); } to { opacity: 1; transform: none; } }
+@keyframes data-in { from { opacity: 0; transform: translateY(54px) scale(.99); } to { opacity: 1; transform: none; } }
+.data-header{position:relative;flex-shrink:0;padding:18px 20px 0;touch-action:none;user-select:none;-webkit-user-select:none}.sheet-grip{display:block;width:32px;height:4px;border-radius:8px;background:oklch(48% .02 250);margin:0 auto 12px}.data-heading{display:flex;align-items:center;justify-content:space-between;gap:15px}.data-heading h2{font-size:17px;letter-spacing:-.4px}.data-heading button{background:none}.nav{display:flex;gap:5px;margin:14px 22px 10px;padding:4px;background:oklch(12% .02 265 / .7);border-radius:16px;flex-shrink:0}.nav button{flex:1;background:none;color:var(--muted);padding:9px 7px;font-size:12px;min-height:40px;border-radius:12px;font-weight:500}.nav button.active{background:var(--raised);color:var(--text)}.data-scroll{padding:8px 25px calc(env(safe-area-inset-bottom,0px) + 28px);overflow-y:auto;overscroll-behavior-y:contain;touch-action:pan-y;min-height:0;flex:1}.balance-panel{text-align:center;padding:27px 0 25px}.balance{font-size:42px;font-weight:450;letter-spacing:-1.8px;font-variant-numeric:tabular-nums;line-height:1.4;margin-top:5px}.budget-panel{margin:0 3px 30px}.split{display:flex;justify-content:space-between;align-items:center;gap:12px;font-size:12px;color:var(--muted)}.split strong{color:var(--accent);font-size:15px;font-weight:500;font-variant-numeric:tabular-nums}.split strong.negative{color:var(--red)}.budget-panel>.tiny{display:block;text-align:center;font-size:10px;margin-top:10px}.track{height:3px;border-radius:9px;background:var(--raised);overflow:hidden;margin-top:15px}.track div{height:100%;max-width:100%;background:var(--accent);border-radius:9px}.section-heading{display:flex;justify-content:space-between;align-items:center;gap:14px;margin:20px 0 6px}.section-heading h3{font-size:14px}.section-heading .icon-button{color:var(--accent)}.row{width:100%;display:flex;justify-content:space-between;align-items:center;text-align:left;gap:13px;background:transparent;color:var(--text);padding:16px 0;border-radius:0;border:0;border-bottom:1px solid var(--line);font-weight:400}.row:last-child{border-bottom:0}.row-left{display:flex;align-items:center;gap:11px;min-width:0}.row-left>span:last-child{min-width:0}.cat-icon{width:34px;height:34px;border-radius:50%;background:var(--raised);color:var(--muted);display:grid;place-items:center;flex-shrink:0}.cat-icon svg{width:16px;height:16px}.cat-icon.green{color:var(--accent)}.row-title{display:block;font-size:13px;font-weight:500;line-height:1.5;overflow-wrap:anywhere}.row-sub{display:block;font-size:10px;color:var(--muted);margin-top:3px;line-height:1.5}.row-money{font-size:14px;white-space:nowrap;text-align:right;font-variant-numeric:tabular-nums;font-weight:500}.row-money small{display:none}.row-money.income{color:var(--accent)}.empty{padding:25px 5px;font-size:12px;color:var(--muted);line-height:1.7;text-align:center}.empty svg{width:23px;height:23px;margin:0 auto 10px;display:block;opacity:.5}.empty strong{display:block;font-size:14px;color:var(--text);margin-bottom:4px;font-weight:450}.disclosure{margin-top:18px;border-top:1px solid var(--line)}summary{cursor:pointer;padding:16px 0;min-height:48px;color:var(--muted);font-size:13px;line-height:1.5}details p{font-size:12px;color:var(--muted)}.disclosure>summary{display:flex;align-items:center;justify-content:space-between;gap:10px;list-style:none}.disclosure>summary::-webkit-details-marker{display:none}.disclosure>summary:after{content:'+';font-size:17px;font-weight:300;color:var(--muted)}.disclosure[open]>summary:after{content:'−'}.line-item{display:flex;align-items:flex-start;justify-content:space-between;gap:14px;font-size:12px;line-height:1.6;color:var(--muted);padding:9px 0}.line-item strong{color:var(--text);white-space:nowrap}.line-item.total{padding-top:14px;margin-top:7px;border-top:1px solid var(--line)}.upcoming-mini{width:100%;text-align:left;justify-content:space-between;padding:14px 0;border-bottom:1px solid var(--line);background:none;color:var(--text);border-radius:0;font-size:13px;gap:12px}.upcoming-mini strong{font-size:13px}.upcoming-mini small{display:block;color:var(--muted);font-size:11px;margin-top:4px}.upcoming-mini>span:last-child{white-space:nowrap}.welcome{margin:12px 0 0;text-align:center;border:1px solid var(--line);border-radius:18px;padding:12px 15px}.welcome p{font-size:13px;margin:0 0 8px}.welcome button{font-size:12px;min-height:44px}.welcome .quiet{margin-left:8px}.toolbar{display:flex;gap:9px;align-items:center;margin:13px 0 17px}.toolbar input{flex:1}.toolbar .icon-button{background:var(--raised)}.toolbar #report-title{text-align:center;font-size:11px}.segmented{display:flex;gap:4px;border-radius:12px;background:oklch(13% .02 265);padding:4px;margin-bottom:10px}.segmented button{flex:1;min-height:38px;padding:7px;font-size:12px;background:none;color:var(--muted);border-radius:9px}.segmented button.active{background:var(--raised);color:var(--text)}.category-summary{margin:16px 0}.report-bar{height:3px;background:var(--raised);border-radius:8px;overflow:hidden}.report-bar div{height:100%;background:var(--accent)}
+.dialog-head{position:sticky;top:0;z-index:2;display:flex;align-items:center;justify-content:space-between;gap:15px;padding:22px 24px 7px;background:var(--surface);border-radius:30px 30px 0 0}.dialog-head h2{font-size:22px}.dialog-head>button{width:40px;min-height:40px;height:40px;padding:11px;border-radius:50%;background:var(--raised);color:var(--muted);flex-shrink:0}.dialog-head>button svg{width:17px;height:17px}.dialog-body{padding:7px 26px 18px}.dialog-footer{position:sticky;bottom:0;z-index:2;display:flex;gap:10px;padding:12px 26px calc(env(safe-area-inset-bottom,0px) + 22px);background:var(--surface)}.dialog-footer button{flex:1;min-height:52px}.dialog-body label{display:block;font-size:11px;color:var(--muted);margin-bottom:8px}label{font-size:11px;color:var(--muted);display:block;margin-bottom:8px}input,select,textarea{width:100%;max-width:100%;min-width:0;color:var(--text);font-size:16px;min-height:48px;border:1px solid var(--line);background:oklch(14% .022 265);border-radius:12px;padding:12px;-webkit-tap-highlight-color:transparent}input::placeholder,textarea::placeholder{color:oklch(57% .023 250);opacity:1}textarea{line-height:1.65;resize:vertical}input[type=date]{-webkit-appearance:none;min-width:0}input[type=checkbox]{width:18px;height:18px;min-height:18px;accent-color:var(--accent);margin:0;flex-shrink:0}.field-group{margin:13px 0}.fields{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:12px}.check-label,.dialog-body .check-label{display:flex;gap:10px;align-items:center;font-size:12px;line-height:1.6;color:var(--muted);margin:15px 0}.amount-entry{padding:15px 0 18px}.amount-input{display:flex;align-items:center;gap:12px}.amount-input>span{font-size:29px;font-weight:300;color:var(--muted)}.amount-input input{font-size:48px;font-weight:350;font-variant-numeric:tabular-nums;letter-spacing:-1.6px;line-height:1.2;background:none;border:0;border-radius:0;padding:2px 0;min-height:65px;box-shadow:none}.amount-input input:focus-visible{outline:none}.amount-entry:focus-within>label{color:var(--accent)}.amount-input input::placeholder{color:oklch(50% .025 250)}.quick-date-row{display:flex;align-items:flex-end;gap:16px}.quick-date-row>div{flex:1}.quick-date-row input{min-height:46px}.quick-date-row>button{background:var(--raised);margin-bottom:1px}#quick-hint{font-size:10px;margin:12px 0 0;min-height:17px}.quick-details{margin-top:18px;padding-top:15px;border-top:1px solid var(--line)}.notice{margin:12px 0;font-size:12px;line-height:1.6;padding:12px 14px;border:1px solid oklch(42% .04 75);background:oklch(23% .022 75);color:var(--amber);border-radius:12px}.notice.error{background:oklch(23% .03 20);border-color:oklch(40% .055 20);color:var(--red)}.install-hint{color:var(--muted);border-color:var(--line);background:var(--raised)}.actions{display:flex;gap:8px;flex-wrap:wrap;margin:12px 0}.actions button{flex:1;font-size:12px;padding:12px}.draft{border-bottom:1px solid var(--line);padding:6px 0 16px}.draft:last-child{border-bottom:0}.draft .reason{display:none}.draft>details{border-top:1px solid var(--line);margin-top:14px}.draft>p.tiny{display:none}.draft>.notice{font-size:11px}.draft>.notice.install-hint{background:none;border:0;padding:0;color:var(--muted);font-size:11px}.draft summary{font-size:12px}.voice-sheet .dialog-body{padding-top:14px;padding-bottom:calc(env(safe-area-inset-bottom,0px) + 24px)}.voice-status{font-size:12px;color:var(--muted);margin:4px 0 15px;min-height:20px}.voice-status.attention{color:var(--amber)}#natural{min-height:114px;background:none;padding:8px 0;border:0;border-radius:0;font-size:20px;line-height:1.5;resize:none;letter-spacing:-.3px}#natural:focus-visible{outline:none}#voice-compose:focus-within #natural{box-shadow:0 1px var(--accent)}.voice-actions{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-top:22px}.voice-actions .icon-button{width:56px;height:56px;background:var(--raised);color:var(--text);border:1px solid var(--line)}.voice-actions .mic-listening{color:var(--accent);border-color:var(--accent);animation:mic-breathe 1.4s ease-in-out infinite}.mic-listening svg{width:20px;height:20px}.voice-actions>button:last-child{min-width:140px}.preview-line{display:flex;justify-content:space-between;gap:14px;align-items:center;padding:17px 0;border-bottom:1px solid var(--line);font-size:14px;line-height:1.4}.preview-line>span{overflow-wrap:anywhere;min-width:0}.preview-line small{display:block;font-size:11px;color:var(--muted);line-height:1.5;margin-top:8px}.preview-line strong{font-size:17px;white-space:nowrap;font-weight:500}.preview-actions{display:flex;gap:10px;margin-top:24px}.preview-actions button{flex:1}#command-title{font-size:20px;font-weight:450;letter-spacing:-.5px}#command-description{margin:14px 0 0}#voice-consent p{color:var(--muted);font-size:14px;margin:0 0 24px}#view-settings>.disclosure:first-child{border-top:0;margin-top:0}#view-settings .disclosure>summary{color:var(--text)}#view-settings form>button{margin:12px 0 8px}#plan-budget>h3{display:none}
+.toast{position:fixed;bottom:calc(env(safe-area-inset-bottom,0px) + 42px);left:50%;transform:translateX(-50%);z-index:100;max-width:calc(100vw - 32px);width:max-content;display:flex;align-items:center;gap:14px;padding:12px 16px;border:1px solid oklch(52% .04 230 / .4);background:oklch(24% .025 255 / .96);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);color:var(--text);border-radius:18px;font-size:12px;line-height:1.5;box-shadow:0 10px 40px oklch(5% .025 265 / .3);animation:toast-in 220ms var(--ease)}.toast button{min-height:38px;padding:9px 11px;border-radius:11px;color:var(--accent);background:var(--raised);font-size:12px;flex-shrink:0}@keyframes toast-in{from{opacity:0;transform:translate(-50%,10px)}to{opacity:1;transform:translate(-50%,0)}}@keyframes mic-breathe{50%{box-shadow:0 0 0 8px oklch(86% .07 220 / .06)}}
+.ambient-fallback{z-index:-2}
 
-/* Use the full phone width for the confirmation sheet. */
-@media(max-width:420px){.dialog{max-width:100vw}}
+.row-money small.planned{display:block;font-size:10px;font-weight:400;color:var(--amber);margin-top:4px}
+#recurring-list .row-money small{display:block;font-size:10px;font-weight:400;color:var(--muted);margin-top:4px}
+
+/* Task surfaces share quiet fields, fine dividers and a single ice-toned action. */
+.dialog-head {
+  padding: 23px 23px 9px 27px;
+  border-radius: 36px 36px 0 0;
+  background: transparent;
+}
+.dialog-head h2 { font-size: 20px; font-weight: 450; letter-spacing: -.65px; }
+.dialog-head>button {
+  width: 44px; height: 44px; min-height: 44px;
+  border: 1px solid oklch(86% .02 230 / .08);
+  background: oklch(85% .025 235 / .045);
+  color: oklch(80% .02 235);
+}
+.dialog-body { padding: 8px 28px 17px; }
+.dialog-footer {
+  gap: 12px;
+  padding: 13px 26px 24px;
+  border-radius: 0 0 36px 36px;
+  background: linear-gradient(180deg, oklch(18% .025 255 / 0), oklch(18% .025 255 / .96) 32%);
+}
+.dialog-footer button,#voice-enable,#interpret,#command-save,#settings-form>button {
+  min-height: 51px;
+  border-radius: 18px;
+  background: oklch(92% .035 220);
+  color: oklch(22% .035 250);
+  border-color: oklch(98% .01 220 / .5);
+  box-shadow: inset 0 1px 0 oklch(99% .008 220 / .4), 0 5px 20px oklch(76% .06 230 / .065);
+  font-weight: 550;
+}
+.dialog-footer button.danger {
+  background: oklch(54% .1 22 / .09);
+  color: var(--red);
+  border-color: oklch(75% .1 22 / .13);
+  box-shadow: none;
+}
+dialog button.ghost {
+  background: oklch(85% .025 235 / .06);
+  border-color: oklch(85% .025 235 / .1);
+  box-shadow: inset 0 1px 0 oklch(93% .02 230 / .025);
+}
+dialog input,dialog select,dialog textarea {
+  border-color: oklch(84% .025 230 / .1);
+  background: oklch(9% .025 255 / .2);
+  border-radius: 15px;
+  padding: 13px 14px;
+  transition: border-color 150ms ease, background-color 150ms ease;
+}
+dialog input:focus,dialog select:focus,dialog textarea:focus {
+  border-color: oklch(83% .055 220 / .42);
+  background-color: oklch(11% .025 255 / .28);
+}
+dialog input::placeholder,dialog textarea::placeholder { color: oklch(65% .025 240); }
+dialog label { color: oklch(74% .025 240); }
+dialog input[type=checkbox] { padding: 0; }
+.quick-sheet .dialog-footer { background: transparent; }
+.quick-sheet .dialog-body { padding-top: 8px; padding-bottom: 2px; }
+.quick-sheet .field-group { margin: 11px 0 0; }
+#q-name {
+  border-radius: 0;
+  border-width: 0 0 1px;
+  border-color: var(--line);
+  background: transparent;
+  padding: 6px 0 13px;
+  font-size: 20px;
+  letter-spacing: -.4px;
+  min-height: 46px;
+}
+#q-name:focus { border-color: oklch(85% .04 220 / .45); }
+#q-name:focus-visible { outline: none; }
+.amount-entry { padding: 23px 0 24px; }
+.amount-input { gap: 10px; }
+.amount-input>span { font-size: 29px; font-weight: 300; color: oklch(79% .03 235); }
+.amount-input input,.amount-input input:focus {
+  padding: 0;
+  min-height: 72px;
+  font-size: 58px;
+  line-height: 1.15;
+  letter-spacing: -2.5px;
+  font-weight: 300;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+}
+.amount-input input::placeholder { color: oklch(83% .025 235 / .6); }
+.quick-date-row { gap: 12px; align-items: flex-end; }
+.quick-date-row input { min-height: 48px; background: oklch(83% .03 235 / .045); }
+.quick-date-row>button { width: 48px; height: 48px; margin: 0; border: 1px solid var(--line); }
+#quick-hint { margin: 10px 1px 0; color: oklch(76% .026 235); }
+.quick-details { margin-top: 11px; padding-top: 18px; }
+#quick-options[aria-expanded=true] { color: var(--accent); background: oklch(85% .045 225 / .12); }
+.voice-sheet .dialog-body { padding-top: 13px; padding-bottom: 27px; }
+.voice-status { color: oklch(76% .03 235); }
+#natural { min-height: 140px; padding: 5px 0; background: transparent; border: 0; border-radius: 0; font-size: 22px; line-height: 1.5; letter-spacing: -.5px; }
+#natural:focus { background: transparent; }
+.voice-actions { margin-top: 24px; }
+.voice-actions .icon-button { width: 56px; height: 56px; background: oklch(85% .025 235 / .055); border-color: oklch(86% .03 230 / .16); }
+.voice-actions .mic-listening { color: var(--accent); background: oklch(77% .08 220 / .1); border-color: oklch(85% .06 220 / .55); box-shadow: 0 0 0 6px oklch(86% .07 220 / .055); animation: none; }
+.preview-actions button { min-height: 51px; border-radius: 18px; }
+#command-title { font-size: 22px; }
+.data-header { padding: 17px 18px 0; }
+.sheet-grip { width: 30px; height: 3px; margin-bottom: 10px; background: oklch(85% .03 230 / .23); }
+.data-heading h2 { font-size: 17px; font-weight: 450; }
+.data-heading .icon-button { background: oklch(85% .025 235 / .035); }
+.nav { gap: 3px; margin: 15px 23px 8px; padding: 4px; border-radius: 18px; background: oklch(8% .02 255 / .2); border: 1px solid oklch(86% .03 230 / .055); }
+.nav button { min-height: 40px; border-radius: 13px; }
+.nav button.active { background: oklch(85% .03 235 / .105); box-shadow: inset 0 1px 0 oklch(94% .02 230 / .075), 0 2px 9px oklch(7% .02 255 / .1); }
+.data-scroll { padding: 8px 25px 25px; }
+.balance-panel { padding-top: 25px; }
+.balance { font-weight: 350; letter-spacing: -1.8px; }
+.budget-panel { margin-bottom: 25px; }
+.cat-icon { background: oklch(85% .025 235 / .055); border: 1px solid oklch(86% .03 230 / .055); }
+.row { border-color: oklch(85% .03 230 / .08); }
+.disclosure { border-color: oklch(85% .03 230 / .11); }
+.welcome { background: oklch(85% .025 235 / .035); border-color: oklch(85% .025 235 / .1); border-radius: 20px; }
+.segmented { background: oklch(9% .02 255 / .18); border: 1px solid oklch(85% .025 235 / .06); border-radius: 16px; }
+.segmented button { border-radius: 11px; }
+.notice { background: oklch(57% .055 75 / .1); border-color: oklch(78% .06 75 / .2); border-radius: 15px; }
+.notice.error { background: oklch(50% .08 22 / .12); border-color: oklch(74% .09 22 / .2); }
+.install-hint { background: var(--raised); border-color: var(--line); }
+.toast { border-color: oklch(86% .04 230 / .18); background: oklch(20% .025 255 / .85); border-radius: 20px; }
+.desktop-controls { display: none; }
+@media (max-height: 700px) {
+  .dialog-head { padding-top: 16px; padding-bottom: 4px; }
+  .dialog-body { padding-top: 2px; }
+  .amount-entry { padding: 15px 0 17px; }
+  .amount-input input { font-size: 48px; min-height: 58px; }
+  .field-group { margin: 10px 0; }
+  .dialog-footer { padding-top: 9px; padding-bottom: 17px; }
+}
+@media (max-width: 374px) {
+  .dialog-head { padding-left: 22px; padding-right: 18px; }
+  .dialog-body { padding-left: 22px; padding-right: 22px; }
+  .dialog-footer { padding-left: 21px; padding-right: 21px; }
+  .data-scroll { padding-left: 21px; padding-right: 21px; }
+  .nav { margin-left: 19px; margin-right: 19px; }
+  .fields { gap: 9px; }
+}
+@media (min-width: 540px) { .wordmark { font-size: 48px; } .data-handle { bottom: 24px; } }
+/* Fine pointer devices receive a window-sized workspace and a quiet command dock. */
+@media (min-width: 900px) and (hover: hover) and (pointer: fine) {
+  #open-data { display: none; }
+  body>.toast { bottom: 110px; }
+  .dialog,.data-sheet {
+    inset: 0;
+    margin: auto;
+    width: min(500px,calc(100vw - 80px));
+    max-width: none;
+    max-height: calc(var(--vv-height) - 80px);
+    border-radius: 34px;
+    transform-origin: 50% 50%;
+    --panel-exit: translateY(12px) scale(.975);
+    --data-exit: translateY(12px) scale(.975);
+  }
+  .dialog { height: fit-content; }
+  .dialog[open],.data-sheet[open] { animation: window-in 220ms var(--ease) both; }
+  .dialog-head { padding: 25px 26px 13px 32px; }
+  .dialog-head h2 { font-size: 22px; }
+  .dialog-body { padding-left: 33px; padding-right: 33px; }
+  .dialog-footer { padding: 17px 31px 29px; }
+  .quick-sheet .dialog-body { padding-top: 13px; }
+  .amount-entry { padding-top: 26px; padding-bottom: 27px; }
+  .amount-input input { font-size: 64px; min-height: 78px; }
+  .voice-sheet .dialog-body { padding-top: 15px; padding-bottom: 31px; }
+  .data-sheet { width: min(960px,calc(100vw - 96px)); height: min(740px,86dvh); }
+  .data-header { padding: 23px 25px 0; touch-action: auto; cursor: default; }
+  .sheet-grip { display: none; }
+  .data-heading h2 { font-size: 21px; letter-spacing: -.7px; }
+  .nav { align-self: center; width: 380px; margin: 12px 0 8px; }
+  .data-scroll { padding: 18px 43px 35px; }
+  #view-home { display: grid; grid-template-columns: minmax(0,.9fr) minmax(0,1.2fr); grid-template-areas: 'welcome welcome' 'balance recent-title' 'budget recent' 'plan recent' 'next all'; column-gap: 58px; align-items: start; }
+  #view-home .welcome { grid-area: welcome; margin: 0 0 15px; }
+  #view-home .balance-panel { grid-area: balance; text-align: left; padding: 18px 0 20px; }
+  #view-home .balance { font-size: 52px; margin-top: 8px; letter-spacing: -2.2px; }
+  #view-home .budget-panel { grid-area: budget; margin: 0 0 16px; }
+  #view-home .budget-panel>.tiny { text-align: left; }
+  #view-home>.section-heading { grid-area: recent-title; align-self: end; margin: 0 0 5px; min-height: 47px; }
+  #recent { grid-area: recent; }
+  #view-home>button { grid-area: all; margin-top: 4px; }
+  #view-home>details:nth-last-child(2) { grid-area: plan; margin-top: 10px; }
+  #view-home>details:last-child { grid-area: next; margin-top: 0; }
+  #view-history,#view-plan { max-width: 790px; margin: 0 auto; }
+  #view-settings { max-width: 660px; margin: 0 auto; }
+  .row { padding: 18px 0; }
+  .row-title { font-size: 14px; }
+  .row-sub { font-size: 11px; }
+  .row-money { font-size: 15px; }
+  .cat-icon { width: 38px; height: 38px; }
+  .desktop-controls {
+    position: fixed; left: 50%; bottom: 30px; transform: translateX(-50%); z-index: 3;
+    display: flex; align-items: center; gap: 5px; padding: 7px;
+    border: 1px solid oklch(87% .035 230 / .13); border-radius: 24px;
+    background: oklch(20% .03 250 / .42);
+    box-shadow: inset 0 1px 0 oklch(95% .02 230 / .055), 0 8px 35px oklch(5% .02 260 / .18);
+    backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+    transition: opacity 160ms ease, transform 180ms var(--ease);
+  }
+  .desktop-controls button { min-height: 42px; padding: 10px 14px; border-radius: 17px; color: oklch(86% .02 235); font-size: 12px; font-weight: 450; background: transparent; white-space: nowrap; }
+  .desktop-controls button:first-child { background: oklch(90% .025 230 / .07); }
+  .desktop-controls svg { width: 16px; height: 16px; }
+  .desktop-controls kbd { font-family: inherit; font-size: 10px; font-weight: 400; color: oklch(71% .025 235); line-height: 1; padding: 4px 5px; min-width: 19px; border: 1px solid oklch(85% .02 230 / .13); border-radius: 5px; margin-left: 6px; }
+  html:not([data-scene=idle]) .desktop-controls { opacity: 0; pointer-events: none; transform: translate(-50%,8px); }
+  @keyframes window-in { from { opacity: 0; transform: translateY(14px) scale(.975); } to { opacity: 1; transform: none; } }
+}
+@media (hover: hover) and (pointer: fine) {
+  dialog button:hover:not(:disabled),.desktop-controls button:hover { filter: brightness(1.09); }
+  dialog .icon-button:hover,dialog .quiet:hover { color: var(--text); background-color: oklch(85% .035 235 / .08); }
+  .desktop-controls button:hover { background: oklch(86% .035 230 / .11); }
+  dialog .row:hover { background: oklch(85% .025 235 / .025); }
+  dialog input:hover,dialog select:hover { border-color: oklch(84% .025 230 / .22); }
+}
+@media (prefers-reduced-transparency: reduce) {
+  dialog,.desktop-controls,.toast { background: oklch(19% .025 255); backdrop-filter: none; -webkit-backdrop-filter: none; }
+  dialog::backdrop { background: oklch(8% .02 265 / .55); backdrop-filter: none; -webkit-backdrop-filter: none; }
+}
+@media (prefers-contrast: more) {
+  dialog { --line: oklch(85% .025 235 / .35); --muted: oklch(85% .025 235); background: oklch(18% .025 255); }
+  dialog input,dialog select,dialog textarea { border-color: oklch(85% .025 235 / .38); }
+}
+@media (prefers-reduced-motion: reduce) {
+  *,*:before,*:after { animation: none!important; transition: none!important; scroll-behavior: auto!important; }
+  .wordmark { filter: none!important; }
+}
 </style>
 </head>
 <body>
-<!-- Keep the shell generic: personal balances live only in an imported private file. -->
-<main class="app">
-  <header class="header">
-    <div class="brand"><span class="brandmark" data-icon="wallet"></span><div><h1>MyMoney</h1><small>Local edition · 02</small></div></div>
-    <span class="pill"><span data-icon="lock"></span>Solo su questo dispositivo</span>
-  </header>
-  <div id="environment" class="notice install-hint" hidden></div>
-  <div id="storage-warning" class="notice error" hidden role="alert"></div>
-  <section id="welcome" hidden>
-    <div class="card welcome">
-      <div class="brandmark" data-icon="wallet"></div>
-      <h2 class="big-title">Meno pensieri.<br>Più controllo.</h2>
-      <p class="muted">Un posto semplice per le tue spese.<br>Nessun account. Nessun archivio cloud.</p>
-      <button class="setup-button" data-import>Importa i miei dati <span data-icon="download"></span></button>
-      <p class="tiny">Scegli <strong>Dati_iniziali_PRIVATI.json</strong> dal pacchetto, oppure il backup esportato dal vecchio prototipo. Nessun dato viene inviato a un server.</p>
-      <button class="quiet setup-button" id="setup-new">Oppure configura da zero</button>
-    </div>
-  </section>
-  <section id="view-home">
-    <div class="hero"><div class="eyebrow">Il tuo saldo registrato</div><div class="balance" id="balance">—</div><p class="muted" id="balance-caption">Le previsioni non sono addebiti.</p></div>
-    <div class="home-grid">
-      <div class="card budget-card">
-        <div class="budget-top"><div><div class="eyebrow">Libero dopo gli impegni</div><div class="budget-number" id="available">—</div></div><span class="budget-symbol" data-icon="sparkles"></span></div>
-        <div class="track"><div id="budget-progress" style="width:0"></div></div>
-        <div class="split tiny"><span id="cycle-label">Ciclo stipendio</span><span id="budget-cap">—</span></div>
-        <div id="budget-warning" class="notice" hidden></div>
-      </div>
-      <div>
-        <div class="mini-grid">
-          <div class="mini"><span class="tiny">Obiettivo / mese</span><strong class="value" id="goal">—</strong></div>
-          <div class="mini"><span class="tiny">Fisse / mese equivalente</span><strong class="value" id="fixed">—</strong></div>
-        </div>
-        <p class="tiny" id="budget-caption">Una stima di budget, non un accantonamento bancario.</p>
-      </div>
-      <div class="card composer full">
-        <div class="composer-head"><span data-icon="sparkles"></span><h2>Scrivi. Oppure raccontala.</h2></div>
-        <label for="natural" class="tiny">Una spesa, una frase. Controlli sempre tu.</label>
-        <textarea id="natural" placeholder="50 euro domani tavolo Amazon" rows="2" maxlength="4000" autocomplete="off"></textarea>
-        <div class="composer-controls"><button class="icon-button" id="mic" aria-label="Detta una spesa" title="Detta una spesa"><span data-icon="mic"></span></button><button class="submit" id="interpret">Interpreta <span data-icon="arrow"></span></button></div>
-        <p class="tiny hint" id="voice-status" role="status">Interpretazione locale · nessun salvataggio senza conferma</p>
-        <button class="quiet" id="manual-add">Inserisci manualmente</button>
-      </div>
-    </div>
-    <div id="home-alerts"></div>
-    <div class="section-heading"><h2>Ultimi movimenti</h2><button class="quiet" data-go="history">Vedi tutti <span data-icon="arrow"></span></button></div>
-    <div id="recent"></div>
-    <p class="bottom-note">Il conto resta separato dal budget.<br>Le spese future restano “Da pagare”, finché le confermi.</p>
-  </section>
-  <section id="view-history" hidden>
-    <h2 class="view-title">Movimenti</h2><p class="muted">Quello che è successo. E quello che hai in programma.</p>
-    <div class="toolbar"><input id="search" class="grow" type="search" placeholder="Cerca una spesa…" aria-label="Cerca movimenti"><button class="icon-button" id="history-add" aria-label="Nuovo movimento"><span data-icon="plus"></span></button></div>
-    <div class="segmented" id="history-filters"><button data-filter="all" class="active">Tutti</button><button data-filter="paid">Pagati</button><button data-filter="planned">Da pagare</button></div>
-    <div id="all-transactions"></div>
-    <div class="section-heading"><h2>Il tuo resoconto</h2></div>
-    <div class="card"><div class="segmented" id="report-modes"><button data-report="week">Settimana</button><button data-report="month" class="active">Mese</button><button data-report="cycle">Ciclo</button></div><div class="toolbar"><button class="icon-button" id="report-prev" aria-label="Periodo precedente"><span data-icon="left"></span></button><strong class="grow tiny" id="report-title" style="text-align:center"></strong><button class="icon-button" id="report-next" aria-label="Periodo successivo"><span data-icon="arrow"></span></button></div><div id="report"></div></div>
-  </section>
-  <section id="view-plan" hidden>
-    <h2 class="view-title">Il tuo piano</h2><p class="muted">Gli impegni hanno un posto. Non diventano pagamenti da soli.</p>
-    <div class="card" id="plan-budget"></div>
-    <div class="section-heading"><h2>Spese ricorrenti</h2><button class="quiet" id="new-recurring">Aggiungi <span data-icon="plus"></span></button></div>
-    <div id="recurring-list"></div>
-    <div class="section-heading"><h2>Prossime scadenze</h2></div><div id="upcoming"></div>
-    <div class="section-heading"><h2>Da definire</h2></div><div class="card" id="plan-notes"></div>
-    <div class="card"><h3>Promemoria, senza server</h3><p class="muted">Esporta le scadenze nel Calendario. Gli avvisi saranno gestiti dal calendario, non dall’app. Non confermano i pagamenti e non seguono le modifiche successive.</p><button class="ghost" id="export-calendar"><span data-icon="calendar"></span>Esporta scadenze .ics</button><p class="tiny">Importa il file in un calendario e verifica gli avvisi. Non è un’attivazione automatica delle notifiche di MyMoney.</p></div>
-  </section>
-  <section id="view-settings" hidden>
-    <h2 class="view-title">I tuoi dati</h2><p class="muted">Sul dispositivo. Sotto il tuo controllo.</p>
-    <div class="card"><h3>Backup prima di tutto</h3><p class="muted">Se cancelli i dati dell’app o del browser, perdi l’archivio locale. Un backup salvato in File ti permette di recuperarlo.</p><div class="actions"><button id="export-json"><span data-icon="download"></span>Salva backup</button><button class="ghost" data-import>Importa</button><button class="ghost" id="export-csv">Esporta CSV</button></div><p class="tiny" id="backup-status">Nessun backup esportato.</p><p class="tiny">I backup non sono cifrati: conservali in un luogo privato. Puoi salvarli in File/iCloud Drive, ma l’archivio dell’app non si sincronizza da solo.</p></div>
-    <div class="card"><h3>Situazione iniziale e budget</h3><form id="settings-form">
-      <div class="fields"><div class="field-group"><label for="s-opening">Saldo iniziale (€)</label><input id="s-opening" inputmode="decimal" required></div><div class="field-group"><label for="s-date">Data iniziale</label><input id="s-date" type="date" required></div></div>
-      <div class="fields"><div class="field-group"><label for="s-salary">Stipendio netto (€)</label><input id="s-salary" inputmode="decimal" required></div><div class="field-group"><label for="s-day">Giorno stipendio (1–28)</label><input id="s-day" type="number" min="1" max="28" required></div></div>
-      <div class="fields"><div class="field-group"><label for="s-budget">Budget del ciclo (€)</label><input id="s-budget" inputmode="decimal" required></div><div class="field-group"><label for="s-goal">Risparmio obiettivo (€)</label><input id="s-goal" inputmode="decimal" required></div></div>
-      <div class="field-group"><label for="s-savings">Risparmi separati (€ · facoltativo)</label><input id="s-savings" inputmode="decimal" placeholder="Da definire"></div>
-      <p class="tiny">Lo stipendio è un riferimento, non un accredito automatico. Aggiornare il saldo iniziale non è il modo di registrare entrate successive.</p><button type="submit">Salva impostazioni</button>
-    </form></div>
-    <div class="card"><h3>Le tue preferenze</h3><p class="muted">Quando correggi una categoria puoi memorizzare una frase, per riconoscerla la prossima volta. Non è un modello AI generativo.</p><div id="learned-rules"></div></div>
-    <div class="card"><h3>iPhone, voce e modalità offline</h3><p class="muted" id="install-status"></p><p class="muted">Da una pagina HTTPS: Safari → Condividi → Aggiungi alla schermata Home. Apri l’icona, importa il backup lì e mantieni lo stesso indirizzo.</p><button class="ghost" id="request-storage">Richiedi conservazione persistente</button><p class="tiny" id="persistent-status"></p><details><summary>Che cosa funziona davvero</summary><p>Testo, categorie, conti e resoconti vengono elaborati localmente. Il riconoscimento vocale è fornito dal browser/sistema: può usare servizi online. Puoi sempre usare il microfono della tastiera dell’iPhone.</p><p>Non è presente un servizio push. A pagina chiusa non vengono calcolati avvisi o resoconti automatici. Gli avvisi di budget compaiono quando apri l’app o salvi un movimento.</p><p>Non c’è sincronizzazione con Mac o ChatGPT. Per trasferire i dati usa un backup. Non condividere pubblicamente i backup personali.</p></details></div>
-    <p class="bottom-note">MyMoney Local 2 · nessun tracker · nessuna libreria esterna<br>Interpretazione a regole con conferma, non un’AI generale.</p>
-  </section>
+<main id="experience" aria-label="MyMoney">
+  <canvas id="orb-canvas" aria-hidden="true"></canvas>
+  <div class="scene-shade" aria-hidden="true"></div>
+  <button id="touch-surface" aria-label="Aggiungi una spesa" aria-describedby="gesture-instructions"></button>
+  <h1 class="wordmark" aria-hidden="true">MyMoney<span class="wordmark-point">.</span></h1>
+  <span class="hold-ring" aria-hidden="true"></span>
+  <p id="gesture-instructions" class="sr-only">Tocca per inserire una spesa. Tieni premuto per parlare. Scorri verso l’alto per vedere i dati.</p>
+  <button id="open-data" class="data-handle" aria-label="Mostra i tuoi dati"><span></span></button>
+  <button id="accessible-voice" class="focus-action">Detta una spesa</button>
 </main>
-<nav class="nav" aria-label="Navigazione principale"><div class="nav-inner"><button data-go="home" class="active"><span data-icon="home"></span>Oggi</button><button data-go="history"><span data-icon="list"></span>Movimenti</button><button data-go="plan"><span data-icon="calendar"></span>Piano</button><button data-go="settings"><span data-icon="settings"></span>Dati</button></div></nav>
+<nav class="desktop-controls" aria-label="Azioni rapide">
+  <button id="desktop-add" title="Nuova spesa (⌘K)"><span data-icon="plus"></span><span>Nuova spesa</span><kbd>⌘K</kbd></button>
+  <button id="desktop-voice" title="Dettatura (V)"><span data-icon="mic"></span><span>Voce</span></button>
+  <button id="desktop-data" title="I tuoi dati (D)"><span data-icon="list"></span><span>I tuoi dati</span></button>
+</nav>
+
+<dialog id="data-sheet" class="data-sheet" aria-labelledby="data-title">
+  <header class="data-header" id="data-drag-handle">
+    <span class="sheet-grip" aria-hidden="true"></span>
+    <div class="data-heading"><button id="data-settings" class="icon-button" data-go="settings" aria-label="Preferenze"><span data-icon="settings"></span></button><h2 id="data-title">I tuoi dati</h2><button id="close-data" class="icon-button" aria-label="Nascondi i dati"><span data-icon="close"></span></button></div>
+  </header>
+  <nav class="nav" aria-label="I tuoi dati"><button data-go="home" class="active">Sintesi</button><button data-go="history">Movimenti</button><button data-go="plan">Piano</button></nav>
+  <div id="data-scroll" class="data-scroll">
+    <div id="storage-warning" class="notice error" hidden role="alert"></div>
+    <section id="view-home">
+      <div id="welcome" class="welcome" hidden><p>Hai già un archivio?</p><button class="ghost" data-import>Importa dati <span data-icon="download"></span></button><button id="setup-new" class="quiet">Parti da zero</button></div>
+      <div class="balance-panel"><span class="label">Saldo</span><div id="balance" class="balance">—</div></div>
+      <div class="budget-panel"><div class="split"><span>Nel budget</span><strong id="available">—</strong></div><div class="track"><div id="budget-progress"></div></div><span id="cycle-label" class="tiny"></span><div id="budget-warning" class="notice" hidden></div></div>
+      <div class="section-heading"><h3>Ultimi movimenti</h3><button id="top-add" class="icon-button" aria-label="Nuova spesa"><span data-icon="plus"></span></button></div>
+      <div id="recent"></div>
+      <button class="quiet full-width" data-go="history">Vedi tutti <span data-icon="arrow"></span></button>
+      <details class="disclosure"><summary>Il piano in breve</summary><div class="line-item"><span>Spese fisse / mese</span><strong id="fixed"></strong></div><div class="line-item"><span>Obiettivo risparmio</span><strong id="goal"></strong></div><div class="line-item"><span>Budget</span><strong id="budget-cap"></strong></div><p id="budget-caption" class="tiny"></p><p id="balance-caption" class="tiny"></p><div id="home-alerts"></div></details>
+      <details class="disclosure"><summary>Prossime scadenze</summary><div id="home-upcoming"></div></details>
+    </section>
+    <section id="view-history" hidden>
+      <div class="toolbar"><input id="search" type="search" placeholder="Cerca" aria-label="Cerca movimenti"><button id="history-add" class="icon-button" aria-label="Nuovo movimento"><span data-icon="plus"></span></button></div>
+      <div class="segmented" id="history-filters"><button data-filter="all" class="active">Tutti</button><button data-filter="paid">Pagati</button><button data-filter="planned">Previsti</button></div>
+      <div id="all-transactions"></div>
+      <details class="disclosure"><summary>Resoconto</summary><div class="segmented" id="report-modes"><button data-report="week">Settimana</button><button data-report="month" class="active">Mese</button><button data-report="cycle">Ciclo</button></div><div class="toolbar"><button class="icon-button" id="report-prev" aria-label="Periodo precedente"><span data-icon="left"></span></button><strong class="tiny grow" id="report-title"></strong><button class="icon-button" id="report-next" aria-label="Periodo successivo"><span data-icon="arrow"></span></button></div><div id="report"></div></details>
+    </section>
+    <section id="view-plan" hidden>
+      <div class="section-heading"><h3>Spese fisse</h3><button class="icon-button" id="new-recurring" aria-label="Aggiungi spesa fissa"><span data-icon="plus"></span></button></div><div id="recurring-list"></div>
+      <details class="disclosure"><summary>Scadenze</summary><div id="upcoming"></div><button class="ghost full-width" id="export-calendar">Esporta nel Calendario</button></details>
+      <details class="disclosure"><summary>Calcolo del budget</summary><div id="plan-budget"></div></details>
+      <details class="disclosure"><summary>Note del piano</summary><div id="plan-notes"></div></details>
+    </section>
+    <section id="view-settings" hidden>
+      <details class="disclosure" open><summary>Budget e stipendio</summary><form id="settings-form">
+        <div class="fields"><div class="field-group"><label for="s-salary">Stipendio previsto €</label><input id="s-salary" inputmode="decimal" required></div><div class="field-group"><label for="s-day">Giorno di accredito</label><input id="s-day" type="number" min="1" max="28" required></div></div>
+        <div class="fields"><div class="field-group"><label for="s-budget">Budget €</label><input id="s-budget" inputmode="decimal" required></div><div class="field-group"><label for="s-goal">Obiettivo risparmio €</label><input id="s-goal" inputmode="decimal" required></div></div>
+        <details><summary>Situazione iniziale</summary><div class="field-group"><label for="s-opening">Saldo iniziale €</label><input id="s-opening" inputmode="decimal" required></div><div class="field-group"><label for="s-date">Data iniziale</label><input id="s-date" type="date" required></div><div class="field-group"><label for="s-savings">Risparmi separati €</label><input id="s-savings" inputmode="decimal" placeholder="Facoltativo"></div><p class="tiny">Il saldo iniziale è il punto di partenza. Registra gli stipendi successivi come entrate.</p></details><button type="submit" class="full-width">Salva</button>
+      </form></details>
+      <details class="disclosure"><summary>Backup e trasferimento</summary><div class="actions"><button id="export-json">Salva backup</button><button class="ghost" data-import>Importa</button><button class="ghost" id="export-csv">CSV</button></div><p class="tiny" id="backup-status"></p><p class="tiny">I dati sono solo in questo browser. Conserva un backup privato prima di cancellarli o cambiare dispositivo.</p></details>
+      <details class="disclosure"><summary>Categorie imparate</summary><div id="learned-rules"></div></details>
+      <details class="disclosure"><summary>App e dispositivi</summary><p class="tiny">Tocco: nuova spesa.<br>Pressione prolungata: voce.<br>Scorri in alto: i tuoi dati.</p><button id="settings-voice" class="ghost full-width">Detta una modifica <span data-icon="mic"></span></button><div id="environment" class="notice" hidden></div><p class="tiny" id="install-status"></p><p class="tiny">Su iPhone: Safari → Condividi → Aggiungi alla schermata Home.<br>Su Mac: Safari → File → Aggiungi al Dock, oppure installa dal menu di Chrome.</p><p class="tiny">App e sito usano la stessa interfaccia. I dati restano nel browser o nell’app in uso: per trasferirli tra dispositivi usa un backup.</p><button class="ghost full-width" id="request-storage">Conserva i dati sul dispositivo</button><p class="tiny" id="persistent-status"></p><p class="tiny">La voce usa il servizio del browser e può richiedere internet. MyMoney non conserva audio. I comandi vengono interpretati localmente e proposti prima del salvataggio.</p></details>
+    </section>
+  </div>
+</dialog>
+
+<dialog id="quick-sheet" class="dialog quick-sheet" aria-labelledby="quick-title">
+  <div class="dialog-head"><h2 id="quick-title">Nuova spesa</h2><button id="close-quick" class="icon-button" aria-label="Chiudi inserimento"><span data-icon="close"></span></button></div>
+  <form id="quick-form" autocomplete="off"><div class="dialog-body">
+    <div class="field-group"><label for="q-name">Nome</label><input id="q-name" placeholder="Per cosa?" maxlength="150" enterkeyhint="next" required></div>
+    <div class="amount-entry"><label for="q-amount">Importo</label><div class="amount-input"><span>€</span><input id="q-amount" inputmode="decimal" placeholder="0,00" enterkeyhint="done" required aria-label="Importo in euro"></div></div>
+    <div class="quick-date-row"><div><label for="q-date">Data</label><input id="q-date" type="date" required></div><button class="icon-button" type="button" id="quick-options" aria-label="Personalizza categoria e tipo" aria-expanded="false"><span data-icon="settings"></span></button></div>
+    <p id="quick-hint" class="tiny"></p>
+    <div id="quick-details" class="quick-details" hidden><div class="fields"><div><label for="q-category">Categoria</label><select id="q-category"></select></div><div><label for="q-type">Tipo</label><select id="q-type"><option value="auto">Automatico</option><option value="expense">Uscita</option><option value="income">Entrata</option></select></div></div><label class="check-label"><input id="q-learn" type="checkbox" checked>Ricorda la categoria</label></div>
+    <div id="quick-error" class="notice error" role="alert" hidden></div>
+  </div><div class="dialog-footer"><button type="submit" id="quick-save">Salva <span data-icon="check"></span></button></div></form>
+</dialog>
+
+<dialog id="voice-sheet" class="dialog voice-sheet" aria-labelledby="voice-title">
+  <div class="dialog-head"><h2 id="voice-title">Dimmi pure.</h2><button id="close-voice" class="icon-button" aria-label="Chiudi dettatura"><span data-icon="close"></span></button></div>
+  <div class="dialog-body">
+    <section id="voice-consent" hidden><p>La dettatura usa il servizio vocale del browser, che può elaborare l’audio online.</p><button id="voice-enable" class="full-width">Attiva microfono <span data-icon="mic"></span></button><button id="voice-write" class="quiet full-width">Preferisco scrivere</button></section>
+    <div id="voice-compose"><p class="voice-status" id="voice-status" role="status"></p><label class="sr-only" for="natural">Scrivi una spesa o una modifica</label><textarea id="natural" rows="3" maxlength="4000" placeholder="Una spesa. O quello che vuoi cambiare."></textarea><div class="voice-actions"><button class="icon-button" id="mic" aria-label="Avvia dettatura"><span data-icon="mic"></span></button><button id="interpret">Continua <span data-icon="arrow"></span></button></div></div>
+    <section id="command-preview" hidden aria-label="Proposta da confermare" aria-live="polite"><h3 id="command-title"></h3><p id="command-description" class="tiny"></p><div id="command-lines"></div><div class="preview-actions"><button class="ghost" id="command-edit">Modifica</button><button id="command-save">Conferma</button></div><button class="quiet full-width" id="command-close">Riprova</button><div id="command-error" class="notice error" role="alert" hidden></div></section>
+  </div>
+</dialog>
 <input id="import-file" type="file" accept="application/json,.json" hidden>
 <dialog class="dialog" id="editor" aria-labelledby="editor-title"><div class="dialog-head"><h2 id="editor-title">Controlla prima di salvare</h2><button id="close-editor" aria-label="Chiudi"><span data-icon="close"></span></button></div><form id="editor-form"><div class="dialog-body"><div id="drafts"></div><div class="notice error" id="editor-error" hidden role="alert"></div></div><div class="dialog-footer"><button type="button" class="danger" id="delete-transaction" hidden>Elimina</button><button type="submit" id="save-drafts">Conferma e salva</button></div></form></dialog>
-<dialog class="dialog" id="rec-editor" aria-labelledby="rec-title"><div class="dialog-head"><h2 id="rec-title">Spesa ricorrente</h2><button id="close-rec" aria-label="Chiudi"><span data-icon="close"></span></button></div><form id="rec-form"><div class="dialog-body"><div class="field-group"><label for="r-name">Nome</label><input id="r-name" maxlength="150" required></div><div class="fields"><div class="field-group"><label for="r-amount">Importo rata (€)</label><input id="r-amount" inputmode="decimal" required></div><div class="field-group"><label for="r-months">Ogni quanti mesi</label><select id="r-months"><option value="1">1 · mensile</option><option value="2">2 · bimestrale</option><option value="3">3 · trimestrale</option><option value="6">6 · semestrale</option><option value="12">12 · annuale</option></select></div></div><div class="field-group"><label for="r-date">Prima scadenza nel piano</label><input id="r-date" type="date"></div><div class="field-group"><label for="r-category">Categoria</label><select id="r-category"></select></div><label class="check-label"><input id="r-active" type="checkbox">Attiva nel budget (richiede una data)</label><label class="check-label"><input id="r-auto" type="checkbox">Addebito automatico sul conto</label><label class="check-label"><input id="r-estimated" type="checkbox">Importo o scadenza da verificare</label><p class="tiny">“Automatico” è una nota: MyMoney non legge la banca e non segna la rata come pagata.</p><div class="notice error" id="rec-error" hidden role="alert"></div></div><div class="dialog-footer"><button type="submit">Salva ricorrenza</button></div></form></dialog>
+<dialog class="dialog" id="rec-editor" aria-labelledby="rec-title"><div class="dialog-head"><h2 id="rec-title">Spesa ricorrente</h2><button id="close-rec" aria-label="Chiudi"><span data-icon="close"></span></button></div><form id="rec-form"><div class="dialog-body"><div class="field-group"><label for="r-name">Nome</label><input id="r-name" maxlength="150" required></div><div class="fields"><div class="field-group"><label for="r-amount">Importo rata (€)</label><input id="r-amount" inputmode="decimal" required></div><div class="field-group"><label for="r-months">Ogni quanti mesi</label><select id="r-months"><option value="1">1 · mensile</option><option value="2">2 · bimestrale</option><option value="3">3 · trimestrale</option><option value="6">6 · semestrale</option><option value="12">12 · annuale</option></select></div></div><div class="field-group"><label for="r-date">Prima scadenza nel piano</label><input id="r-date" type="date"></div><div class="field-group"><label for="r-category">Categoria</label><select id="r-category"></select></div><label class="check-label"><input id="r-active" type="checkbox">Attiva nel budget (richiede una data)</label><label class="check-label"><input id="r-auto" type="checkbox">Addebito automatico sul conto</label><label class="check-label"><input id="r-estimated" type="checkbox">Importo o scadenza da verificare</label><p class="tiny">“Automatico” è una nota: MyMoney non legge la banca e non segna la rata come pagata.</p><div class="notice error" id="rec-error" hidden role="alert"></div></div><div class="dialog-footer"><button type="button" class="danger" id="delete-recurring" hidden>Elimina</button><button type="submit">Salva ricorrenza</button></div></form></dialog>
 <div class="toast" id="toast" hidden role="status"></div>
-<noscript><p>Questa app richiede JavaScript. Se stai usando l’anteprima File di iPhone, apri la versione HTTPS in Safari.</p></noscript>
+<noscript><p>MyMoney richiede JavaScript.</p></noscript>
 <script>/* MyMoney Local 2 — deterministic, offline interpretation and accounting. */
 (function (root) {
   'use strict';
@@ -291,7 +556,7 @@
     ['Casa',5,'ikea|leroy merlin|mondo convenienza'],
     ['Spesa',8,'supermercato|conad|lidl|coop|esselunga|carrefour|eurospin|aldi|md discount|fruttivendolo|macelleria|pescheria|alimentari|spesa alimentare'],
     ['Spesa',4,'pane|latte|frutta|verdura|uova|spesa al mercato'],
-    ['Mangiare fuori',9,'ristorante|ristoranti|pizzeria|pizza|cena|pranzo|colazione|aperitivo|apericena|sushi|cappuccino|cornetto|spritz|pub|bar|trattoria|gelato|mcdonald|mcdonalds|burger king|deliveroo|glovo|just eat|ho mangiato fuori'],
+    ['Mangiare fuori',9,'ristorante|ristoranti|pizzeria|pizza|cena|pranzo|colazione|aperitivo|apericena|sushi|caffe|cappuccino|cornetto|spritz|pub|bar|trattoria|gelato|mcdonald|mcdonalds|burger king|deliveroo|glovo|just eat|ho mangiato fuori'],
     ['Trasporti',10,'benzina|carburante|gasolio|diesel|pieno|distributore|ricarica tesla|ricarica auto|colonnina|colonnine|supercharger|parcheggio|pedaggio|casello|telepass|taxi|uber|autobus|metro|metropolitana'],
     ['Trasporti',7,'eni|q8|esso|ip distributore|enilive'],
     ['Auto',10,'rata macchina|rata auto|meccanico|gommista|pneumatici|tagliando|revisione auto|bollo|carrozziere'],
@@ -308,7 +573,7 @@
     ['Utenze',12,'bolletta|bollette|elettricita|fibra|internet casa|luce e gas|luce|gas|acqua|ricarica telefonica|ricarica cellulare|ricarica vodafone|ricarica tim|ricarica iliad|vodafone|iliad|fastweb'],
     ['Regali',15,'regalo|regali|compleanno|donazione|beneficenza'],
     ['Lavoro',12,'commercialista|ordine professionale|partita iva|cancelleria'],
-    ['Stipendio',20,'stipendio|busta paga'],
+    ['Stipendio',20,'stipendio|busta paga|tredicesima|quattordicesima|bonus'],
     ['Rimborsi',16,'rimborso|rimborsato|rimborso ricevuto']
   ];
   function classify(text, learned = []) {
@@ -333,7 +598,7 @@
   }
   function parseEntry(text, ref = today(), learned = []) {
     const d = parseDate(text,ref), a = parseAmount(d.masked), cat = classify(text,learned);
-    const type = /\b(stipendio|accreditato|accredito|ricevuto|incassato|incasso|entrata|rimborso|rimborsato)\b/.test(norm(text)) ? 'income' : 'expense';
+    const type = /\b(stipendio|tredicesima|quattordicesima|bonus|accreditato|accredito|ricevuto|incassato|incasso|entrata|rimborso|rimborsato)\b/.test(norm(text)) ? 'income' : 'expense';
     const futureIntent = /\b(devo pagare|da pagare|paghero|spendero|comprero|previsto|prevista|preventivo|mi costera)\b/.test(norm(text));
     return {id:id(), amountCents:a.amountCents, date:d.date, type, category:cat.category, status:(d.date && d.date > ref)||futureIntent ? 'planned' : 'paid', note:text.trim(), includedInOpening:false, countBudget:true, recurringId:null, dueDate:null, confidence:cat.confidence, reason:cat.reason, dateReason:d.reason, warnings:[d.warning,a.warning].filter(Boolean)};
   }
@@ -434,13 +699,211 @@
   root.MM=api;
 })(typeof globalThis!=='undefined'?globalThis:this);
 </script>
+<script>/* Domain commands. Deterministic, inspectable, and deliberately conservative. */
+(function(root){
+  'use strict';
+  const M=typeof module!=='undefined'&&module.exports?require('./core.js'):root.MM;
+  const incomeWords=/\b(stipendio|busta paga|tredicesima|quattordicesima|bonus|rimborso|entrata|incassato|ricevuto|accredito)\b/;
+  const editWords=/\b(imposta|cambia|modifica|aggiorna|porta|aumenta|riduci|correggi|rettifica)\b/;
+  function inferType(name){return incomeWords.test(M.norm(name))?'income':'expense';}
+  function inferCategory(name,rules){const c=M.classify(name,rules);return c.category||(/\b(tredicesima|quattordicesima|bonus)\b/.test(M.norm(name))?'Stipendio':'Altro');}
+  function linkRecurring(d,state){
+    if(d.type!=='expense'||!d.date||!d.amountCents)return d;
+    const matches=state.recurring.filter(r=>r.active&&r.amountCents===d.amountCents&&r.category===d.category&&M.has(d.note,r.name)&&M.occurrences(r,d.date,M.shiftDays(d.date,1)).length);
+    if(matches.length===1){d.recurringId=matches[0].id;d.dueDate=d.date;}
+    return d;
+  }
+  function quickEntry({name,amount,date,category='',type='auto'},state,ref=M.today()){
+    name=String(name).trim();if(!name)throw Error('Dai un nome a questo movimento.');if(name.length>150)throw Error('Usa un nome di massimo 150 caratteri.');
+    const amountCents=M.cents(amount);if(!amountCents)throw Error('L’importo deve essere maggiore di zero.');
+    if(!M.validDate(date))throw Error('Scegli una data valida.');
+    const kind=type==='auto'?inferType(name):type;if(!['income','expense'].includes(kind))throw Error('Tipo non valido.');
+    const cat=category||inferCategory(name,state.rules);if(!M.CATEGORIES.includes(cat))throw Error('Categoria non valida.');
+    return linkRecurring({id:M.id(),date,amountCents,type:kind,category:cat,note:name,status:date>ref?'planned':'paid',includedInOpening:date<state.settings.openingDate,countBudget:true,recurringId:null,dueDate:null,createdAt:new Date().toISOString()},state);
+  }
+  function command(text,state,ref=M.today()){
+    text=String(text).trim();if(!text)throw Error('Scrivi o detta una spesa o una modifica.');if(text.length>4000)throw Error('Usa meno di 4.000 caratteri.');
+    const n=M.norm(text), editing=editWords.test(n);
+    const extra=/\b(tredicesima|quattordicesima|bonus)\b/.test(n);
+    // Only a clear setting instruction changes future salary expectations.
+    const setting=(editing&&/\b(budget|obiettivo|risparmio|stipendio)\b/.test(n)&&!extra&&!/\b(questo mese|per questo mese|ricevuto|incassato|accreditato)\b/.test(n));
+    if(setting){
+      const keys=[[/\bbudget\b/,'budgetCents','Budget del ciclo'],[/\b(obiettivo|risparmio)\b/,'savingsGoalCents','Obiettivo di risparmio'],[/\bstipendio\b/,'salaryCents','Stipendio previsto']].filter(([re])=>re.test(n));
+      if(keys.length!==1)throw Error('Cambia una preferenza alla volta, per esempio “Imposta budget a 1000 euro”.');
+      if(/\b(giorno|ogni|percento)\b|%/.test(n))throw Error('Per il giorno di accredito usa Preferenze. Per gli importi indica il nuovo valore completo in euro.');
+      const a=M.parseAmount(n);if(!a.amountCents)throw Error(a.warning);
+      if(/\b(di|del)\s+\d/.test(n)&&/\b(aumenta|riduci)\b/.test(n))throw Error('Indica il nuovo totale, per esempio “Imposta budget a 1200 euro”.');
+      const [,key,label]=keys[0];return {kind:'setting',key,value:a.amountCents,title:label,description:`Da ${M.money(state.settings[key])} a ${M.money(a.amountCents)}. ${key==='salaryCents'?'Cambia il riferimento per il futuro, senza registrare un accredito.':'Il piano verrà ricalcolato. Il saldo del conto resta invariato.'}`};
+    }
+    const recurringMatches=state.recurring.filter(r=>M.has(n,M.norm(r.name)));
+    const toggling=/\b(disattiva|sospendi|riattiva|attiva|elimina|cancella)\b/.test(n);
+    const recurrence=/\b(ogni mese|al mese|mensile|ogni due mesi|bimestrale|ogni tre mesi|trimestrale|ogni sei mesi|semestrale|ogni anno|annuale)\b/;
+    if((editing||toggling)&&recurringMatches.length){
+      if(recurringMatches.length!==1)throw Error('Ho trovato più spese fisse. Usa il nome di una sola.');
+      if(/\b(elimina|cancella)\b/.test(n))throw Error('Per eliminare una spesa fissa aprila nel Piano. Puoi dire “Disattiva '+recurringMatches[0].name+'”.');
+      const r=M.clone(recurringMatches[0]);
+      if(toggling){r.active=!/\b(disattiva|sospendi)\b/.test(n);if(r.active&&!r.startDate)throw Error('Questa spesa non ha ancora una data. Impostala nel Piano prima di attivarla.');}
+      else{const dateInfo=M.parseDate(n,ref);if(dateInfo.explicit)throw Error('Per spostare una scadenza o programmare una modifica, apri la spesa nel Piano.');const a=M.parseAmount(dateInfo.masked);if(!a.amountCents)throw Error(a.warning);r.amountCents=a.amountCents;if(recurrence.test(n))throw Error('Per cambiare anche la frequenza, apri la spesa nel Piano. Qui aggiorno solo l’importo.');}
+      return {kind:'recurring',recurring:r,isNew:false,title:toggling?(r.active?'Riattiva '+r.name:'Sospendi '+r.name):'Aggiorna '+r.name,description:toggling?'Il piano si aggiornerà. I movimenti già registrati resteranno invariati.':`${M.money(recurringMatches[0].amountCents)} → ${M.money(r.amountCents)} ogni ${r.months} mes${r.months===1?'e':'i'}. Vale per il piano; i pagamenti già registrati restano invariati.`};
+    }
+    if(recurrence.test(n)){
+      if(editing||toggling)throw Error('Non trovo una spesa fissa con quel nome. Controlla il nome nel Piano.');
+      const clean=n.replace(recurrence,' '),d=M.parseDate(clean,ref),a=M.parseAmount(d.masked);
+      if(!a.amountCents)throw Error(a.warning);if(!d.date)throw Error(d.warning);
+      if(incomeWords.test(n))throw Error('Lo stipendio non viene accreditato automaticamente. Puoi impostare lo stipendio previsto oppure registrare una singola entrata.');
+      const months=/ogni due mesi|bimestrale/.test(n)?2:/ogni tre mesi|trimestrale/.test(n)?3:/ogni sei mesi|semestrale/.test(n)?6:/ogni anno|annuale/.test(n)?12:1;
+      const name=d.masked.replace(/\b(?:aggiungi|crea|spesa fissa|abbonamento|pago|pagamento|di|da|a|per|euro|eur)\b/g,' ').replace(/\d[\d.,\/\-]*/g,' ').replace(/€/g,' ').replace(/\b(oggi|domani|dal|dalla|il|ogni)\b/g,' ').replace(/\s+/g,' ').trim();
+      if(!name||name.length>150)throw Error('Indica il nome della spesa fissa, per esempio “Netflix 13,99 euro ogni mese”.');
+      if(state.recurring.some(r=>M.norm(r.name)===name))throw Error('Questa spesa fissa esiste già. Scrivi “Modifica '+name+' a '+M.money(a.amountCents)+'”.');
+      const r={id:M.id(),name:name[0].toUpperCase()+name.slice(1),amountCents:a.amountCents,months,startDate:d.date,category:inferCategory(name,state.rules),active:true,automatic:false,estimated:false};
+      return {kind:'recurring',recurring:r,isNew:true,title:'Nuova spesa fissa: '+r.name,description:`${M.money(r.amountCents)} ogni ${months} mes${months===1?'e':'i'}, prima scadenza ${d.date.split('-').reverse().join('/')}. Nessun pagamento viene registrato.`};
+    }
+    // A monthly salary replaces a unique salary in the same calendar month; bonuses never do.
+    if(/\b(stipendio|busta paga)\b/.test(n)&&!extra&&/\b(questo mese|per questo mese)\b/.test(n)){
+      const d=M.parseEntry(n.replace(/\b(?:per )?questo mese\b/g,''),ref,state.rules);
+      if(!d.amountCents)throw Error(d.warnings.join(' '));if(!d.date)throw Error(d.warnings.join(' '));
+      const candidates=state.transactions.filter(t=>t.type==='income'&&t.category==='Stipendio'&&t.date.slice(0,7)===d.date.slice(0,7)&&! /\b(tredicesima|quattordicesima|bonus)\b/.test(M.norm(t.note)));
+      if(candidates.length>1)throw Error('Ci sono più stipendi questo mese. Apri il movimento da correggere nello storico.');
+      const existing=candidates[0];
+      const t=existing?{...M.clone(existing),amountCents:d.amountCents}:{...d,category:'Stipendio',type:'income',note:'Stipendio',createdAt:new Date().toISOString()};
+      if(!existing&&t.date<state.settings.openingDate)t.includedInOpening=true;
+      return {kind:'salary',transaction:t,existingId:existing?.id||null,title:existing?'Aggiorna lo stipendio del mese':'Registra lo stipendio del mese',description:existing?`${M.money(existing.amountCents)} → ${M.money(t.amountCents)}. ${t.includedInOpening?'È già compreso nel saldo iniziale: il saldo resta invariato.':'Corregge il movimento esistente, senza duplicarlo.'}`:'Una sola entrata per questo mese. Lo stipendio previsto dei mesi successivi non cambia.'};
+    }
+    if(editing||toggling)throw Error('Non ho individuato la modifica. Prova “Imposta stipendio a 2200 euro”, “Questo mese stipendio 2100 euro” oppure “Modifica Netflix a 15 euro”.');
+    const items=M.interpret(text,ref,state.rules).map(d=>{
+      d.type=inferType(d.note);d.category=d.category||inferCategory(d.note,state.rules);
+      if(d.date&&d.date<state.settings.openingDate&&d.status==='paid')d.includedInOpening=true;
+      return linkRecurring(d,state);
+    });
+    return {kind:'transactions',items,title:items.length===1?(items[0].type==='income'?'Nuova entrata':'Nuova spesa'):`${items.length} movimenti`,description:'Controlla importo e data, poi conferma. Puoi correggere i dettagli o annullare dopo il salvataggio.'};
+  }
+  function applyCommand(state,proposal){
+    const next=M.clone(state);next.settings.initialized=true;
+    if(proposal.kind==='setting')next.settings[proposal.key]=proposal.value;
+    else if(proposal.kind==='recurring'){
+      if(proposal.isNew)next.recurring.push(proposal.recurring);
+      else{if(!next.recurring.some(r=>r.id===proposal.recurring.id))throw Error('La ricorrenza è cambiata. Ripeti la richiesta.');next.recurring=next.recurring.map(r=>r.id===proposal.recurring.id?proposal.recurring:r);}
+    }else{
+      const items=proposal.kind==='salary'?[proposal.transaction]:proposal.items;
+      if(proposal.kind==='salary'&&proposal.existingId)next.transactions=next.transactions.filter(t=>t.id!==proposal.existingId);
+      for(const d of items){
+        if(d.status==='paid'&&d.date>M.today())throw Error('Una data futura deve restare prevista.');
+        if(d.recurringId&&next.transactions.some(t=>t.recurringId===d.recurringId&&t.dueDate===d.dueDate))throw Error('Questa rata è già registrata. Aprila dal Piano per modificarla.');
+        next.transactions.push({...d,createdAt:d.createdAt||new Date().toISOString()});
+      }
+    }
+    return M.validate(next);
+  }
+  const api={inferType,inferCategory,quickEntry,command,applyCommand,linkRecurring};Object.assign(M,api);
+  if(typeof module!=='undefined'&&module.exports)module.exports=api;
+})(typeof globalThis!=='undefined'?globalThis:this);
+</script>
+<script>/* iPhone gesture layer. Pointer gestures never leak into form or list interactions. */
+(function(){
+  'use strict';
+  const $=s=>document.querySelector(s),root=document.documentElement;
+  const reduced=matchMedia('(prefers-reduced-motion: reduce)'),closing=new WeakMap();
+  let callbacks={},gesture=null,holdTimer=null,voiceActive=false,pendingTap=false,suppressClick=false;
+  const surface=$('#touch-surface');
+  function dialogs(){return [...document.querySelectorAll('dialog[open]')].filter(d=>!d.classList.contains('is-closing'));}
+  function scene(){
+    const active=dialogs();
+    root.dataset.scene=voiceActive?'listening':active.some(d=>d.id!=='data-sheet')?'modal':active.length?'data':gesture&&!gesture.moved?'pressing':'idle';
+  }
+  function open(dialog,focus){
+    const pending=closing.get(dialog);if(pending){pending.cancel();closing.delete(dialog);}
+    dialog.classList.remove('is-closing');dialog.style.transform='';
+    if(!dialog.open)dialog.showModal();
+    scene();
+    if(focus)focus.focus({preventScroll:true});
+  }
+  function close(dialog,{immediate=false}={}){
+    if(!dialog.open||closing.has(dialog))return;
+    const style=getComputedStyle(dialog),from=style.transform,opacity=style.opacity,exit=style.getPropertyValue(dialog.id==='data-sheet'?'--data-exit':'--panel-exit').trim()||'translateY(36px)';
+    dialog.dispatchEvent(new CustomEvent('mm:closing',{bubbles:true}));
+    dialog.classList.add('is-closing');
+    const finish=()=>{closing.delete(dialog);dialog.close();dialog.classList.remove('is-closing');dialog.style.transform='';scene();};
+    if(immediate||reduced.matches||!dialog.animate){finish();return;}
+    const animation=dialog.animate([{transform:from==='none'?'translateY(0)':from,opacity},{transform:exit,opacity:0}],{duration:dialog.id==='data-sheet'?220:170,easing:'cubic-bezier(.32,.72,0,1)'});
+    closing.set(dialog,animation);animation.finished.then(finish).catch(()=>{});
+  }
+  function cancelGesture(){clearTimeout(holdTimer);holdTimer=null;gesture=null;pendingTap=false;scene();}
+  function down(e){
+    if(!e.isPrimary){cancelGesture();return;}
+    if(e.button!==0||dialogs().length)return;
+    // Suppress compatibility mouse focus after touchup opens the keyboard.
+    e.preventDefault();
+    cancelGesture();gesture={id:e.pointerId,x:e.clientX,y:e.clientY,time:performance.now(),moved:false,held:false};
+    try{surface.setPointerCapture(e.pointerId);}catch(_){}
+    scene();holdTimer=setTimeout(()=>{
+      if(!gesture||gesture.moved||dialogs().length)return;
+      gesture.held=true;holdTimer=null;suppressClick=true;callbacks.voice?.();scene();
+    },460);
+  }
+  function move(e){
+    if(!gesture||e.pointerId!==gesture.id)return;
+    if(Math.hypot(e.clientX-gesture.x,e.clientY-gesture.y)>12){gesture.moved=true;clearTimeout(holdTimer);holdTimer=null;scene();}
+  }
+  function up(e){
+    if(!gesture||e.pointerId!==gesture.id)return;
+    const g=gesture,dx=e.clientX-g.x,dy=e.clientY-g.y,elapsed=performance.now()-g.time;
+    cancelGesture();
+    if(g.held||dialogs().length)return;
+    if(dy<=-64&&Math.abs(dy)>Math.abs(dx)*1.25){suppressClick=true;callbacks.data?.();return;}
+    if(!g.moved&&Math.hypot(dx,dy)<=12&&elapsed<460)pendingTap=true;
+  }
+  function viewport(){
+    const v=window.visualViewport,height=v?v.height:innerHeight,top=v?v.offsetTop:0;
+    root.style.setProperty('--vv-height',`${height}px`);
+    root.style.setProperty('--keyboard-bottom',`${Math.max(0,innerHeight-height-top)}px`);
+  }
+  function init(actions){
+    callbacks=actions;viewport();scene();
+    surface.addEventListener('pointerdown',down);surface.addEventListener('pointermove',move);surface.addEventListener('pointerup',up);
+    surface.addEventListener('pointercancel',cancelGesture);surface.addEventListener('lostpointercapture',()=>{if(gesture)cancelGesture();});
+    surface.addEventListener('contextmenu',e=>e.preventDefault());
+    // A tap opens on its click, so the compatibility click cannot hit the new popup.
+    window.addEventListener('pointerdown',()=>{suppressClick=false;pendingTap=false;},true);
+    window.addEventListener('click',e=>{if(suppressClick&&e.detail!==0){suppressClick=false;e.preventDefault();e.stopImmediatePropagation();}},true);
+    surface.addEventListener('click',e=>{e.preventDefault();const activate=e.detail===0||pendingTap;pendingTap=false;if(activate&&!dialogs().length)callbacks.manual?.();});
+    surface.addEventListener('keydown',e=>{if(e.key==='ArrowUp'){e.preventDefault();callbacks.data?.();}});
+    $('#open-data').addEventListener('click',()=>callbacks.data?.());
+    $('#desktop-add').addEventListener('click',()=>callbacks.manual?.());$('#desktop-voice').addEventListener('click',()=>callbacks.voice?.());$('#desktop-data').addEventListener('click',()=>callbacks.data?.());
+    document.addEventListener('keydown',e=>{if((e.metaKey||e.ctrlKey)&&e.key.toLowerCase()==='k'&&!e.isComposing){e.preventDefault();if(!dialogs().some(d=>d.id!=='data-sheet'))callbacks.manual?.();}});
+    if(!/Mac|iPhone|iPad/.test(navigator.platform))$('#desktop-add kbd').textContent='Ctrl K';$('#accessible-voice').addEventListener('click',()=>callbacks.voice?.());
+    $('#close-data').addEventListener('click',()=>close($('#data-sheet')));
+    for(const dialog of document.querySelectorAll('dialog')){
+      dialog.addEventListener('cancel',e=>{e.preventDefault();close(dialog);});
+      dialog.addEventListener('close',scene);
+      dialog.addEventListener('click',e=>{if(e.target!==dialog)return;const b=dialog.getBoundingClientRect();if(e.clientX<b.left||e.clientX>b.right||e.clientY<b.top||e.clientY>b.bottom)close(dialog);});
+    }
+    // Only the grab area dismisses. The content keeps native, momentum scrolling.
+    const handle=$('#data-drag-handle'),sheet=$('#data-sheet');let drag=null;
+    handle.addEventListener('pointerdown',e=>{if(matchMedia('(min-width:900px) and (hover:hover) and (pointer:fine)').matches||!e.isPrimary||e.button!==0||e.target.closest('button'))return;drag={id:e.pointerId,y:e.clientY,time:performance.now(),dy:0};try{handle.setPointerCapture(e.pointerId);}catch(_){};});
+    handle.addEventListener('pointermove',e=>{if(!drag||drag.id!==e.pointerId)return;drag.dy=Math.max(0,e.clientY-drag.y);sheet.style.animation='none';sheet.style.transform=`translateY(${drag.dy}px)`;});
+    const release=e=>{
+      if(!drag||drag.id!==e.pointerId)return;
+      const {dy,time}=drag;drag=null;
+      if(e.type==='pointerup'&&(dy>80||(dy>25&&dy/(performance.now()-time)>.55))){close(sheet);}
+      else{const animation=sheet.animate([{transform:`translateY(${dy}px)`},{transform:'translateY(0)'}],{duration:reduced.matches?0:220,easing:'cubic-bezier(.22,1,.36,1)'});sheet.style.transform='';animation.finished.catch(()=>{});}
+    };
+    handle.addEventListener('pointerup',release);handle.addEventListener('pointercancel',release);handle.addEventListener('lostpointercapture',release);
+    sheet.addEventListener('close',()=>{sheet.style.animation='';drag=null;});
+    window.visualViewport?.addEventListener('resize',viewport);window.visualViewport?.addEventListener('scroll',viewport);window.addEventListener('resize',viewport);
+    const suspend=()=>{cancelGesture();callbacks.suspend?.();};
+    window.addEventListener('blur',suspend);document.addEventListener('visibilitychange',()=>{if(document.hidden)suspend();else viewport();});
+  }
+  window.MMUI={init,open,close,scene,dialogs,setVoice(active){voiceActive=active;scene();}};
+})();
+</script>
 <script>/* Local-first UI: no financial records are uploaded or synchronized. */
 (function () {
   'use strict';
-  const M=window.MM, KEY='mymoney-local-v2', PREVIOUS=KEY+'-previous', LEGACY='mymoney-ai-v1';
+  const M=window.MM, UI=window.MMUI, KEY='mymoney-local-v2', PREVIOUS=KEY+'-previous', LEGACY='mymoney-ai-v1';
   const $=s=>document.querySelector(s), $$=s=>[...document.querySelectorAll(s)];
-  let state=M.blank(), storageOK=true, readOnly=false, currentView='home', historyFilter='all', reportMode='month', reportOffset=0, editingId=null, recEditingId=null, drafts=[], speech=null, toastTimer;
+  let state=M.blank(), storageOK=true, readOnly=false, currentView='home', historyFilter='all', reportMode='month', reportOffset=0, editingId=null, recEditingId=null, drafts=[], speech=null, toastTimer, proposal=null, proposalRevision=null, editingRevision=null, recRevision=null;
   const ICONS={
+    check:'<path d="m5 12 4 4L19 6"/>',info:'<circle cx="12" cy="12" r="9"/><path d="M12 11v6M12 7h.01"/>',target:'<circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1"/>',
     wallet:'<path d="M4 6h14a2 2 0 0 1 2 2v10H4a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h13v2"/><path d="M20 10h-5v4h5"/>',
     lock:'<rect x="5" y="10" width="14" height="11" rx="3"/><path d="M8 10V7a4 4 0 0 1 8 0v3M12 14v3"/>',
     home:'<path d="m3 10 9-7 9 7v10H3zM9 20v-7h6v7"/>',
@@ -464,7 +927,8 @@
   function icon(name){const span=document.createElement('span');span.innerHTML=`<svg viewBox="0 0 24 24" aria-hidden="true">${ICONS[name]||ICONS.wallet}</svg>`;return span.firstChild;}
   function decorate(){for(const e of $$('[data-icon]'))e.replaceChildren(icon(e.dataset.icon));}
   function el(tag, cls, text){const e=document.createElement(tag);if(cls)e.className=cls;if(text!==undefined)e.textContent=String(text);return e;}
-  function say(message){clearTimeout(toastTimer);$('#toast').textContent=message;$('#toast').hidden=false;toastTimer=setTimeout(()=>$('#toast').hidden=true,4200);}
+  function toastHost(){const toast=$('#toast');(UI.dialogs().at(-1)||document.body).append(toast);return toast;}
+  function say(message){clearTimeout(toastTimer);toastHost().textContent=message;$('#toast').hidden=false;toastTimer=setTimeout(()=>$('#toast').hidden=true,4200);}
   function errBox(selector,message){const box=$(selector);box.textContent=message;box.hidden=!message;}
   const formatDate=(s,year=false)=>M.validDate(s)?new Intl.DateTimeFormat('it-IT',{day:'numeric',month:'short',...(year?{year:'numeric'}:{})}).format(M.dateObj(s)):'Da definire';
   const val=n=>(n/100).toFixed(2).replace('.',',');
@@ -476,7 +940,6 @@
   function load(){
     let raw=null;
     try{
-      const probe=KEY+'-probe';localStorage.setItem(probe,'1');localStorage.removeItem(probe);
       raw=localStorage.getItem(KEY);
       if(raw)state=M.validate(JSON.parse(raw));
       else if(localStorage.getItem(LEGACY)){
@@ -486,8 +949,10 @@
       }
     }catch(error){
       if(raw){readOnly=true;errBox('#storage-warning','Archivio non leggibile: non lo sovrascrivo. Importa un backup valido per recuperarlo. '+error.message);}
-      else{storageOK=false;errBox('#storage-warning','Salvataggio locale non disponibile. Nessun movimento verrà registrato: apri l’app in un browser con archiviazione abilitata.');}
+      else{storageOK=false;errBox('#storage-warning','Archivio locale non disponibile. Apri l’app in un browser con archiviazione abilitata.');}
     }
+    try{const probe=KEY+'-probe';localStorage.setItem(probe,'1');localStorage.removeItem(probe);}
+    catch(_){storageOK=false;errBox('#storage-warning','Salvataggio locale bloccato o spazio esaurito. I dati leggibili restano visibili: esporta un backup prima di liberare spazio.');}
   }
   function commit(next,{replace=false}={}){
     if(!storageOK)throw Error('Archiviazione locale bloccata. Non ho salvato.');
@@ -503,28 +968,36 @@
     try{localStorage.setItem(KEY,JSON.stringify(clean));}catch(_){throw Error('Spazio locale esaurito o salvataggio bloccato. Nessuna modifica salvata.');}
     state=clean;readOnly=false;errBox('#storage-warning','');render();
   }
-  window.addEventListener('storage',e=>{if(e.key===KEY&&e.newValue){try{state=M.validate(JSON.parse(e.newValue));render();say('Dati aggiornati da un’altra scheda.');}catch(_){errBox('#storage-warning','Aggiornamento da un’altra scheda non valido.');}}});
+  window.addEventListener('storage',e=>{
+    if(e.key===null||(e.key===KEY&&!e.newValue)){readOnly=true;errBox('#storage-warning','L’archivio è stato rimosso da un’altra scheda. Esporta i dati ancora visibili prima di ricaricare.');return;}
+    if(e.key===KEY&&e.newValue){try{state=M.validate(JSON.parse(e.newValue));readOnly=false;render();say('Dati aggiornati da un’altra scheda.');}catch(_){readOnly=true;errBox('#storage-warning','Aggiornamento da un’altra scheda non valido. Esporta i dati visibili prima di ricaricare.');}}
+  });
 
-  function go(view){currentView=view;for(const v of ['home','history','plan','settings'])$(`#view-${v}`).hidden=(v!==view)||(!state.settings.initialized&&v!=='settings');$('#welcome').hidden=state.settings.initialized||view==='settings';for(const b of $$('.nav [data-go]')){b.classList.toggle('active',b.dataset.go===view);if(b.dataset.go===view)b.setAttribute('aria-current','page');else b.removeAttribute('aria-current');}window.scrollTo({top:0,behavior:'auto'});}
+  function go(view){
+    cancelVoice();
+    currentView=view;goQuiet(view);
+    for(const b of $$('.nav [data-go]')){b.classList.toggle('active',b.dataset.go===view);if(b.dataset.go===view)b.setAttribute('aria-current','page');else b.removeAttribute('aria-current');}
+    UI.open($('#data-sheet'));$('#data-scroll').scrollTo({top:0,behavior:'auto'});
+  }
   function transactionRow(t){
     const row=el('button','row');row.type='button';row.setAttribute('aria-label',`Modifica ${t.note||t.category}, ${M.money(t.amountCents)}`);row.addEventListener('click',()=>editTransaction(t));
     const left=el('span','row-left'), badge=el('span','cat-icon'+(t.type==='income'?' green':''));badge.append(icon(catIcon(t.category)));
     const texts=el('span');texts.append(el('span','row-title',t.note||t.category),el('span','row-sub',`${formatDate(t.date)} · ${t.category}${t.includedInOpening?' · già nel saldo':''}`));left.append(badge,texts);
-    const right=el('span','row-money'+(t.type==='income'?' income':''),(t.type==='income'?'+ ':'− ')+M.money(t.amountCents));right.append(el('small',t.status==='planned'?'planned':'',t.status==='planned'?'Da pagare':'Registrato'));
+    const right=el('span','row-money'+(t.type==='income'?' income':''),(t.type==='income'?'+ ':'− ')+M.money(t.amountCents));right.append(el('small',t.status==='planned'?'planned':'',t.status==='planned'?(t.type==='income'?'Da incassare':'Da pagare'):'Registrato'));
     row.append(left,right);return row;
   }
-  function transactionsInto(container,items){container.replaceChildren();if(!items.length)container.append(el('div','empty','Nessun movimento in questa vista.'));else items.forEach(t=>container.append(transactionRow(t)));}
-  function sortedTransactions(){return [...state.transactions].sort((a,b)=>b.date.localeCompare(a.date)||(b.createdAt||'').localeCompare(a.createdAt||''));}
+  function transactionsInto(container,items){container.replaceChildren();if(!items.length){const empty=el('div','empty');empty.append(icon('list'),el('strong',null,container.id==='recent'?'Ancora nessun movimento.':'Nessun movimento trovato.'),document.createTextNode(container.id==='recent'?'Tocca + per aggiungere una spesa.':'Prova un’altra ricerca o cambia il filtro.'));container.append(empty);}else items.forEach(t=>container.append(transactionRow(t)));}
+  function sortedTransactions(){return [...state.transactions].reverse().sort((a,b)=>b.date.localeCompare(a.date)||(b.createdAt||'').localeCompare(a.createdAt||''));}
   function renderHome(){
     const x=M.totals(state), s=state.settings;
     $('#balance').textContent=M.money(x.balance);$('#balance-caption').textContent=`Saldo iniziale ${M.money(s.openingBalanceCents)} · ${formatDate(s.openingDate,true)}`;
-    $('#available').textContent=M.money(x.available);$('#available').classList.toggle('negative',x.available<0);
+    $('#available').textContent=M.money(x.available);$('#available').classList.toggle('negative',s.budgetCents>0&&x.available<0);
     $('#goal').textContent=M.money(s.savingsGoalCents);$('#fixed').textContent=M.money(x.fixedEquivalent);
     $('#cycle-label').textContent=`${formatDate(x.start)} — ${formatDate(M.shiftDays(x.end,-1))}`;
-    $('#budget-cap').textContent=`Budget ${M.money(s.budgetCents)}`;
+    $('#budget-cap').textContent=s.budgetCents?`su ${M.money(s.budgetCents)}`:'Imposta in Preferenze';if(!s.budgetCents)$('#available').textContent='Da impostare';
     const used=s.budgetCents-x.available;$('#budget-progress').style.width=Math.max(0,Math.min(100,s.budgetCents?used/s.budgetCents*100:0))+'%';
     $('#budget-caption').textContent=`Fisse equivalenti + ${M.money(x.paidVariable)} variabili pagate + ${M.money(x.plannedVariable)} previste. Gli accantonamenti sono una stima, non denaro spostato.`;
-    const warning=x.available<0?'Il budget è superato, considerando anche gli impegni.':s.budgetCents&&used>=s.budgetCents*.8?'Hai impegnato almeno l’80% del budget.':'';
+    const warning=s.budgetCents&&x.available<0?'Il budget è superato, considerando anche gli impegni.':s.budgetCents&&used>=s.budgetCents*.8?'Hai impegnato almeno l’80% del budget.':'';
     errBox('#budget-warning',warning);
     const alerts=$('#home-alerts');alerts.replaceChildren();
     const late=state.transactions.filter(t=>t.status==='planned'&&t.date<=M.today());
@@ -532,9 +1005,15 @@
     const overdue=[];
     for(const r of state.recurring)for(const d of M.occurrences(r,s.openingDate,M.shiftDays(M.today(),1)))if(!isPaidOccurrence(r.id,d))overdue.push({r,d});
     if(overdue.length)alerts.append(el('div','notice',`${overdue.length} scadenz${overdue.length===1?'a':'e'} ricorrent${overdue.length===1?'e':'i'} da confermare nel Piano. Anche gli addebiti automatici richiedono verifica.`));
-    const sinceBackup=state.lastBackup?Math.floor((+new Date()-+new Date(state.lastBackup))/86400000):Infinity;
-    if(sinceBackup>=7)alerts.append(el('div','notice install-hint','Proteggi il tuo archivio: Dati → Salva backup. È l’unica copia recuperabile fuori da questo browser.'));
-    transactionsInto($('#recent'),sortedTransactions().slice(0,5));
+
+    transactionsInto($('#recent'),sortedTransactions().slice(0,3));
+    const upcoming=[];
+    for(const r of state.recurring){const date=M.occurrences(r,M.today(),M.shiftMonths(M.today(),13)).find(d=>!isPaidOccurrence(r.id,d));if(date)upcoming.push({r,date});}
+    upcoming.sort((a,b)=>a.date.localeCompare(b.date));const u=$('#home-upcoming');u.replaceChildren();
+    for(const {r,date} of upcoming.slice(0,3)){const b=el('button','upcoming-mini'),l=el('span');l.append(el('strong',null,r.name),el('small',null,formatDate(date)));b.append(l,el('span',null,M.money(r.amountCents)));b.addEventListener('click',()=>draftRecurring(r,date));u.append(b);}
+    if(!upcoming.length)u.append(el('p','tiny','Nessuna scadenza in arrivo. Aggiungi le tue spese fisse nel Piano.'));
+    if(!s.initialized){$('#balance').textContent='—';$('#available').textContent='—';}
+
   }
   function renderHistory(){
     const query=M.norm($('#search').value||'');
@@ -564,7 +1043,7 @@
     line(b,'Budget del ciclo',M.money(state.settings.budgetCents));line(b,'Fisse: equivalente mensile','− '+M.money(x.fixedEquivalent));line(b,'Variabili già pagate','− '+M.money(x.paidVariable));line(b,'Variabili previste nel ciclo','− '+M.money(x.plannedVariable));line(b,'Libero dopo gli impegni',M.money(x.available),true);
     b.append(el('p','tiny',`Uscite effettivamente registrate nel ciclo: ${M.money(x.spent)}. Le rate bimestrali o semestrali sono ripartite per il budget: sul conto esce l’importo intero alla conferma del pagamento. Gli importi già accantonati prima dell’avvio non sono noti.`));
     const list=$('#recurring-list');list.replaceChildren();
-    for(const r of state.recurring){const row=el('button','row');row.type='button';const l=el('span');l.append(el('span','row-title',r.name),el('span','row-sub',`${r.active?'Attiva':'Non ancora attiva'} · ${r.automatic?'addebito automatico':'pagamento manuale'}${r.estimated?' · da verificare':''}`));const right=el('span','row-money',M.money(r.amountCents));right.append(el('small',null,`ogni ${r.months} mes${r.months===1?'e':'i'} · ${M.money(Math.round(r.amountCents/r.months))}/mese`));row.append(l,right);row.addEventListener('click',()=>editRecurring(r));list.append(row);}
+    for(const r of state.recurring){const row=el('button','row');row.type='button';const l=el('span');l.append(el('span','row-title',r.name),el('span','row-sub',`${r.active?'Attiva':'Non ancora attiva'} · ${r.automatic?'addebito automatico':'pagamento manuale'}${r.estimated?' · da verificare':''}`));const right=el('span','row-money',M.money(r.amountCents));right.append(el('small',null,r.months===1?'al mese':`ogni ${r.months} mesi`));row.append(l,right);row.addEventListener('click',()=>editRecurring(r));list.append(row);}
     if(!state.recurring.length)list.append(el('p','empty','Nessuna spesa fissa. Aggiungine una.'));
     const upcoming=[];
     for(const r of state.recurring)for(const date of M.occurrences(r,state.settings.openingDate,M.shiftMonths(M.today(),7)))if(!isPaidOccurrence(r.id,date))upcoming.push({r,date});
@@ -582,29 +1061,32 @@
     if(!state.rules.length)r.append(el('p','tiny','Ancora nessuna preferenza memorizzata.'));
   }
   function render(){
-    if(state.settings.initialized){renderHome();renderHistory();renderPlan();}
+    renderHome();renderHistory();renderPlan();
     renderSettings();goQuiet(currentView);
   }
-  function goQuiet(view){for(const v of ['home','history','plan','settings'])$(`#view-${v}`).hidden=(v!==view)||(!state.settings.initialized&&v!=='settings');$('#welcome').hidden=state.settings.initialized||view==='settings';}
+  function goQuiet(view){
+    for(const v of ['home','history','plan','settings'])$(`#view-${v}`).hidden=v!==view;
+    $('#welcome').hidden=state.settings.initialized||view!=='home';
+    $('#data-title').textContent=({home:'I tuoi dati',history:'Movimenti',plan:'Il tuo piano',settings:'Preferenze'})[view];
+  }
 
   // Draft fields are editable and no parser output is committed automatically.
   function field(label,type,value){const wrap=el('div','field-group'),input=document.createElement(type==='select'?'select':'input');const id='f-'+M.id();input.id=id;if(type!=='select')input.type=type;input.value=value??'';const lab=el('label',null,label);lab.htmlFor=id;wrap.append(lab,input);return {wrap,input};}
   function check(label,value){const wrap=el('label','check-label'),input=document.createElement('input');input.type='checkbox';input.checked=!!value;wrap.append(input,document.createTextNode(label));return {wrap,input};}
   function openDrafts(items,editId=null){
-    if(!state.settings.initialized){say('Importa i dati iniziali prima di aggiungere movimenti.');go('settings');return;}
-    editingId=editId;drafts=M.clone(items);const list=$('#drafts');list.replaceChildren();errBox('#editor-error','');
-    $('#editor-title').textContent=editId?'Modifica movimento':items.length>1?`Controlla ${items.length} movimenti`:'Controlla prima di salvare';
+    editingRevision=state.revision;editingId=editId;drafts=M.clone(items);const list=$('#drafts');list.replaceChildren();errBox('#editor-error','');
+    $('#editor-title').textContent=editId?'Modifica movimento':items.length>1?`Controlla ${items.length} movimenti`:'Tutto giusto?';
     $('#delete-transaction').hidden=!editId;$('#save-drafts').textContent=editId?'Salva modifiche':`Conferma e salva${items.length>1?' tutto':''}`;
     drafts.forEach((d,i)=>{
       const box=el('section','draft');box.dataset.index=i;
       if(d.warnings?.length)box.append(el('div','notice',d.warnings.join(' ')));
       if(d.reason)box.append(el('p','reason',d.reason));
       const grid=el('div','fields'),a=field('Importo (€)','text',d.amountCents!==null?val(d.amountCents):''),date=field('Data del pagamento','date',d.date||'');a.input.inputMode='decimal';a.input.required=true;date.input.required=true;a.input.dataset.field='amount';date.input.dataset.field='date';grid.append(a.wrap,date.wrap);box.append(grid);
-      const grid2=el('div','fields'),cat=field('Categoria','select',d.category),status=field('Stato','select',d.status);categoryOptions(cat.input,d.category);cat.input.required=true;cat.input.dataset.field='category';option(status.input,'paid','Pagato');option(status.input,'planned','Da pagare');status.input.value=d.status;status.input.dataset.field='status';grid2.append(cat.wrap,status.wrap);box.append(grid2);
-      const note=field('Descrizione / nota','text',d.note);note.input.maxLength=4000;note.input.dataset.field='note';box.append(note.wrap);
+      const grid2=el('div','fields'),cat=field('Categoria','select',d.category),status=field('Stato','select',d.status);categoryOptions(cat.input,d.category);cat.input.required=true;cat.input.dataset.field='category';option(status.input,'paid','Pagato');option(status.input,'planned','Da pagare');status.input.value=d.status;status.input.dataset.field='status';grid2.append(cat.wrap,status.wrap);
+      const note=field('Nome','text',d.note);note.input.maxLength=4000;note.input.dataset.field='note';box.insertBefore(note.wrap,grid);
       const datePreview=el('p','tiny');box.append(datePreview);
       const info=el('div','notice install-hint');box.append(info);
-      const more=el('details'),sum=el('summary',null,'Tipo, budget e preferenze');more.append(sum);
+      const more=el('details'),sum=el('summary',null,`${d.category||'Altro'} · ${d.status==='planned'?'Previsto':'Registrato'} · Personalizza`);more.append(sum,grid2);cat.input.value=d.category||'Altro';
       const type=field('Tipo di movimento','select',d.type);option(type.input,'expense','Uscita');option(type.input,'income','Entrata');type.input.value=d.type;type.input.dataset.field='type';more.append(type.wrap);
       const included=check('Già compreso nel saldo iniziale: non modificare il conto',d.includedInOpening);included.input.dataset.field='included';
       const count=check('Considera nel budget (per le uscite)',d.countBudget);count.input.dataset.field='budget';more.append(included.wrap,count.wrap);
@@ -628,29 +1110,28 @@
       rec.input.addEventListener('change',()=>{if(rec.input.value){const rr=state.recurring.find(r=>r.id===rec.input.value);cat.input.value=rr.category;if(!due.input.value)due.input.value=date.input.value;}});
       sync();list.append(box);
     });
-    $('#editor').showModal();
+    UI.open($('#editor'));
   }
-  function manual(){openDrafts([{id:M.id(),date:M.today(),type:'expense',amountCents:null,category:'',note:'',status:'paid',includedInOpening:false,countBudget:true,recurringId:null,dueDate:null}]);}
+  function manual(){openDrafts([{id:M.id(),date:M.today(),type:'expense',amountCents:null,category:'Altro',note:'',status:'paid',includedInOpening:false,countBudget:true,recurringId:null,dueDate:null}]);}
   function editTransaction(t){openDrafts([t],t.id);}
   function draftRecurring(r,due){
     const existing=state.transactions.find(t=>t.recurringId===r.id&&t.dueDate===due);
     if(existing){editTransaction(existing);return;}
     openDrafts([{id:M.id(),date:due>M.today()?due:M.today(),amountCents:r.amountCents,type:'expense',category:r.category,note:r.name,status:due>M.today()?'planned':'paid',includedInOpening:false,countBudget:true,recurringId:r.id,dueDate:due,reason:'Rata collegata: nel budget è già compresa nelle spese fisse equivalenti.'}]);
   }
-  function analyze(){try{
-    const items=M.interpret($('#natural').value,M.today(),state.rules);
-    for(const d of items){
-      if(!d.date||!d.amountCents||d.type!=='expense')continue;
-      const matches=state.recurring.filter(r=>r.active&&r.amountCents===d.amountCents&&r.category===d.category&&M.occurrences(r,d.date,M.shiftDays(d.date,1)).length);
-      if(matches.length===1){d.recurringId=matches[0].id;d.dueDate=d.date;d.reason+=` · Collegata alla rata: ${matches[0].name}.`;
-      }
-    }
-    openDrafts(items);
-  }catch(e){say(e.message);}}
+  function analyze(){
+    cancelVoice();closeProposal();
+    try{
+      proposal=M.command($('#natural').value,state);proposalRevision=state.revision;
+      if(proposal.kind==='transactions'&&proposal.items.some(d=>!d.date||!d.amountCents||d.warnings.length)){const items=proposal.items;UI.close($('#voice-sheet'),{immediate:true});openDrafts(items);proposal=null;return;}
+      showProposal();
+    }catch(e){say(e.message);$('#voice-status').textContent=e.message;$('#voice-status').classList.add('attention');}
+  }
   $('#editor-form').addEventListener('submit',event=>{
     event.preventDefault();errBox('#editor-error','');
     try{
-      const next=M.clone(state), additions=[], rules=[];
+      if(editingRevision!==state.revision)throw Error('I dati sono cambiati mentre modificavi. Chiudi e riapri il movimento.');
+      const before=M.clone(state),next=M.clone(state), additions=[], rules=[];next.settings.initialized=true;
       for(const box of $$('#drafts .draft')){
         const d=drafts[Number(box.dataset.index)],get=k=>box.querySelector(`[data-field="${k}"]`);
         const amountCents=M.cents(get('amount').value),date=get('date').value,status=get('status').value;
@@ -669,19 +1150,20 @@
       if(duplicates&&!window.confirm('Un movimento uguale esiste già. Aggiungerlo comunque?'))return;
       next.transactions.push(...additions);
       for(const r of rules){next.rules=next.rules.filter(x=>x.phrase!==r.phrase);next.rules.push(r);}
-      commit(next);$('#editor').close();$('#natural').value='';say(editingId?'Movimento aggiornato.':'Salvato sul dispositivo.');
+      commit(next);UI.close($('#editor'));$('#natural').value='';closeProposal();sayUndo(editingId?'Movimento aggiornato.':'Movimento salvato.',before);
     }catch(e){errBox('#editor-error',e.message);}
   });
-  $('#delete-transaction').addEventListener('click',()=>{if(!editingId||!confirm('Eliminare questo movimento? Il saldo e il budget saranno ricalcolati.'))return;try{const next=M.clone(state);next.transactions=next.transactions.filter(t=>t.id!==editingId);commit(next);$('#editor').close();say('Movimento eliminato.');}catch(e){errBox('#editor-error',e.message);}});
+  $('#delete-transaction').addEventListener('click',()=>{if(!editingId||!confirm('Eliminare questo movimento? Il saldo e il budget saranno ricalcolati.'))return;try{if(editingRevision!==state.revision)throw Error('I dati sono cambiati. Chiudi e riapri il movimento.');const before=M.clone(state),next=M.clone(state);next.transactions=next.transactions.filter(t=>t.id!==editingId);commit(next);UI.close($('#editor'));sayUndo('Movimento eliminato.',before);}catch(e){errBox('#editor-error',e.message);}});
 
   function editRecurring(r=null){
-    recEditingId=r?.id||null;$('#r-name').value=r?.name||'';$('#r-amount').value=r?val(r.amountCents):'';$('#r-months').value=r?.months||1;$('#r-date').value=r?.startDate||'';$('#r-category').value=r?.category||'Altro';$('#r-active').checked=r?.active??true;$('#r-auto').checked=!!r?.automatic;$('#r-estimated').checked=!!r?.estimated;errBox('#rec-error','');$('#rec-editor').showModal();
+    recRevision=state.revision;recEditingId=r?.id||null;$('#delete-recurring').hidden=!r;$('#r-name').value=r?.name||'';$('#r-amount').value=r?val(r.amountCents):'';$('#r-months').value=r?.months||1;$('#r-date').value=r?.startDate||'';$('#r-category').value=r?.category||'Altro';$('#r-active').checked=r?.active??true;$('#r-auto').checked=!!r?.automatic;$('#r-estimated').checked=!!r?.estimated;errBox('#rec-error','');UI.open($('#rec-editor'));
   }
   $('#rec-form').addEventListener('submit',e=>{e.preventDefault();try{
-    const next=M.clone(state),r={id:recEditingId||M.id(),name:$('#r-name').value.trim(),amountCents:M.cents($('#r-amount').value),months:Number($('#r-months').value),startDate:$('#r-date').value||null,category:$('#r-category').value,active:$('#r-active').checked,automatic:$('#r-auto').checked,estimated:$('#r-estimated').checked};
+    if(recRevision!==state.revision)throw Error('Il piano è cambiato. Chiudi e riapri la spesa fissa.');
+    const before=M.clone(state),next=M.clone(state),r={id:recEditingId||M.id(),name:$('#r-name').value.trim(),amountCents:M.cents($('#r-amount').value),months:Number($('#r-months').value),startDate:$('#r-date').value||null,category:$('#r-category').value,active:$('#r-active').checked,automatic:$('#r-auto').checked,estimated:$('#r-estimated').checked};
     if(!r.name||!r.amountCents||r.active&&!r.startDate)throw Error('Indica nome, importo e prima scadenza se la ricorrenza è attiva.');
     if(recEditingId)next.recurring=next.recurring.map(x=>x.id===recEditingId?r:x);else next.recurring.push(r);
-    commit(next);$('#rec-editor').close();say('Piano aggiornato, nessun pagamento registrato.');
+    next.settings.initialized=true;commit(next);UI.close($('#rec-editor'));sayUndo('Spesa fissa aggiornata.',before);
   }catch(err){errBox('#rec-error',err.message);}});
   $('#settings-form').addEventListener('submit',e=>{e.preventDefault();try{
     const next=M.clone(state);next.settings={initialized:true,openingDate:$('#s-date').value,openingBalanceCents:M.cents($('#s-opening').value),salaryCents:M.cents($('#s-salary').value),budgetCents:M.cents($('#s-budget').value),savingsGoalCents:M.cents($('#s-goal').value),payday:Number($('#s-day').value),separateSavingsCents:$('#s-savings').value.trim()?M.cents($('#s-savings').value):null};
@@ -701,7 +1183,7 @@
   async function exportJSON(){try{
     const next=M.clone(state);next.lastBackup=new Date().toISOString();
     const saved=await saveFile(JSON.stringify(next,null,2),`MyMoney-backup-${M.today()}.json`,'application/json');
-    if(saved){commit(next);say('Esportazione avviata: verifica il file salvato.');}
+    if(saved){try{const current=M.clone(state);current.lastBackup=next.lastBackup;commit(current);say('Backup esportato. Verifica il file salvato.');}catch(_){say('Backup esportato. Lo stato del backup non è aggiornabile nell’archivio locale.');}}
   }catch(e){say(e.message);}}
   $('#import-file').addEventListener('change',async event=>{
     const file=event.target.files[0];if(!file)return;
@@ -735,24 +1217,47 @@
     say('File creato. Importalo nel Calendario e verifica gli avvisi.');
   }
 
-  // Speech is optional; typed input and the iPhone keyboard microphone remain available.
-  function startVoice(){
-    if(speech){speech.stop();return;}
+  // Recognition stays optional. Each callback belongs to exactly one live session.
+  let speechTimers=[], voiceConsent=false;
+  function voiceStatus(text,attention=false){$('#voice-status').textContent=text;$('#voice-status').classList.toggle('attention',attention);}
+  function voiceUI(active){UI.setVoice(active);$('#mic').classList.toggle('mic-listening',active);$('#mic').setAttribute('aria-pressed',String(active));$('#mic').setAttribute('aria-label',active?'Termina dettatura':'Avvia dettatura');}
+  function clearSpeechTimers(){speechTimers.forEach(clearTimeout);speechTimers=[];}
+  function cancelVoice(){const previous=speech;speech=null;clearSpeechTimers();voiceUI(false);if(previous){try{previous.abort();}catch(_){}}}
+  function beginRecognition(){
+    $('#voice-consent').hidden=true;$('#voice-compose').hidden=false;
     const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
-    if(!SR){$('#natural').focus();$('#voice-status').textContent='Usa il microfono della tastiera dell’iPhone: la dettatura integrata non è disponibile in questo browser.';return;}
-    if(!sessionStorage.getItem('mymoney-voice-consent')){
-      if(!confirm('La dettatura usa il servizio vocale del browser o del sistema e potrebbe inviare l’audio al relativo fornitore. MyMoney non conserva l’audio. Continuare?'))return;
-      sessionStorage.setItem('mymoney-voice-consent','yes');
-    }
+    if(!SR){voiceStatus('Scrivi qui o usa il microfono della tastiera.',true);$('#natural').focus();return;}
+    cancelVoice();
     try{
       const r=new SR();speech=r;r.lang='it-IT';r.interimResults=true;r.continuous=false;
-      $('#mic').classList.add('mic-listening');$('#voice-status').textContent='Ti ascolto… tocca di nuovo il microfono per fermare.';
-      r.onresult=e=>{let text='';for(let i=0;i<e.results.length;i++)text+=e.results[i][0].transcript+' ';$('#natural').value=text.trim();if(e.results[e.results.length-1].isFinal){$('#voice-status').textContent='Dettatura pronta. Premi Interpreta per controllarla.';}};
-      r.onerror=e=>{$('#voice-status').textContent=`Dettatura non riuscita (${e.error}). Usa il microfono della tastiera oppure scrivi.`;};
-      r.onend=()=>{speech=null;$('#mic').classList.remove('mic-listening');};
+      let finalText='',failed=false;
+      voiceUI(true);$('#voice-title').textContent='Dimmi pure.';voiceStatus('Attivo il microfono…');
+      const startup=setTimeout(()=>{if(speech!==r)return;cancelVoice();voiceStatus('Tocca il microfono per riprovare, oppure scrivi.',true);},9000);
+      speechTimers.push(startup,setTimeout(()=>{if(speech!==r)return;cancelVoice();voiceStatus('Dettatura terminata. Puoi continuare dal testo.',true);},45000));
+      r.onstart=()=>{if(speech!==r)return;clearTimeout(startup);voiceStatus('Ti ascolto…');};
+      r.onresult=e=>{if(speech!==r)return;let all='';finalText='';for(let i=0;i<e.results.length;i++){all+=e.results[i][0].transcript+' ';if(e.results[i].isFinal)finalText+=e.results[i][0].transcript+' ';}$('#natural').value=all.trim();};
+      r.onerror=e=>{if(speech!==r)return;failed=true;const messages={'not-allowed':'Microfono non autorizzato. Puoi abilitarlo in Safari oppure scrivere qui.','audio-capture':'Microfono non disponibile. Puoi scrivere qui.','no-speech':'Non ho sentito una frase. Tocca il microfono per riprovare.','network':'Voce non disponibile. Controlla la connessione oppure scrivi.','aborted':'Dettatura interrotta. Puoi riprovare.'};cancelVoice();voiceStatus(messages[e.error]||'Puoi riprovare con il microfono oppure scrivere.',true);};
+      r.onend=()=>{if(speech!==r)return;speech=null;clearSpeechTimers();voiceUI(false);if(!failed&&finalText.trim()){$('#natural').value=finalText.trim();analyze();}else if(!failed)voiceStatus('Puoi riprovare o continuare dal testo.',true);};
       r.start();
-    }catch(e){speech=null;$('#mic').classList.remove('mic-listening');$('#voice-status').textContent='Dettatura non disponibile qui. Usa il microfono della tastiera.';}
+    }catch(_){cancelVoice();voiceStatus('Tocca il microfono per riprovare, oppure scrivi.',true);}
   }
+  function startVoice(){
+    if(speech){try{speech.stop();}catch(_){cancelVoice();}return;}
+    closeProposal();UI.open($('#voice-sheet'));$('#voice-title').textContent='Dimmi pure.';
+    if(!(window.SpeechRecognition||window.webkitSpeechRecognition)){beginRecognition();return;}
+    try{voiceConsent=voiceConsent||localStorage.getItem('mymoney-voice-consent')==='yes';}catch(_){}
+    if(!voiceConsent){$('#voice-consent').hidden=false;$('#voice-compose').hidden=true;return;}
+    beginRecognition();
+  }
+  $('#voice-enable').addEventListener('click',()=>{voiceConsent=true;try{localStorage.setItem('mymoney-voice-consent','yes');}catch(_){}beginRecognition();});
+  $('#voice-write').addEventListener('click',()=>{$('#voice-consent').hidden=true;$('#voice-compose').hidden=false;voiceStatus('Scrivi una spesa o una modifica.');$('#natural').focus();});
+  $('#close-voice').addEventListener('click',()=>UI.close($('#voice-sheet')));
+  $('#close-quick').addEventListener('click',()=>UI.close($('#quick-sheet')));
+  $('#settings-voice').addEventListener('click',startVoice);
+  document.addEventListener('mm:closing',e=>{
+    if(e.target.id==='voice-sheet'){cancelVoice();closeProposal();}
+    const toast=$('#toast');if(e.target.contains(toast))(UI.dialogs().filter(d=>d!==e.target).at(-1)||document.body).append(toast);
+  });
   async function setupOffline(){
     const local=location.protocol==='file:';
     if(local){errBox('#environment','Anteprima da file: funziona per la prova su computer. Su iPhone usa la versione HTTPS installata dalla Home. Fai sempre un backup.');$('#install-status').textContent='File locale: nessuna installazione offline PWA attiva.';return;}
@@ -766,21 +1271,390 @@
   }
   $('#request-storage').addEventListener('click',async()=>{try{const granted=await navigator.storage?.persist?.();$('#persistent-status').textContent=granted?'Conservazione persistente concessa. La cancellazione manuale elimina comunque i dati.':'Conservazione persistente non concessa o non disponibile. Mantieni un backup.';}catch(e){say('Richiesta non disponibile in questo browser.');}});
 
+  function sayUndo(message,before){
+    clearTimeout(toastTimer);const toast=toastHost(),revision=state.revision;
+    toast.replaceChildren(el('span',null,message));const button=el('button',null,'Annulla');
+    button.addEventListener('click',()=>{try{if(state.revision!==revision)throw Error('Ci sono modifiche successive. Apri il movimento per correggerlo.');commit(before);say('Operazione annullata.');}catch(e){say(e.message);}});
+    toast.append(button);toast.hidden=false;toastTimer=setTimeout(()=>{if(!toast.contains(document.activeElement))toast.hidden=true;},12000);
+  }
+  function quickFocus(){if($('#q-date').dataset.chosen!=='true')$('#q-date').value=M.today();updateQuickHint();UI.open($('#quick-sheet'),$('#q-name'));}
+  function updateQuickHint(){
+    const name=$('#q-name').value.trim(),type=$('#q-type').value==='auto'?M.inferType(name):$('#q-type').value;
+    const category=$('#q-category').value||M.inferCategory(name,state.rules),future=$('#q-date').value>M.today();
+    $('#quick-hint').textContent=name?`${category} · ${type==='income'?'Entrata':'Uscita'}${future?' · Prevista':''}${$('#q-date').value<state.settings.openingDate?' · Già nel saldo iniziale':''}`:'';
+  }
+  function closeProposal(){proposal=null;proposalRevision=null;$('#command-preview').hidden=true;$('#voice-compose').hidden=false;$('#voice-title').textContent='Dimmi pure.';errBox('#command-error','');}
+  function showProposal(){
+    $('#command-title').textContent=proposal.title;$('#command-description').textContent=proposal.description;
+    const list=$('#command-lines');list.replaceChildren();
+    const items=proposal.kind==='transactions'?proposal.items:proposal.kind==='salary'?[proposal.transaction]:[];
+    for(const d of items){const row=el('div','preview-line'),text=el('span',null,d.note);text.append(el('small',null,`${formatDate(d.date,true)} · ${d.category} · ${d.status==='planned'?'Previsto':'Confermato'}${d.includedInOpening?' · Già nel saldo iniziale':''}`));row.append(text,el('strong',null,(d.type==='income'?'+ ':'− ')+M.money(d.amountCents)));list.append(row);}
+    $('#command-edit').hidden=!['transactions','salary','recurring'].includes(proposal.kind);
+    $('#command-preview').hidden=false;$('#voice-compose').hidden=true;$('#voice-consent').hidden=true;$('#voice-title').textContent='Tutto giusto?';errBox('#command-error','');UI.open($('#voice-sheet'));
+  }
+  function duplicateTransaction(items,existingId=null){return items.some(a=>state.transactions.some(t=>t.id!==existingId&&t.date===a.date&&t.amountCents===a.amountCents&&t.type===a.type&&M.norm(t.note)===M.norm(a.note)));}
+  function setupQuick(){
+    $('#q-date').value=M.today();option($('#q-category'),'','Automatica');for(const c of M.CATEGORIES)option($('#q-category'),c,c);
+    $('#q-name').addEventListener('keydown',e=>{if(e.key==='Enter'&&!e.isComposing){e.preventDefault();$('#q-amount').focus();}});
+    $('#q-name').addEventListener('input',updateQuickHint);$('#q-category').addEventListener('change',updateQuickHint);$('#q-type').addEventListener('change',updateQuickHint);$('#q-date').addEventListener('change',()=>{$('#q-date').dataset.chosen='true';updateQuickHint();});$('#q-name').addEventListener('focus',()=>{if($('#q-date').dataset.chosen!=='true')$('#q-date').value=M.today();updateQuickHint();});
+    $('#quick-options').addEventListener('click',()=>{const open=$('#quick-details').hidden;$('#quick-details').hidden=!open;$('#quick-options').setAttribute('aria-expanded',String(open));});
+    $('#quick-form').addEventListener('submit',e=>{e.preventDefault();errBox('#quick-error','');try{
+      const before=M.clone(state),t=M.quickEntry({name:$('#q-name').value,amount:$('#q-amount').value,date:$('#q-date').value,category:$('#q-category').value,type:$('#q-type').value},state);
+      if(duplicateTransaction([t])&&!confirm('Un movimento uguale esiste già. Vuoi aggiungerne un altro?'))return;
+      const next=M.applyCommand(state,{kind:'transactions',items:[t]});
+      if($('#q-category').value&&$('#q-learn').checked&&t.note.length>=3){next.rules=next.rules.filter(r=>r.phrase!==M.norm(t.note));next.rules.push({phrase:M.norm(t.note).slice(0,100),category:t.category});}
+      commit(next);$('#q-name').value='';$('#q-amount').value='';$('#q-category').value='';$('#q-type').value='auto';$('#q-date').value=M.today();$('#q-date').dataset.chosen='false';updateQuickHint();closeProposal();$('#quick-details').hidden=true;$('#quick-options').setAttribute('aria-expanded','false');UI.close($('#quick-sheet'));
+      sayUndo(`${t.type==='income'?'Entrata':'Spesa'} ${t.status==='planned'?'prevista':'salvata'} · ${M.money(t.amountCents)}`,before);
+    }catch(error){errBox('#quick-error',error.message);}});
+    $('#top-add').addEventListener('click',quickFocus);
+    $('#natural').addEventListener('keydown',e=>{if(e.key==='Enter'&&!e.shiftKey&&!e.isComposing){e.preventDefault();analyze();}});
+    $('#natural').addEventListener('input',closeProposal);
+    $$('[data-example]').forEach(b=>b.addEventListener('click',()=>{$('#natural').value=b.dataset.example;closeProposal();$('#natural').focus();}));
+    $('#command-close').addEventListener('click',()=>{closeProposal();voiceStatus('Una spesa, uno stipendio, una modifica.');$('#natural').focus();});
+    $('#command-edit').addEventListener('click',()=>{
+      if(proposalRevision!==state.revision){errBox('#command-error','I dati sono cambiati. Ripeti la richiesta.');return;}
+      const p=proposal;UI.close($('#voice-sheet'),{immediate:true});closeProposal();if(p.kind==='transactions')openDrafts(p.items);else if(p.kind==='salary')openDrafts([p.transaction],p.existingId);else if(p.kind==='recurring'){editRecurring(p.recurring);if(p.isNew){recEditingId=null;$('#delete-recurring').hidden=true;}}
+    });
+    $('#command-save').addEventListener('click',()=>{try{
+      if(!proposal)return;if(proposalRevision!==state.revision)throw Error('I dati sono cambiati. Ripeti la richiesta per aggiornare la proposta.');
+      const items=proposal.kind==='transactions'?proposal.items:proposal.kind==='salary'?[proposal.transaction]:[];
+      if(duplicateTransaction(items,proposal.existingId)&&!confirm('Un movimento uguale esiste già. Aggiungerlo comunque?'))return;
+      const before=M.clone(state),next=M.applyCommand(state,proposal),message=proposal.kind==='setting'?'Preferenza aggiornata.':proposal.kind==='recurring'?'Piano aggiornato.':'Movimento salvato.';
+      commit(next);closeProposal();$('#natural').value='';UI.close($('#voice-sheet'));sayUndo(message,before);
+    }catch(e){errBox('#command-error',e.message);}});
+    $('#delete-recurring').addEventListener('click',()=>{
+      if(!recEditingId||!confirm('Eliminare questa spesa fissa? I movimenti già registrati saranno conservati come movimenti indipendenti.'))return;
+      try{if(recRevision!==state.revision)throw Error('Il piano è cambiato. Chiudi e riapri la spesa fissa.');const before=M.clone(state),next=M.clone(state);next.recurring=next.recurring.filter(r=>r.id!==recEditingId);for(const t of next.transactions)if(t.recurringId===recEditingId){t.recurringId=null;t.dueDate=null;}commit(next);UI.close($('#rec-editor'));sayUndo('Spesa fissa eliminata.',before);}catch(e){errBox('#rec-error',e.message);}
+    });
+    document.addEventListener('keydown',e=>{
+      if(e.defaultPrevented||e.metaKey||e.ctrlKey||e.altKey||e.isComposing||/^(INPUT|TEXTAREA|SELECT)$/.test(e.target.tagName)||e.target.isContentEditable||$('dialog[open]'))return;
+      if(e.key.toLowerCase()==='n'){e.preventDefault();quickFocus();}if(e.key.toLowerCase()==='v'){e.preventDefault();startVoice();}if(e.key.toLowerCase()==='d'){e.preventDefault();go('home');}if(e.key==='Escape'&&speech)cancelVoice();
+    });
+  }
+
   // Bind controls after the document is loaded; no inline event attributes are used.
   decorate();categoryOptions($('#r-category'),'Altro');
   $$('[data-go]').forEach(b=>b.addEventListener('click',()=>go(b.dataset.go)));
   $$('[data-import]').forEach(b=>b.addEventListener('click',()=>$('#import-file').click()));
-  $('#setup-new').addEventListener('click',()=>go('settings'));$('#interpret').addEventListener('click',analyze);$('#manual-add').addEventListener('click',manual);$('#history-add').addEventListener('click',manual);
-  $('#close-editor').addEventListener('click',()=>$('#editor').close());$('#close-rec').addEventListener('click',()=>$('#rec-editor').close());$('#new-recurring').addEventListener('click',()=>editRecurring());
+  $('#setup-new').addEventListener('click',()=>{try{const next=M.clone(state);next.settings.initialized=true;commit(next);quickFocus();say('Pronto. Puoi impostare il saldo iniziale in Preferenze.');}catch(e){say(e.message);}});$('#interpret').addEventListener('click',analyze);$('#history-add').addEventListener('click',quickFocus);
+  $('#close-editor').addEventListener('click',()=>UI.close($('#editor')));$('#close-rec').addEventListener('click',()=>UI.close($('#rec-editor')));$('#new-recurring').addEventListener('click',()=>editRecurring());
   $('#search').addEventListener('input',renderHistory);
   $$('#history-filters button').forEach(b=>b.addEventListener('click',()=>{historyFilter=b.dataset.filter;$$('#history-filters button').forEach(x=>x.classList.toggle('active',x===b));renderHistory();}));
   $$('#report-modes button').forEach(b=>b.addEventListener('click',()=>{reportMode=b.dataset.report;reportOffset=0;$$('#report-modes button').forEach(x=>x.classList.toggle('active',x===b));renderReport();}));
   $('#report-prev').addEventListener('click',()=>{reportOffset--;renderReport();});$('#report-next').addEventListener('click',()=>{reportOffset++;renderReport();});
   $('#export-json').addEventListener('click',exportJSON);$('#export-csv').addEventListener('click',()=>exportCSV().catch(e=>say(e.message)));$('#export-calendar').addEventListener('click',()=>exportCalendar().catch(e=>say(e.message)));$('#mic').addEventListener('click',startVoice);
-  load();render();setupOffline();
+  load();render();setupQuick();UI.init({manual:quickFocus,voice:startVoice,data:()=>go('home'),suspend:()=>{if(speech){cancelVoice();voiceStatus('Dettatura interrotta. Tocca il microfono per riprendere.');}}});setupOffline();
   // Refresh date-sensitive views when the user returns, never in the background.
-  document.addEventListener('visibilitychange',()=>{if(!document.hidden)render();});
+  document.addEventListener('visibilitychange',()=>{if(!document.hidden){renderHome();renderHistory();renderPlan();}});
 })();
 </script>
-</body>
-</html>
+<script>/* MyMoney's living backdrop. Decorative, local, and deliberately independent of input. */
+(() => {
+  'use strict';
+  const canvas = document.querySelector('#orb-canvas');
+  const stage = document.querySelector('#experience');
+  if (!canvas || !stage) return;
+
+  const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+  const sceneTargets = {
+    idle: [0, 1], pressing: [.5, 1], listening: [1, 1], data: [0, .3], modal: [0, .48]
+  };
+  let frame = 0, lastFrame = 0, lastPaint = 0, time = 14, width = 1, height = 1;
+  let energy = 0, luminosity = 1, lost = false, renderer = null, destroyed = false;
+  let scene = document.documentElement.dataset.scene || 'idle';
+  let target = sceneTargets[scene] || sceneTargets.idle;
+  const listeners = [];
+  const on = (element, name, callback, options) => {
+    element.addEventListener(name, callback, options);
+    listeners.push(() => element.removeEventListener(name, callback, options));
+  };
+
+  const vertexSource = `
+    attribute vec2 a_position;
+    void main() { gl_Position = vec4(a_position, 0.0, 1.0); }
+  `;
+  const fragmentSource = `
+    #ifdef GL_FRAGMENT_PRECISION_HIGH
+      precision highp float;
+    #else
+      precision mediump float;
+    #endif
+    uniform vec2 u_resolution;
+    uniform float u_time;
+    uniform float u_energy;
+    uniform float u_light;
+
+    float hash(vec2 p) {
+      p = fract(p * vec2(123.34, 456.21));
+      p += dot(p, p + 45.32);
+      return fract(p.x * p.y);
+    }
+    float noise(vec2 p) {
+      vec2 i = floor(p), f = fract(p);
+      f = f * f * (3.0 - 2.0 * f);
+      return mix(mix(hash(i), hash(i + vec2(1.0, 0.0)), f.x),
+                 mix(hash(i + vec2(0.0, 1.0)), hash(i + vec2(1.0)), f.x), f.y);
+    }
+    float cloud(vec2 p) {
+      float value = noise(p) * .56;
+      p = mat2(1.6, 1.2, -1.2, 1.6) * p;
+      value += noise(p + 7.2) * .28;
+      p = mat2(1.6, 1.2, -1.2, 1.6) * p;
+      return value + noise(p + 3.1) * .14;
+    }
+    float glow(float distance, float width) {
+      return width / (abs(distance) + width);
+    }
+    void main() {
+      vec2 uv = gl_FragCoord.xy / u_resolution;
+      vec2 p = (gl_FragCoord.xy - .5 * u_resolution) / u_resolution.y;
+      float t = u_time * .105;
+      // A slow domain warp makes light behave like folded silk, without a mesh.
+      vec2 q = vec2(cloud(p * 2.7 + vec2(.13 * t, -.17 * t)),
+                    cloud(p * 2.5 + vec2(5.4 - .12 * t, 2.1 + .14 * t)));
+      float fold = p.x - p.y * .29 + (q.x - .5) * .55
+                 + sin(p.y * 4.6 + t * .62) * .16;
+      float drift = sin(p.y * 5.0 + q.y * 4.5 - t * .5) * .038;
+      float left = fold + .155 + drift;
+      float right = fold - .19 + drift * .6;
+      float leftFlow = .66 + .34 * sin(p.y * 6.0 + t * .46 + q.x * 3.0);
+      float rightFlow = .67 + .33 * cos(p.y * 4.0 - t * .38 + q.y * 3.0);
+      float activation = u_energy * (.82 + .18 * sin(u_time * 2.8));
+
+      vec3 ink = vec3(.012, .019, .029);
+      vec3 cyan = vec3(.29, .67, .73);
+      vec3 silver = vec3(.69, .88, .91);
+      vec3 blue = vec3(.19, .32, .62);
+      vec3 mint = vec3(.29, .63, .56);
+      vec3 color = ink;
+      // Broad translucent bodies give the thin caustics room to breathe.
+      float leftBody = exp(-abs(left - .028) * 12.0) * leftFlow;
+      float rightBody = exp(-abs(right + .05) * 10.0) * rightFlow;
+      color += mix(mint, cyan, smoothstep(-.4, .4, p.y)) * leftBody * .19;
+      color += mix(cyan, blue, smoothstep(-.3, .4, p.y)) * rightBody * .25;
+      color += blue * exp(-length(p - vec2(.2, .34)) * 4.8) * .12;
+
+      float edge = glow(left, .0018) * .55 + glow(left - .016 - q.y * .02, .003) * .14;
+      float opposite = glow(right, .0022) * .33 + glow(right + .018, .0034) * .12;
+      color += silver * edge * leftFlow * (.8 + activation * .7);
+      color += mix(blue, silver, .5) * opposite * rightFlow * (.85 + activation * .7);
+      color += cyan * glow(left, .024) * .11;
+      color += blue * glow(right, .04) * .14;
+
+      // Soft luminous folds, deliberately sparse and irregular.
+      float grainFold = sin(left * 155.0 + q.y * 9.0 + t * .4);
+      float satin = pow(max(0.0, grainFold), 7.0) * exp(-abs(left - .022) * 24.0);
+      color += cyan * satin * .045 * leftFlow;
+      float breath = 1.0 + sin(u_time * .37) * .055;
+      float centreQuiet = 1.0 - exp(-dot(p * vec2(3.0, 5.0), p * vec2(3.0, 5.0))) * .17;
+      float vignette = 1.0 - smoothstep(.29, .79, length(p * vec2(.9, .82))) * .56;
+      color = ink + (color - ink) * breath * centreQuiet * vignette * u_light;
+      // Static sub-pixel dither prevents visible gradients on dark OLED displays.
+      color += (hash(gl_FragCoord.xy * .01) - .5) / 255.0;
+      gl_FragColor = vec4(color, 1.0);
+    }
+  `;
+
+  function webGLRenderer() {
+    const gl = canvas.getContext('webgl', {
+      alpha: false, antialias: false, depth: false, stencil: false,
+      preserveDrawingBuffer: false, powerPreference: 'low-power'
+    });
+    if (!gl) return null;
+    const compiled = [];
+    let program = null, buffer = null;
+    try {
+      const compile = (type, source) => {
+        const shader = gl.createShader(type);
+        if (!shader) throw new Error('Shader unavailable');
+        compiled.push(shader);
+        gl.shaderSource(shader, source);
+        gl.compileShader(shader);
+        if (!gl.getShaderParameter(shader, gl.COMPILE_STATUS)) throw new Error('Shader unsupported');
+        return shader;
+      };
+      program = gl.createProgram();
+      if (!program) throw new Error('Program unavailable');
+      gl.attachShader(program, compile(gl.VERTEX_SHADER, vertexSource));
+      gl.attachShader(program, compile(gl.FRAGMENT_SHADER, fragmentSource));
+      gl.linkProgram(program);
+      if (!gl.getProgramParameter(program, gl.LINK_STATUS)) throw new Error('Program unsupported');
+      gl.useProgram(program);
+      buffer = gl.createBuffer();
+      if (!buffer) throw new Error('Buffer unavailable');
+      gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
+      gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1, -1, 3, -1, -1, 3]), gl.STATIC_DRAW);
+      const position = gl.getAttribLocation(program, 'a_position');
+      gl.enableVertexAttribArray(position);
+      gl.vertexAttribPointer(position, 2, gl.FLOAT, false, 0, 0);
+      const resolution = gl.getUniformLocation(program, 'u_resolution');
+      const clock = gl.getUniformLocation(program, 'u_time');
+      const activity = gl.getUniformLocation(program, 'u_energy');
+      const light = gl.getUniformLocation(program, 'u_light');
+      compiled.forEach(shader => gl.deleteShader(shader));
+      compiled.length = 0;
+      return {
+        draw() {
+          gl.viewport(0, 0, canvas.width, canvas.height);
+          gl.uniform2f(resolution, canvas.width, canvas.height);
+          gl.uniform1f(clock, time);
+          gl.uniform1f(activity, energy);
+          gl.uniform1f(light, luminosity);
+          gl.drawArrays(gl.TRIANGLES, 0, 3);
+        },
+        dispose() {
+          gl.deleteBuffer(buffer);
+          gl.deleteProgram(program);
+        }
+      };
+    } catch (_) {
+      compiled.forEach(shader => gl.deleteShader(shader));
+      if (buffer) gl.deleteBuffer(buffer);
+      if (program) gl.deleteProgram(program);
+      return null;
+    }
+  }
+
+  function canvasRenderer() {
+    // A second canvas is needed because a WebGL context cannot become a 2D one.
+    const fallback = document.createElement('canvas');
+    fallback.className = 'ambient-fallback';
+    fallback.setAttribute('aria-hidden', 'true');
+    fallback.style.cssText = 'position:absolute;inset:0;width:100%;height:100%;pointer-events:none';
+    canvas.insertAdjacentElement('afterend', fallback);
+    const ctx = fallback.getContext('2d', { alpha: false });
+    if (!ctx) { fallback.remove(); return { draw() {}, dispose() {} }; }
+    return {
+      draw() {
+        if (fallback.width !== canvas.width || fallback.height !== canvas.height) {
+          fallback.width = canvas.width;
+          fallback.height = canvas.height;
+        }
+        const w = fallback.width, h = fallback.height, t = time * .12;
+        ctx.fillStyle = '#030507';
+        ctx.fillRect(0, 0, w, h);
+        ctx.globalCompositeOperation = 'screen';
+        const glows = [
+          [.15 + Math.sin(t) * .09, .65 + Math.cos(t * .7) * .09, '50,139,140'],
+          [.9 + Math.cos(t * .6) * .12, .3 + Math.sin(t * .8) * .15, '53,82,155'],
+          [.3, .07 + Math.sin(t * .4) * .07, '82,135,154']
+        ];
+        glows.forEach(([x, y, rgb]) => {
+          const r = h * .55, gradient = ctx.createRadialGradient(x * w, y * h, 0, x * w, y * h, r);
+          gradient.addColorStop(0, `rgba(${rgb},${.19 * luminosity * (1 + energy * .4)})`);
+          gradient.addColorStop(.45, `rgba(${rgb},${.055 * luminosity})`);
+          gradient.addColorStop(1, `rgba(${rgb},0)`);
+          ctx.fillStyle = gradient;
+          ctx.fillRect(0, 0, w, h);
+        });
+        for (let i = 0; i < 5; i++) {
+          ctx.beginPath();
+          for (let step = 0; step <= 60; step++) {
+            const y = step / 60;
+            const x = .35 + Math.sin(y * 4.7 + t * .7) * .34 + (i - 2) * .018;
+            if (step === 0) ctx.moveTo(x * w, y * h);
+            else ctx.lineTo(x * w, y * h);
+          }
+          ctx.strokeStyle = `rgba(131,208,217,${(i === 2 ? .17 : .035) * luminosity * (1 + energy * .5)})`;
+          ctx.lineWidth = i === 2 ? 1.2 : 3;
+          ctx.stroke();
+        }
+        ctx.globalCompositeOperation = 'source-over';
+      },
+      dispose() { fallback.remove(); }
+    };
+  }
+
+  function draw() {
+    if (renderer && !lost) renderer.draw();
+  }
+  function resize() {
+    const rect = stage.getBoundingClientRect();
+    width = Math.max(1, rect.width);
+    height = Math.max(1, rect.height);
+    // The soft artwork needs fewer pixels than text: save phone battery and GPU fill.
+    const ratio = Math.min(window.devicePixelRatio || 1, 1.25, 900 / Math.max(width, height));
+    canvas.width = Math.max(1, Math.round(width * ratio));
+    canvas.height = Math.max(1, Math.round(height * ratio));
+    draw();
+  }
+  function tick(timestamp) {
+    frame = 0;
+    if (document.hidden || reducedMotion.matches || lost || destroyed) return;
+    const elapsed = timestamp - lastFrame;
+    if (elapsed >= 1000 / 30) {
+      const delta = Math.min((timestamp - lastPaint) / 1000, .09);
+      lastPaint = timestamp;
+      lastFrame = timestamp - (elapsed % (1000 / 30));
+      time += delta * (1 + energy * .9);
+      const ease = 1 - Math.exp(-delta * 4.5);
+      energy += (target[0] - energy) * ease;
+      luminosity += (target[1] - luminosity) * ease;
+      draw();
+    }
+    frame = requestAnimationFrame(tick);
+  }
+  function resume() {
+    cancelAnimationFrame(frame);
+    frame = 0;
+    if (document.hidden || lost || destroyed) return;
+    lastFrame = lastPaint = performance.now();
+    if (reducedMotion.matches) {
+      energy = target[0];
+      luminosity = target[1];
+    }
+    draw();
+    if (!reducedMotion.matches) frame = requestAnimationFrame(tick);
+  }
+  function sceneChanged() {
+    const next = document.documentElement.dataset.scene || 'idle';
+    if (next === scene) return;
+    scene = next;
+    target = sceneTargets[scene] || sceneTargets.idle;
+    if (reducedMotion.matches) resume();
+  }
+
+  renderer = webGLRenderer() || canvasRenderer();
+  const sceneObserver = new MutationObserver(sceneChanged);
+  sceneObserver.observe(document.documentElement, { attributes: true, attributeFilter: ['data-scene'] });
+  const resizeObserver = typeof ResizeObserver === 'function' ? new ResizeObserver(resize) : null;
+  if (resizeObserver) resizeObserver.observe(stage);
+  else on(window, 'resize', resize, { passive: true });
+  on(document, 'visibilitychange', resume);
+  if (reducedMotion.addEventListener) on(reducedMotion, 'change', resume);
+  else reducedMotion.addListener(resume);
+  on(canvas, 'webglcontextlost', event => {
+    event.preventDefault();
+    lost = true;
+    cancelAnimationFrame(frame);
+    frame = 0;
+    renderer?.dispose();
+    renderer = canvasRenderer();
+    // A lightweight ambient fallback keeps the scene alive while WebGL recovers.
+    lost = false;
+    resume();
+  });
+  on(canvas, 'webglcontextrestored', () => {
+    renderer?.dispose();
+    renderer = webGLRenderer() || canvasRenderer();
+    resize();
+    resume();
+  });
+  on(window, 'pagehide', event => {
+    cancelAnimationFrame(frame);
+    frame = 0;
+    if (!event.persisted) {
+      destroyed = true;
+      resizeObserver?.disconnect();
+      sceneObserver.disconnect();
+      listeners.forEach(remove => remove());
+      if (!reducedMotion.removeEventListener) reducedMotion.removeListener(resume);
+      renderer?.dispose();
+    }
+  });
+  on(window, 'pageshow', () => { if (!destroyed) { resize(); resume(); } });
+  resize();
+  resume();
+})();
+</script>
+</body></html>
