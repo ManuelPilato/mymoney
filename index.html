@@ -9,7 +9,7 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="MyMoney">
 <meta name="referrer" content="no-referrer">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self' data: blob:; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; connect-src 'self'; object-src 'none'; base-uri 'self'; form-action 'none'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self' data: blob:; script-src 'self' 'unsafe-inline' https://www.gstatic.com https://apis.google.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; connect-src 'self' https://identitytoolkit.googleapis.com https://securetoken.googleapis.com https://firestore.googleapis.com https://accounts.google.com https://*.firebaseapp.com; frame-src https://*.firebaseapp.com https://accounts.google.com; object-src 'none'; base-uri 'self'; form-action 'none'">
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="apple-touch-icon" href="icon-180.png">
 <link rel="icon" href="icon-192.png" type="image/png">
@@ -189,6 +189,29 @@ dialog input[type=checkbox] { padding: 0; }
 .install-hint { background: var(--raised); border-color: var(--line); }
 .toast { border-color: oklch(86% .04 230 / .18); background: oklch(20% .025 255 / .85); border-radius: 20px; }
 .desktop-controls { display: none; }
+/* Account controls stay within preferences; sync never adds chrome to the home. */
+.sync-settings .sync-intro { margin: 0 0 21px; max-width: 47ch; color: var(--muted); font-size: 13px; line-height: 1.65; }
+.sync-identity { min-width: 0; }
+.sync-settings .sync-status { display: flex; align-items: center; gap: 9px; margin: 0; color: var(--text); font-size: 13px; line-height: 1.55; }
+.sync-status::before { content: ''; width: 6px; height: 6px; flex: 0 0 6px; border-radius: 50%; background: var(--muted); }
+.sync-status[data-state=synced]::before { background: var(--accent); box-shadow: 0 0 0 4px oklch(86% .07 220 / .07); }
+.sync-status[data-state=syncing]::before { background: var(--accent); }
+.sync-status[data-state=offline]::before,.sync-status[data-state=conflict]::before { background: var(--amber); }
+.sync-status[data-state=error]::before { background: var(--red); }
+.sync-settings .sync-account { margin: 5px 0 0 15px; font-size: 12px; color: var(--muted); overflow-wrap: anywhere; }
+.sync-settings #sync-detail { margin: 10px 0 17px; max-width: 60ch; font-size: 12px; }
+.sync-actions { display: flex; align-items: center; flex-wrap: wrap; gap: 10px; padding-bottom: 5px; }
+.sync-actions button { min-height: 48px; font-size: 13px; border-radius: 16px; }
+.sync-actions .quiet { padding-inline: 15px; }
+#sync-connect,.sync-choice-actions>button:first-child { background: oklch(92% .035 220); color: oklch(22% .035 250); border-color: oklch(98% .01 220 / .4); box-shadow: inset 0 1px 0 oklch(99% .008 220 / .3); }
+#sync-connect { padding-inline: 19px; gap: 17px; }
+#sync-connect svg { width: 17px; height: 17px; }
+.sync-choice { margin-top: 22px; padding: 20px 0 3px; border-top: 1px solid var(--line); }
+.sync-choice h3 { font-size: 14px; font-weight: 500; line-height: 1.55; }
+.sync-choice p { margin: 9px 0 17px; max-width: 60ch; font-size: 12px; line-height: 1.7; overflow-wrap: anywhere; }
+.sync-choice-actions { display: grid; gap: 9px; }
+.sync-choice-actions button { min-height: 48px; width: 100%; font-size: 13px; border-radius: 16px; white-space: normal; }
+@media (min-width: 600px) { .sync-choice-actions { grid-template-columns: repeat(2,minmax(0,1fr)); gap: 12px; } }
 @media (max-height: 700px) {
   .dialog-head { padding-top: 16px; padding-bottom: 4px; }
   .dialog-body { padding-top: 2px; }
@@ -340,14 +363,44 @@ dialog input[type=checkbox] { padding: 0; }
       <details class="disclosure"><summary>Note del piano</summary><div id="plan-notes"></div></details>
     </section>
     <section id="view-settings" hidden>
+      <details class="disclosure sync-settings" open>
+        <summary>Account e sincronizzazione</summary>
+        <p class="sync-intro">Le stesse spese e impostazioni, su iPhone e Mac. Accedi con lo stesso account Google su entrambi.</p>
+        <div class="sync-identity">
+          <p id="sync-status" class="sync-status" data-state="local" role="status" aria-live="polite" aria-atomic="true">Solo su questo dispositivo</p>
+          <p id="sync-account" class="sync-account" hidden></p>
+        </div>
+        <p id="sync-detail" class="tiny">Puoi usare MyMoney anche senza accesso. Con la sincronizzazione, i dati vengono salvati su Firebase e sono accessibili solo al tuo account.</p>
+        <div class="sync-actions">
+          <button type="button" id="sync-connect">Accedi con Google <span data-icon="arrow" aria-hidden="true"></span></button>
+          <button type="button" id="sync-retry" class="ghost" hidden>Riprova</button>
+          <button type="button" id="sync-disconnect" class="quiet" hidden>Esci</button>
+        </div>
+        <section id="sync-import" class="sync-choice" aria-labelledby="sync-import-title" hidden>
+          <h3 id="sync-import-title">Collega i tuoi dati</h3>
+          <p>Unisci i dati di questo dispositivo all’account, oppure apri quelli già online. Per i dati già presenti prevale la versione online; la copia locale resta salvata separatamente.</p>
+          <div class="sync-choice-actions">
+            <button type="button" id="sync-import-merge">Unisci e sincronizza</button>
+            <button type="button" id="sync-import-cloud" class="ghost">Usa dati dell’account</button>
+          </div>
+        </section>
+        <section id="sync-conflicts" class="sync-choice" aria-labelledby="sync-conflict-title" hidden>
+          <h3 id="sync-conflict-title">Scegli la versione da tenere</h3>
+          <p id="sync-conflict-detail" aria-live="polite">Lo stesso dato è stato modificato su due dispositivi.</p>
+          <div class="sync-choice-actions">
+            <button type="button" id="sync-use-cloud">Usa la versione online</button>
+            <button type="button" id="sync-use-local" class="ghost">Usa la mia modifica</button>
+          </div>
+        </section>
+      </details>
       <details class="disclosure" open><summary>Budget e stipendio</summary><form id="settings-form">
         <div class="fields"><div class="field-group"><label for="s-salary">Stipendio previsto €</label><input id="s-salary" inputmode="decimal" required></div><div class="field-group"><label for="s-day">Giorno di accredito</label><input id="s-day" type="number" min="1" max="28" required></div></div>
         <div class="fields"><div class="field-group"><label for="s-budget">Budget €</label><input id="s-budget" inputmode="decimal" required></div><div class="field-group"><label for="s-goal">Obiettivo risparmio €</label><input id="s-goal" inputmode="decimal" required></div></div>
         <details><summary>Situazione iniziale</summary><div class="field-group"><label for="s-opening">Saldo iniziale €</label><input id="s-opening" inputmode="decimal" required></div><div class="field-group"><label for="s-date">Data iniziale</label><input id="s-date" type="date" required></div><div class="field-group"><label for="s-savings">Risparmi separati €</label><input id="s-savings" inputmode="decimal" placeholder="Facoltativo"></div><p class="tiny">Il saldo iniziale è il punto di partenza. Registra gli stipendi successivi come entrate.</p></details><button type="submit" class="full-width">Salva</button>
       </form></details>
-      <details class="disclosure"><summary>Backup e trasferimento</summary><div class="actions"><button id="export-json">Salva backup</button><button class="ghost" data-import>Importa</button><button class="ghost" id="export-csv">CSV</button></div><p class="tiny" id="backup-status"></p><p class="tiny">I dati sono solo in questo browser. Conserva un backup privato prima di cancellarli o cambiare dispositivo.</p></details>
+      <details class="disclosure"><summary>Backup e importazione</summary><div class="actions"><button id="export-json">Salva backup</button><button class="ghost" data-import>Importa</button><button class="ghost" id="export-csv">CSV</button></div><p class="tiny" id="backup-status"></p><p class="tiny">Un backup conserva una copia privata del tuo archivio. Se hai attivato la sincronizzazione, non serve per passare da un dispositivo all’altro.</p></details>
       <details class="disclosure"><summary>Categorie imparate</summary><div id="learned-rules"></div></details>
-      <details class="disclosure"><summary>App e dispositivi</summary><p class="tiny">Tocco: nuova spesa.<br>Pressione prolungata: voce.<br>Scorri in alto: i tuoi dati.</p><button id="settings-voice" class="ghost full-width">Detta una modifica <span data-icon="mic"></span></button><div id="environment" class="notice" hidden></div><p class="tiny" id="install-status"></p><p class="tiny">Su iPhone: Safari → Condividi → Aggiungi alla schermata Home.<br>Su Mac: Safari → File → Aggiungi al Dock, oppure installa dal menu di Chrome.</p><p class="tiny">App e sito usano la stessa interfaccia. I dati restano nel browser o nell’app in uso: per trasferirli tra dispositivi usa un backup.</p><button class="ghost full-width" id="request-storage">Conserva i dati sul dispositivo</button><p class="tiny" id="persistent-status"></p><p class="tiny">La voce usa il servizio del browser e può richiedere internet. MyMoney non conserva audio. I comandi vengono interpretati localmente e proposti prima del salvataggio.</p></details>
+      <details class="disclosure"><summary>App e dispositivi</summary><p class="tiny">Tocco: nuova spesa.<br>Pressione prolungata: voce.<br>Scorri in alto: i tuoi dati.</p><button id="settings-voice" class="ghost full-width">Detta una modifica <span data-icon="mic"></span></button><div id="environment" class="notice" hidden></div><p class="tiny" id="install-status"></p><p class="tiny">Su iPhone: Safari → Condividi → Aggiungi alla schermata Home.<br>Su Mac: Safari → File → Aggiungi al Dock, oppure installa dal menu di Chrome.</p><p class="tiny">App e sito si sincronizzano con lo stesso account Google. Le modifiche fatte offline vengono inviate quando torna la connessione; un’app chiusa si aggiorna alla riapertura.</p><button class="ghost full-width" id="request-storage">Conserva i dati sul dispositivo</button><p class="tiny" id="persistent-status"></p><p class="tiny">La voce usa il servizio del browser e può richiedere internet. MyMoney non conserva audio. I comandi vengono interpretati localmente e proposti prima del salvataggio.</p></details>
     </section>
   </div>
 </dialog>
@@ -896,12 +949,409 @@ dialog input[type=checkbox] { padding: 0; }
   window.MMUI={init,open,close,scene,dialogs,setVoice(active){voiceActive=active;scene();}};
 })();
 </script>
-<script>/* Local-first UI: no financial records are uploaded or synchronized. */
+<script>/* Public web-app configuration. Financial data and admin credentials never belong here. */
+window.MM_FIREBASE_CONFIG = Object.freeze({
+  apiKey: 'AIzaSyDKjWtfbI-JkugNTdXQ9_wSoDpqBZy2P0Y',
+  authDomain: 'mymoney-d7a43.firebaseapp.com',
+  projectId: 'mymoney-d7a43',
+  appId: '1:123446416802:web:9590d2e2b9cde0302c8efb'
+});
+</script>
+<script>/* Pure synchronization model. Financial entities retain their original IDs. */
+(function(root){
+  'use strict';
+  const M=typeof module==='object'&&module.exports?require('./core.js'):root.MM;
+  const SETTINGS=['initialized','openingDate','openingBalanceCents','salaryCents','budgetCents','savingsGoalCents','separateSavingsCents','payday'];
+  const MAX_WRITES=400;
+  const clone=M.clone;
+  const stable=value=>JSON.stringify(value,(_,v)=>v&&typeof v==='object'&&!Array.isArray(v)?Object.fromEntries(Object.keys(v).sort().map(k=>[k,v[k]])):v);
+  const equal=(a,b)=>stable(a)===stable(b);
+  const docId=(kind,key)=>kind+'_'+encodeURIComponent(key);
+  const payload=r=>r&&!r.deleted?r.value:null;
+  function entry(kind,key,value){
+    if(typeof key!=='string'||!key||key.length>200||docId(kind,key).length>1500)throw Error('Un identificativo dell’archivio è troppo lungo per la sincronizzazione.');
+    return {kind,key,value:clone(value),deleted:false};
+  }
+  function flatten(raw){
+    const s=M.validate(raw),records={};
+    const add=(kind,key,value)=>{records[docId(kind,key)]=entry(kind,key,value);};
+    for(const key of SETTINGS)add('setting',key,s.settings[key]);
+    for(const t of s.transactions){
+      const v={};for(const key of ['id','date','amountCents','type','category','note','status','includedInOpening','countBudget','recurringId','dueDate'])v[key]=t[key];
+      if(typeof t.createdAt==='string'&&t.createdAt.length<=40)v.createdAt=t.createdAt;
+      add('transaction',t.id,v);
+    }
+    for(const r of s.recurring){
+      const v={};for(const key of ['id','name','amountCents','months','startDate','active','automatic','category'])v[key]=r[key];
+      if(typeof r.estimated==='boolean')v.estimated=r.estimated;
+      add('recurring',r.id,v);
+    }
+    for(const r of s.rules)add('rule',M.norm(r.phrase).trim(),{phrase:r.phrase,category:r.category});
+    if(s.notes.length>20)throw Error('La sincronizzazione supporta fino a 20 note. L’archivio locale è intatto.');
+    add('notes','all',s.notes);
+    return records;
+  }
+  function materialize(records,local=M.blank()){
+    const state=M.blank();state.lastBackup=local.lastBackup;state.revision=local.revision;state.updatedAt=local.updatedAt;
+    for(const [id,r] of Object.entries(records)){
+      if(!r||r.deleted)continue;
+      if(docId(r.kind,r.key)!==id)throw Error('Documento cloud non riconosciuto.');
+      const v=clone(r.value);
+      if(r.kind==='setting'&&SETTINGS.includes(r.key))state.settings[r.key]=v;
+      else if(r.kind==='transaction')state.transactions.push(v);
+      else if(r.kind==='recurring')state.recurring.push(v);
+      else if(r.kind==='rule')state.rules.push(v);
+      else if(r.kind==='notes'&&r.key==='all')state.notes=v;
+      else throw Error('Versione dei dati cloud non supportata.');
+    }
+    return M.validate(state);
+  }
+  function hasData(state){return !!(state.settings.initialized||state.transactions.length||state.recurring.length||state.rules.length||state.notes.length);}
+  function overlay(records,outbox){
+    const result=clone(records);
+    for(const op of outbox)for(const c of op.changes)result[c.id]={schemaVersion:1,kind:c.kind,key:c.key,value:clone(c.value),deleted:c.deleted,version:c.baseVersion+1,mutationId:op.id};
+    return result;
+  }
+  function change(id,value,base){
+    const r=value||base;
+    return {id,kind:r.kind,key:r.key,value:value?clone(value.value):null,deleted:!value,baseVersion:base?.version||0};
+  }
+  function changes(before,after,expected,{seed=false}={}){
+    const a=flatten(before),b=flatten(after),result=new Map();
+    for(const id of new Set([...Object.keys(a),...Object.keys(b)])){
+      if(!equal(payload(a[id]),payload(b[id]))||(seed&&!expected[id]&&b[id]))result.set(id,change(id,b[id],expected[id]||a[id]));
+    }
+    // Every linked movement also versions its recurring parent. A concurrent
+    // deletion/payment therefore conflicts instead of leaving a broken link.
+    for(const c of [...result.values()])if(c.kind==='transaction'){
+      for(const rec of [a[c.id]?.value?.recurringId,b[c.id]?.value?.recurringId].filter(Boolean)){
+        const id=docId('recurring',rec);
+        if(!result.has(id))result.set(id,change(id,b[id],expected[id]||a[id]));
+      }
+    }
+    return [...result.values()];
+  }
+  function append(env,before,after,id,now=new Date().toISOString()){
+    const expected=overlay(env.records,env.outbox),list=changes(before,after,expected,{seed:!Object.keys(env.records).length&&!env.outbox.length});
+    if(list.length>MAX_WRITES)throw Error('Questa modifica coinvolge troppi dati insieme. Importa l’archivio prima di collegare l’account, oppure suddividi le modifiche. Nessun dato è stato cambiato.');
+    const next=clone(env);next.state=clone(after);if(list.length)next.outbox.push({id,createdAt:now,changes:list});return next;
+  }
+  function acknowledged(op,records){return op.changes.every(c=>records[c.id]?.mutationId===op.id&&records[c.id]?.version===c.baseVersion+1&&equal(payload(records[c.id]),c.deleted?null:c.value));}
+  function equivalent(c,record){return !!record&&record.deleted===c.deleted&&equal(payload(record),c.deleted?null:c.value);}
+  function conflicts(op,records){return op.changes.filter(c=>{
+    const record=records[c.id];
+    return (record?.version||0)!==c.baseVersion&&!(record?.mutationId===op.id&&equivalent(c,record))&&!(c.kind!=='recurring'&&equivalent(c,record));
+  });}
+  function mergeInitial(local,records){
+    const merged=clone(records);for(const [id,r] of Object.entries(flatten(local)))if(!Object.hasOwn(merged,id))merged[id]=r;
+    // An existing cloud tombstone stays authoritative, including its linked
+    // recurrence. A unique imported payment remains, without a broken link.
+    for(const r of Object.values(merged))if(r.kind==='transaction'&&!r.deleted&&r.value.recurringId){
+      const parent=merged[docId('recurring',r.value.recurringId)];
+      if(!parent||parent.deleted){r.value.recurringId=null;r.value.dueDate=null;}
+    }
+    return materialize(merged,local);
+  }
+  function importGroups(env,target,makeId){
+    const next=clone(env),destination=flatten(target);let current=materialize(next.records,target);
+    // Parents/settings first; each subsequent transaction chunk is a valid
+    // archive. A destructive edit remains one atomic operation via append().
+    const ordered=Object.values(destination).sort((a,b)=>(a.kind==='transaction'?1:0)-(b.kind==='transaction'?1:0));
+    for(let offset=0;offset<ordered.length;offset+=150){
+      const base=flatten(current);
+      for(const r of ordered.slice(offset,offset+150))base[docId(r.kind,r.key)]=r;
+      const state=materialize(base,current),expected=overlay(next.records,next.outbox),list=changes(current,state,expected,{seed:!Object.keys(next.records).length&&!next.outbox.length});
+      if(list.length)next.outbox.push({id:makeId(),createdAt:new Date().toISOString(),changes:list});
+      current=state;
+    }
+    next.state=clone(target);return next;
+  }
+  function rebaseLocal(env){
+    const projected=overlay(env.records,env.outbox),localPayment=new Map();
+    for(const op of env.outbox)for(const c of op.changes)if(c.kind==='transaction'&&!c.deleted&&c.value.recurringId&&c.value.dueDate)localPayment.set(c.value.recurringId+'|'+c.value.dueDate,c.id);
+    for(const [id,r] of Object.entries(projected))if(r.kind==='transaction'&&!r.deleted){
+      const t=r.value;
+      if(t.recurringId&&projected[docId('recurring',t.recurringId)]?.deleted){t.recurringId=null;t.dueDate=null;}
+      const preferred=localPayment.get(t.recurringId+'|'+t.dueDate);
+      if(preferred&&preferred!==id)projected[id]={...r,deleted:true,value:null};
+    }
+    return materialize(projected,env.state);
+  }
+  const api={SETTINGS,MAX_WRITES,stable,equal,docId,payload,flatten,materialize,hasData,overlay,changes,append,acknowledged,equivalent,conflicts,mergeInitial,importGroups,rebaseLocal};
+  if(typeof module==='object'&&module.exports)module.exports=api;else root.MMSyncCore=api;
+})(typeof window!=='undefined'?window:globalThis);
+</script>
+<script>/* Firebase is an optional transport. The durable per-account outbox is local. */
+(function(root){
+  'use strict';
+  const M=root.MM,C=root.MMSyncCore,KEY='mymoney-local-v2',GUEST='mymoney-sync-guest-v1',META='mymoney-sync-session-v1',PREFIX='mymoney-sync-account-v1:';
+  const $=id=>document.getElementById(id);
+  let bridge=null,sdk=null,auth=null,db=null,user=null,uid=null,env=null,unlisten=null,generation=0,flushing=false,ready=false,serverReady=false,issue='',loading=null,retryTimer=null;
+  const clone=M.clone;
+  function read(key){const raw=localStorage.getItem(key);return raw?JSON.parse(raw):null;}
+  function accountKey(id){return PREFIX+id;}
+  function validEnv(value){
+    if(!value||value.schemaVersion!==1||!value.records||!Array.isArray(value.outbox))throw Error('Archivio di sincronizzazione non leggibile. La copia locale è conservata.');
+    M.validate(value.state);return value;
+  }
+  function storedAccount(id){const raw=read(accountKey(id));return raw?validEnv(raw):null;}
+  function guest(){const saved=read(GUEST);return saved?M.validate(saved):M.blank();}
+  function initialState(){
+    let session=null;
+    try{
+      session=read(META);const owner=session?.uid;
+      if(owner){const cached=storedAccount(owner);if(cached){uid=owner;env=cached;return clone(cached.state);}return guest();}
+      if(session)return guest();
+    }catch(error){
+      if(session){issue=readableError(error);try{return guest();}catch(_){return M.blank();}}
+      /* With no sync session, App keeps its original protected loader. */
+    }
+    return null;
+  }
+  function mirror(state){try{localStorage.setItem(KEY,JSON.stringify(state));}catch(_){/* The account archive remains the authoritative durable copy. */}}
+  function saveEnv(next,{initial=false}={}){
+    const current=read(accountKey(uid));
+    if(!initial&&current&&(current.serial||0)!==(env?.serial||0))throw Error('Dati aggiornati in un’altra finestra. Riapri la modifica.');
+    next.serial=(current?.serial||0)+1;
+    localStorage.setItem(accountKey(uid),JSON.stringify(next));env=next;
+  }
+  function apply(state){
+    if(!bridge)return;
+    const before=bridge.getState();
+    if(C.equal(C.flatten(before),C.flatten(state))&&before.lastBackup===state.lastBackup){
+      if(uid&&env&&env.state.revision!==before.revision){const copy=clone(env);copy.state=clone(before);saveEnv(copy);}
+      if(!uid&&read(META))localStorage.setItem(GUEST,JSON.stringify(before));
+      mirror(before);return;
+    }
+    const next=M.validate(state);next.revision=(before.revision||0)+1;next.updatedAt=new Date().toISOString();
+    if(uid&&env){const copy=clone(env);copy.state=next;saveEnv(copy);}
+    if(!uid&&read(META))localStorage.setItem(GUEST,JSON.stringify(next));
+    mirror(next);bridge.replaceState(next);
+  }
+  function setState(label,state,detail){
+    if($('sync-status')){$('sync-status').textContent=label;$('sync-status').dataset.state=state;}
+    if($('sync-detail'))$('sync-detail').textContent=detail;
+  }
+  function render(){
+    if(!$('sync-connect'))return;
+    const config=!!root.MM_FIREBASE_CONFIG,connected=!!uid,accepted=!!env?.accepted,conflict=!!env?.conflict;
+    $('sync-connect').hidden=connected;$('sync-connect').disabled=!config||(!ready&&!!loading);
+    $('sync-disconnect').hidden=!connected;$('sync-disconnect').disabled=false;
+    $('sync-retry').hidden=!(config&&(!!issue||connected&&!serverReady));
+    $('sync-account').hidden=!connected;$('sync-account').textContent=connected?(user?.email||env?.email||'Account collegato'):'';
+    $('sync-import').hidden=!connected||accepted||!serverReady||conflict;
+    $('sync-conflicts').hidden=!conflict;
+    if(conflict){
+      $('sync-conflict-detail').textContent=`${env.outbox.length} operazion${env.outbox.length===1?'e locale richiede':'i locali richiedono'} una scelta. Un altro dispositivo ha cambiato gli stessi dati. “Usa la versione online” scarta le modifiche in attesa; “Usa la mia modifica” le applica ai dati aggiornati. Per una rata duplicata resta la versione scelta. Una copia delle modifiche resta su questo dispositivo.`;
+      setState('Da verificare','conflict','Scegli quale versione conservare prima di aggiungere altre modifiche.');return;
+    }
+    if(!config){setState('Solo su questo dispositivo','local','Il collegamento Firebase non è ancora configurato. Puoi continuare a usare MyMoney in locale.');return;}
+    if(issue){setState('Sincronizzazione in pausa','error',issue);return;}
+    if(!connected){setState('Solo su questo dispositivo','local','Accedi con lo stesso account Google su iPhone e Mac per ritrovare spese e impostazioni.');return;}
+    if(!accepted){setState(serverReady?'Collega il tuo archivio':'Connessione…',serverReady?'local':'syncing',serverReady?'Scegli come iniziare. Nessun dato locale viene caricato prima della tua scelta.':'Verifico l’account e l’archivio online. I dati locali sono al sicuro.');return;}
+    if(!navigator.onLine||!serverReady){setState('Salvato sul dispositivo','offline',env.outbox.length?`${env.outbox.length} operazion${env.outbox.length===1?'e pronta':'i pronte'} da inviare appena torna la connessione.`:'Le modifiche restano qui e si sincronizzano alla riconnessione.');return;}
+    if(env.outbox.length||flushing){setState('Sincronizzazione…','syncing',`${env.outbox.length} operazion${env.outbox.length===1?'e':'i'} in attesa di conferma dal server.`);return;}
+    setState('Tutto sincronizzato','synced','Salvato nel tuo account. Gli altri dispositivi online si aggiornano automaticamente.');
+  }
+  function readableError(error){
+    const code=error?.code||'';
+    if(code.includes('popup-blocked'))return 'Consenti la finestra di accesso e tocca di nuovo “Accedi con Google”.';
+    if(code.includes('popup-closed-by-user')||code.includes('cancelled-popup-request'))return 'Accesso annullato. Il tuo archivio locale è intatto.';
+    if(code.includes('unauthorized-domain'))return 'Questo indirizzo non è ancora autorizzato in Firebase. Il tuo archivio locale è intatto.';
+    if(code.includes('permission-denied'))return 'Il server non ha autorizzato la sincronizzazione. Nessun dato in attesa è stato eliminato.';
+    if(code.includes('resource-exhausted'))return 'Quota gratuita temporaneamente esaurita. I dati restano salvati sul dispositivo; riprova più tardi.';
+    if(code.includes('network')||code.includes('unavailable'))return 'Connessione non disponibile. I dati restano salvati sul dispositivo.';
+    return error?.message||'Sincronizzazione non disponibile. I dati locali sono conservati.';
+  }
+  function report(error){issue=readableError(error);render();}
+  function saveLocal(next,before){
+    if(!uid){
+      if(!read(META))return false;
+      const disk=guest();if(disk.revision!==before.revision)throw Error('L’archivio locale è cambiato in un’altra finestra. Riapri la modifica.');
+      localStorage.setItem(GUEST,JSON.stringify(next));mirror(next);return true;
+    }
+    if(!env?.accepted)throw Error('Completa il collegamento dell’archivio in Preferenze, oppure scollega l’account per continuare in locale.');
+    if(env.conflict)throw Error('C’è una modifica da verificare in Preferenze → Sincronizzazione.');
+    const disk=storedAccount(uid);
+    if(!disk||disk.serial!==env.serial||disk.state.revision!==before.revision)throw Error('L’archivio è cambiato. Chiudi e riapri la modifica.');
+    const changed=C.append(env,before,next,M.id());saveEnv(changed);mirror(next);render();queueMicrotask(flush);return true;
+  }
+  function recordsFrom(snapshot){
+    const records={};
+    for(const d of snapshot.docs){
+      const r=d.data();
+      if(r.schemaVersion!==1||!Number.isSafeInteger(r.version)||r.version<1||typeof r.deleted!=='boolean'||typeof r.mutationId!=='string'||C.docId(r.kind,r.key)!==d.id)throw Error('I dati online richiedono una versione più recente dell’app. La copia locale è conservata.');
+      records[d.id]={schemaVersion:r.schemaVersion,kind:r.kind,key:r.key,value:r.value,deleted:r.deleted,version:r.version,mutationId:r.mutationId};
+    }
+    C.materialize(records,env?.state||M.blank());return records;
+  }
+  function refreshProjection(next){
+    while(next.outbox.length&&C.acknowledged(next.outbox[0],next.records))next.outbox.shift();
+    if(next.conflict)return next;
+    try{next.state=C.materialize(C.overlay(next.records,next.outbox),next.state);}
+    catch(error){next.conflict={reason:'linked-change',message:error.message};}
+    return next;
+  }
+  function receive(snapshot,token){
+    if(token!==generation||!uid)return;
+    if(snapshot.metadata.fromCache){serverReady=false;render();return;}
+    if(snapshot.metadata.hasPendingWrites){render();return;}
+    try{
+      const records=recordsFrom(snapshot),next=clone(env);next.records=records;serverReady=true;issue='';
+      if(!next.accepted){
+        if(!C.hasData(next.state)){next.accepted=true;next.state=C.materialize(records,next.state);}
+        saveEnv(next);if(next.accepted)apply(next.state);render();if(next.accepted)flush();return;
+      }
+      refreshProjection(next);saveEnv(next);if(!next.conflict)apply(next.state);render();flush();
+    }catch(error){report(error);}
+  }
+  async function authChanged(account){
+    const token=++generation;unlisten?.();unlisten=null;flushing=false;serverReady=false;issue='';user=account;
+    try{
+      if((account?.uid||null)!==uid)bridge.resetDrafts?.();
+      if(!account){
+        const wasOwner=uid;uid=null;env=null;localStorage.setItem(META,JSON.stringify({uid:null}));
+        if(wasOwner)apply(guest());render();return;
+      }
+      if(!uid&&!read(META)){
+        // Only the explicitly local archive is a migration candidate. An old
+        // account's cache can never become another account's initial upload.
+        localStorage.setItem(GUEST,JSON.stringify(bridge.getState()));
+      }
+      uid=account.uid;env=storedAccount(uid);
+      if(!env){env={schemaVersion:1,serial:0,accepted:false,email:account.email||'',state:guest(),records:{},outbox:[],conflict:null};saveEnv(env,{initial:true});}
+      else if(env.email!==account.email){const next=clone(env);next.email=account.email||'';saveEnv(next);}
+      localStorage.setItem(META,JSON.stringify({uid}));
+      apply(env.state);render();
+      unlisten=sdk.onSnapshot(sdk.collection(db,'users',uid,'records'),{includeMetadataChanges:true},snapshot=>receive(snapshot,token),error=>{if(token===generation){serverReady=false;report(error);}});
+    }catch(error){report(error);}
+  }
+  async function loadSDK(){
+    if(ready)return;
+    if(loading)return loading;
+    if(!root.MM_FIREBASE_CONFIG)return;
+    loading=(async()=>{
+      sdk=await import('./firebase-sdk.js');
+      const app=sdk.initializeApp(root.MM_FIREBASE_CONFIG);auth=sdk.getAuth(app);db=sdk.getFirestore(app);ready=true;
+      sdk.onAuthStateChanged(auth,authChanged,error=>report(error));
+    })().catch(error=>{loading=null;report(error);throw error;});
+    render();return loading;
+  }
+  async function connect(){
+    issue='';
+    // SDK is preloaded. Keeping signInWithPopup in this user gesture also works
+    // with Safari's stricter popup policy; no cross-origin redirect storage.
+    if(!ready){try{await loadSDK();issue='Pronto. Tocca di nuovo “Accedi con Google” per aprire l’accesso.';render();}catch(_){}return;}
+    try{const provider=new sdk.GoogleAuthProvider();provider.setCustomParameters({prompt:'select_account'});await sdk.signInWithPopup(auth,provider);}catch(error){report(error);}
+  }
+  async function disconnect(){
+    if(!ready){issue='Connettiti a Internet per completare l’uscita dall’account. Le modifiche locali sono conservate.';render();return;}
+    try{await sdk.signOut(auth);}catch(error){report(error);}
+  }
+  function acceptInitial(merge){
+    if(!uid||!env||env.accepted||!serverReady)return;
+    try{
+      const original=clone(env.state),target=merge?C.mergeInitial(original,env.records):C.materialize(env.records,original);
+      localStorage.setItem(accountKey(uid)+':before-import',JSON.stringify(original));
+      let next=clone(env);next.accepted=true;next.conflict=null;
+      if(merge)next=C.importGroups(next,target,M.id);else next.state=target;
+      saveEnv(next);apply(next.state);issue='';render();flush();
+    }catch(error){report(error);}
+  }
+  async function flush(){
+    if(flushing||!ready||!user||user.uid!==uid||!serverReady||!navigator.onLine||!env?.accepted||env.conflict||!env.outbox.length)return;
+    const token=generation,owner=uid;flushing=true;render();
+    try{
+      while(token===generation&&env.outbox.length&&!env.conflict){
+        const op=clone(env.outbox[0]);
+        const confirmed=await sdk.runTransaction(db,async transaction=>{
+          if(token!==generation)throw Error('Account cambiato durante la sincronizzazione.');
+          const refs=op.changes.map(c=>sdk.doc(db,'users',owner,'records',c.id));
+          const snapshots=await Promise.all(refs.map(ref=>transaction.get(ref))),actual={};
+          snapshots.forEach((snap,index)=>{if(snap.exists())actual[op.changes[index].id]=snap.data();});
+          if(C.acknowledged(op,actual))return op.changes.map(c=>({...c,record:actual[c.id]}));
+          if(C.conflicts(op,actual).length){const error=Error('Gli stessi dati sono stati modificati su un altro dispositivo.');error.code='mymoney/conflict';throw error;}
+          if(token!==generation)throw Error('Account cambiato durante la sincronizzazione.');
+          return op.changes.map((c,index)=>{
+            const existing=actual[c.id];
+            // Two devices may initialize the same default setting together.
+            // Identical values need no overwrite; recurrence guards still
+            // advance so linked payment/deletion races remain detectable.
+            if(C.equivalent(c,existing)&&(c.kind!=='recurring'||existing.mutationId===op.id))return {...c,record:existing};
+            const record={schemaVersion:1,kind:c.kind,key:c.key,value:c.value,deleted:c.deleted,version:c.baseVersion+1,mutationId:op.id};
+            transaction.set(refs[index],{...record,updatedAt:sdk.serverTimestamp()});return {...c,record};
+          });
+        });
+        if(token!==generation)return;
+        // The transaction is confirmed, not merely queued in the SDK. Updating
+        // the baseline here also handles a slow realtime acknowledgement.
+        const next=clone(env);
+        if(next.outbox[0]?.id===op.id){
+          next.outbox.shift();
+          for(const c of confirmed){
+            const current=next.records[c.id],record=c.record;
+            if(!current||current.version<=record.version){const {updatedAt,...stored}=record;next.records[c.id]=stored;}
+            const offset=record.version-(c.baseVersion+1);
+            if(offset)for(const queued of next.outbox)for(const change of queued.changes)if(change.id===c.id)change.baseVersion+=offset;
+          }
+          refreshProjection(next);saveEnv(next);if(!next.conflict)apply(next.state);
+        }
+        issue='';
+      }
+    }catch(error){
+      if(token!==generation)return;
+      if(error.code==='mymoney/conflict'){
+        const next=clone(env);next.conflict={reason:'version',message:error.message};saveEnv(next);issue='';
+        try{const snapshot=await sdk.getDocsFromServer(sdk.collection(db,'users',uid,'records'));if(token===generation){const latest=clone(env);latest.records=recordsFrom(snapshot);saveEnv(latest);}}catch(_){}
+      }else{report(error);if(navigator.onLine&&/(unavailable|network|aborted)/.test(error.code||'')){clearTimeout(retryTimer);retryTimer=setTimeout(()=>{if(token===generation)retry();},15000);}}
+    }finally{if(token===generation){flushing=false;render();}}
+  }
+  async function resolveConflict(keepLocal){
+    if(!uid||!env?.conflict||!ready)return;
+    const token=generation;
+    try{
+      const snapshot=await sdk.getDocsFromServer(sdk.collection(db,'users',uid,'records'));if(token!==generation)return;
+      const records=recordsFrom(snapshot),original=clone(env);localStorage.setItem(accountKey(uid)+':before-conflict',JSON.stringify(original));
+      let next=clone(env);next.records=records;const target=keepLocal?C.rebaseLocal(next):C.materialize(records,next.state);
+      next.outbox=[];next.conflict=null;
+      // Reapply the explicitly chosen local intent. Unrelated cloud changes
+      // remain in target; all affected records are version checked again.
+      if(keepLocal)next=C.append(next,C.materialize(records,next.state),target,M.id());else next.state=target;
+      saveEnv(next);apply(next.state);issue='';serverReady=true;render();flush();
+    }catch(error){report(error);}
+  }
+  async function retry(){
+    issue='';render();
+    try{if(!ready){await loadSDK();return;}if(user)await authChanged(user);else render();}catch(error){report(error);}
+  }
+  function handlesStorage(event){
+    if(event.key===KEY&&(uid||read(META)))return true;
+    return false;
+  }
+  function init(api){
+    bridge=api;
+    try{if(!read(META)){localStorage.setItem(GUEST,JSON.stringify(bridge.getState()));localStorage.setItem(META,JSON.stringify({uid:null}));}}
+    catch(error){report(error);}
+    $('sync-connect')?.addEventListener('click',connect);$('sync-disconnect')?.addEventListener('click',disconnect);$('sync-retry')?.addEventListener('click',retry);
+    $('sync-import-merge')?.addEventListener('click',()=>acceptInitial(true));$('sync-import-cloud')?.addEventListener('click',()=>acceptInitial(false));
+    $('sync-use-cloud')?.addEventListener('click',()=>resolveConflict(false));$('sync-use-local')?.addEventListener('click',()=>resolveConflict(true));
+    root.addEventListener('online',()=>{issue='';retry();});root.addEventListener('offline',()=>{serverReady=false;render();});
+    document.addEventListener('visibilitychange',()=>{if(!document.hidden){render();if(ready&&user&&!flushing)flush();}});
+    root.addEventListener('storage',event=>{
+      if(uid&&event.key===accountKey(uid)&&event.newValue){try{env=validEnv(JSON.parse(event.newValue));mirror(env.state);bridge.replaceState(env.state);render();flush();}catch(error){report(error);}}
+      if(!uid&&event.key===GUEST&&event.newValue){try{const state=M.validate(JSON.parse(event.newValue));mirror(state);bridge.replaceState(state);}catch(error){report(error);}}
+    });
+    render();if(root.MM_FIREBASE_CONFIG)loadSDK().catch(()=>{});
+  }
+  root.MMSync={initialState,init,saveLocal,handlesStorage,ownsArchive:()=>!!uid||!!read(META)};
+})(window);
+</script>
+<script>/* Local-first UI. Optional, explicitly connected accounts sync through MMSync. */
 (function () {
   'use strict';
   const M=window.MM, UI=window.MMUI, KEY='mymoney-local-v2', PREVIOUS=KEY+'-previous', LEGACY='mymoney-ai-v1';
   const $=s=>document.querySelector(s), $$=s=>[...document.querySelectorAll(s)];
-  let state=M.blank(), storageOK=true, readOnly=false, currentView='home', historyFilter='all', reportMode='month', reportOffset=0, editingId=null, recEditingId=null, drafts=[], speech=null, toastTimer, proposal=null, proposalRevision=null, editingRevision=null, recRevision=null;
+  let state=M.blank(), storageOK=true, readOnly=false, currentView='home', historyFilter='all', reportMode='month', reportOffset=0, editingId=null, recEditingId=null, drafts=[], speech=null, toastTimer, proposal=null, proposalRevision=null, editingRevision=null, recRevision=null, settingsDirty=false, settingsRevision=null;
   const ICONS={
     check:'<path d="m5 12 4 4L19 6"/>',info:'<circle cx="12" cy="12" r="9"/><path d="M12 11v6M12 7h.01"/>',target:'<circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1"/>',
     wallet:'<path d="M4 6h14a2 2 0 0 1 2 2v10H4a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h13v2"/><path d="M20 10h-5v4h5"/>',
@@ -940,7 +1390,7 @@ dialog input[type=checkbox] { padding: 0; }
   function load(){
     let raw=null;
     try{
-      raw=localStorage.getItem(KEY);
+      const accountState=window.MMSync?.initialState();raw=accountState?JSON.stringify(accountState):localStorage.getItem(KEY);
       if(raw)state=M.validate(JSON.parse(raw));
       else if(localStorage.getItem(LEGACY)){
         state=M.migrate(JSON.parse(localStorage.getItem(LEGACY)));
@@ -958,17 +1408,21 @@ dialog input[type=checkbox] { padding: 0; }
     if(!storageOK)throw Error('Archiviazione locale bloccata. Non ho salvato.');
     if(readOnly&&!replace)throw Error('Archivio protetto per errore di lettura: importa un backup valido.');
     const clean=M.validate(next), disk=localStorage.getItem(KEY);
-    if(disk&&!replace&&!readOnly){
+    if(disk&&!replace&&!readOnly&&!window.MMSync?.ownsArchive()){
       const latest=JSON.parse(disk);
       if((latest.revision||0)!==(state.revision||0))throw Error('Archivio modificato in un’altra scheda. Riapri la modifica sui dati aggiornati.');
     }
     clean.revision=(state.revision||0)+1;clean.updatedAt=new Date().toISOString();
+    if(window.MMSync?.saveLocal(clean,state)){
+      state=clean;readOnly=false;errBox('#storage-warning','');render();return;
+    }
     // Preserve the previous snapshot on a best-effort basis, without blocking the main write.
     if(disk&&!readOnly){try{localStorage.setItem(PREVIOUS,disk);}catch(_){/* Primary storage still gets a chance to save. */}}
     try{localStorage.setItem(KEY,JSON.stringify(clean));}catch(_){throw Error('Spazio locale esaurito o salvataggio bloccato. Nessuna modifica salvata.');}
     state=clean;readOnly=false;errBox('#storage-warning','');render();
   }
   window.addEventListener('storage',e=>{
+    if(window.MMSync?.handlesStorage(e))return;
     if(e.key===null||(e.key===KEY&&!e.newValue)){readOnly=true;errBox('#storage-warning','L’archivio è stato rimosso da un’altra scheda. Esporta i dati ancora visibili prima di ricaricare.');return;}
     if(e.key===KEY&&e.newValue){try{state=M.validate(JSON.parse(e.newValue));readOnly=false;render();say('Dati aggiornati da un’altra scheda.');}catch(_){readOnly=true;errBox('#storage-warning','Aggiornamento da un’altra scheda non valido. Esporta i dati visibili prima di ricaricare.');}}
   });
@@ -1054,7 +1508,10 @@ dialog input[type=checkbox] { padding: 0; }
   }
   function renderSettings(){
     const s=state.settings;
+    if(!settingsDirty){
     $('#s-opening').value=val(s.openingBalanceCents);$('#s-date').value=s.openingDate;$('#s-salary').value=val(s.salaryCents);$('#s-day').value=s.payday;$('#s-budget').value=val(s.budgetCents);$('#s-goal').value=val(s.savingsGoalCents);$('#s-savings').value=s.separateSavingsCents===null?'':val(s.separateSavingsCents);
+      settingsRevision=state.revision;
+    }
     $('#backup-status').textContent=state.lastBackup?`Ultima esportazione avviata: ${new Date(state.lastBackup).toLocaleString('it-IT')}. Verifica di aver salvato il file.`:'Nessun backup esportato.';
     const r=$('#learned-rules');r.replaceChildren();
     for(const [index,rule] of state.rules.entries()){const row=el('div','row'),text=el('span','row-sub',`${rule.phrase} → ${rule.category}`),button=el('button','quiet','Rimuovi');button.type='button';button.addEventListener('click',()=>{try{const next=M.clone(state);next.rules.splice(index,1);commit(next);say('Preferenza rimossa.');}catch(e){say(e.message);}});row.append(text,button);r.append(row);}
@@ -1165,10 +1622,12 @@ dialog input[type=checkbox] { padding: 0; }
     if(recEditingId)next.recurring=next.recurring.map(x=>x.id===recEditingId?r:x);else next.recurring.push(r);
     next.settings.initialized=true;commit(next);UI.close($('#rec-editor'));sayUndo('Spesa fissa aggiornata.',before);
   }catch(err){errBox('#rec-error',err.message);}});
+  $('#settings-form').addEventListener('input',()=>{if(!settingsDirty)settingsRevision=state.revision;settingsDirty=true;});
   $('#settings-form').addEventListener('submit',e=>{e.preventDefault();try{
+    if(settingsDirty&&settingsRevision!==state.revision)throw Error('I dati sono cambiati mentre modificavi le preferenze. Ricarica la pagina per vedere i valori aggiornati prima di salvarli.');
     const next=M.clone(state);next.settings={initialized:true,openingDate:$('#s-date').value,openingBalanceCents:M.cents($('#s-opening').value),salaryCents:M.cents($('#s-salary').value),budgetCents:M.cents($('#s-budget').value),savingsGoalCents:M.cents($('#s-goal').value),payday:Number($('#s-day').value),separateSavingsCents:$('#s-savings').value.trim()?M.cents($('#s-savings').value):null};
     if(state.settings.initialized&&(next.settings.openingBalanceCents!==state.settings.openingBalanceCents||next.settings.openingDate!==state.settings.openingDate)&&!confirm('Modificare la situazione iniziale ricalcolerà tutto il saldo. Non usare questa funzione per registrare una nuova entrata. Continuare?'))return;
-    commit(next);say('Impostazioni salvate.');
+    commit(next);settingsDirty=false;renderSettings();say('Impostazioni salvate.');
   }catch(err){say(err.message);}});
 
   // Offer file sharing on mobile and a download fallback on desktop.
@@ -1197,7 +1656,7 @@ dialog input[type=checkbox] { padding: 0; }
         next.notes=[...new Set([...state.notes,...next.notes])];
       }
       if(state.settings.initialized&&!confirm('L’importazione sostituirà l’archivio locale. Esporta prima un backup. Continuare?'))return;
-      commit(next,{replace:true});go('home');say('Archivio importato. I dati restano su questo dispositivo.');
+      commit(next,{replace:true});go('home');say('Archivio importato. Se hai collegato un account, le modifiche saranno sincronizzate.');
     }catch(e){say('Importazione annullata: '+e.message);}
     finally{event.target.value='';}
   });
@@ -1344,6 +1803,12 @@ dialog input[type=checkbox] { padding: 0; }
   $('#report-prev').addEventListener('click',()=>{reportOffset--;renderReport();});$('#report-next').addEventListener('click',()=>{reportOffset++;renderReport();});
   $('#export-json').addEventListener('click',exportJSON);$('#export-csv').addEventListener('click',()=>exportCSV().catch(e=>say(e.message)));$('#export-calendar').addEventListener('click',()=>exportCalendar().catch(e=>say(e.message)));$('#mic').addEventListener('click',startVoice);
   load();render();setupQuick();UI.init({manual:quickFocus,voice:startVoice,data:()=>go('home'),suspend:()=>{if(speech){cancelVoice();voiceStatus('Dettatura interrotta. Tocca il microfono per riprendere.');}}});setupOffline();
+  window.MMSync?.init({getState:()=>M.clone(state),replaceState:next=>{state=M.validate(next);readOnly=false;render();},notify:say,resetDrafts:()=>{
+    cancelVoice();closeProposal();settingsDirty=false;editingId=null;recEditingId=null;drafts=[];editingRevision=null;recRevision=null;proposalRevision=null;
+    clearTimeout(toastTimer);$('#toast').replaceChildren();$('#toast').hidden=true;$('#drafts').replaceChildren();
+    for(const dialog of UI.dialogs())if(dialog.id!=='data-sheet')UI.close(dialog,{immediate:true});
+    $('#natural').value='';$('#q-name').value='';$('#q-amount').value='';$('#q-category').value='';$('#q-type').value='auto';$('#q-date').value=M.today();
+  }});
   // Refresh date-sensitive views when the user returns, never in the background.
   document.addEventListener('visibilitychange',()=>{if(!document.hidden){renderHome();renderHistory();renderPlan();}});
 })();

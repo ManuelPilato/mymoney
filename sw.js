@@ -1,7 +1,7 @@
 /* Cache only the public application shell, never backup files. */
 'use strict';
-const CACHE='mymoney-local-shell-v5.0.0';
-const FILES=['./','./index.html','./manifest.webmanifest','./icon-180.png','./icon-192.png','./icon-512.png'];
+const CACHE='mymoney-local-shell-v6.0.0';
+const FILES=['./','./index.html','./firebase-sdk.js','./manifest.webmanifest','./icon-180.png','./icon-192.png','./icon-512.png'];
 self.addEventListener('install',event=>{
   event.waitUntil(caches.open(CACHE).then(cache=>cache.addAll(FILES)));
   // Wait for existing windows to close before activating a new release.

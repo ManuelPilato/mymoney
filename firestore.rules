@@ -1,0 +1,128 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    function owner(uid) {
+      return request.auth != null && request.auth.uid == uid
+        && request.auth.token.firebase.sign_in_provider == 'google.com';
+    }
+    function text(value, maximum) {
+      return value is string && value.size() <= maximum;
+    }
+    function identifier(value) {
+      return text(value, 200) && value.size() > 0;
+    }
+    function amount(value, minimum) {
+      return value is int && value >= minimum && value <= 9000000000;
+    }
+    function date(value) {
+      return value is string
+        && value.matches('2[01][0-9]{2}-(0[1-9]|1[0-2])-(0[1-9]|[12][0-9]|3[01])');
+    }
+    function category(value) {
+      return value in ['Casa', 'Spesa', 'Mangiare fuori', 'Trasporti', 'Auto',
+        'Viaggi', 'Salute', 'Sport', 'Shopping', 'Abbonamenti', 'Assicurazioni',
+        'Pensione', 'Utenze', 'Regali', 'Lavoro', 'Stipendio', 'Rimborsi', 'Altro'];
+    }
+    function keys(value, required, optional) {
+      return value is map && value.keys().hasAll(required)
+        && value.keys().hasOnly(required.concat(optional));
+    }
+    function optionalText(value, field, maximum) {
+      return !(field in value) || text(value[field], maximum);
+    }
+    function itemText(value, index) {
+      return value.size() <= index || text(value[index], 2000);
+    }
+    function warnings(value) {
+      return value is list && value.size() <= 12
+        && itemText(value, 0) && itemText(value, 1) && itemText(value, 2)
+        && itemText(value, 3) && itemText(value, 4) && itemText(value, 5)
+        && itemText(value, 6) && itemText(value, 7) && itemText(value, 8)
+        && itemText(value, 9) && itemText(value, 10) && itemText(value, 11);
+    }
+    function transaction(value, key) {
+      return keys(value,
+          ['id', 'date', 'type', 'amountCents', 'category', 'note', 'status',
+           'includedInOpening', 'countBudget', 'recurringId', 'dueDate'],
+          ['createdAt', 'confidence', 'reason', 'dateReason', 'warnings'])
+        && value.id == key && date(value.date)
+        && value.type in ['income', 'expense'] && amount(value.amountCents, 1)
+        && category(value.category) && text(value.note, 4000)
+        && value.status in ['paid', 'planned']
+        && value.includedInOpening is bool && value.countBudget is bool
+        && !(value.status == 'planned' && value.includedInOpening)
+        && (value.recurringId == null || identifier(value.recurringId))
+        && (value.dueDate == null || date(value.dueDate))
+        && optionalText(value, 'createdAt', 40)
+        && (!('confidence' in value) || value.confidence in ['low', 'medium', 'high'])
+        && optionalText(value, 'reason', 2000) && optionalText(value, 'dateReason', 2000)
+        && (!('warnings' in value) || warnings(value.warnings));
+    }
+    function recurring(value, key) {
+      return keys(value,
+          ['id', 'name', 'amountCents', 'months', 'startDate', 'category', 'active', 'automatic'],
+          ['estimated'])
+        && value.id == key && text(value.name, 150) && amount(value.amountCents, 1)
+        && value.months is int && value.months >= 1 && value.months <= 60
+        && (value.startDate == null || date(value.startDate))
+        && category(value.category) && value.active is bool && value.automatic is bool
+        && (!value.active || value.startDate != null)
+        && (!('estimated' in value) || value.estimated is bool);
+    }
+    function setting(value, key) {
+      return (key == 'initialized' && value is bool)
+        || (key == 'openingDate' && date(value))
+        || (key in ['openingBalanceCents', 'salaryCents', 'budgetCents', 'savingsGoalCents'] && amount(value, 0))
+        || (key == 'separateSavingsCents' && (value == null || amount(value, 0)))
+        || (key == 'payday' && value is int && value >= 1 && value <= 28);
+    }
+    function preference(value) {
+      return keys(value, ['phrase', 'category'], []) && text(value.phrase, 100)
+        && value.phrase.size() >= 3 && category(value.category);
+    }
+    function noteBlock(value, start) {
+      return itemText(value, start) && itemText(value, start + 1)
+        && itemText(value, start + 2) && itemText(value, start + 3)
+        && itemText(value, start + 4) && itemText(value, start + 5)
+        && itemText(value, start + 6) && itemText(value, start + 7)
+        && itemText(value, start + 8) && itemText(value, start + 9);
+    }
+    function notes(value) {
+      return value is list && value.size() <= 20
+        && noteBlock(value, 0) && (value.size() <= 10 || noteBlock(value, 10));
+    }
+    function validRecord(data, recordId) {
+      return keys(data,
+          ['schemaVersion', 'kind', 'key', 'value', 'deleted', 'version', 'mutationId', 'updatedAt'], [])
+        && data.schemaVersion == 1
+        && data.kind in ['transaction', 'recurring', 'setting', 'rule', 'notes']
+        && identifier(data.key) && recordId.size() <= 1500
+        && recordId.matches(data.kind + '_.+')
+        && data.deleted is bool && data.version is int
+        && data.version >= 1 && data.version <= 9007199254740991
+        && text(data.mutationId, 80) && data.mutationId.size() >= 16
+        && data.updatedAt is timestamp && data.updatedAt == request.time
+        && ((data.deleted && data.value == null)
+          || (!data.deleted && (
+            (data.kind == 'transaction' && transaction(data.value, data.key))
+            || (data.kind == 'recurring' && recurring(data.value, data.key))
+            || (data.kind == 'setting' && setting(data.value, data.key))
+            || (data.kind == 'rule' && preference(data.value))
+            || (data.kind == 'notes' && data.key == 'all' && notes(data.value)))));
+    }
+    match /users/{uid}/records/{recordId} {
+      allow read: if owner(uid);
+      allow create: if owner(uid) && validRecord(request.resource.data, recordId)
+        && request.resource.data.version == 1;
+      allow update: if owner(uid) && validRecord(request.resource.data, recordId)
+        && request.resource.data.kind == resource.data.kind
+        && request.resource.data.key == resource.data.key
+        && request.resource.data.version == resource.data.version + 1;
+      // Tombstones retain a revision so stale offline clients cannot resurrect deletions.
+      allow delete: if false;
+    }
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}
