@@ -1,0 +1,786 @@
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#0c0e13">
+<meta name="color-scheme" content="dark">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="MyMoney">
+<meta name="referrer" content="no-referrer">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self' data: blob:; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; connect-src 'self'; object-src 'none'; base-uri 'self'; form-action 'none'">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="icon-180.png">
+<link rel="icon" href="icon-192.png" type="image/png">
+<title>MyMoney · Local</title>
+<style>/* Dark-only mobile layout with large touch targets and local system fonts. */
+:root{color-scheme:dark;--bg:#0c0e13;--surface:#151820;--surface2:#1d212c;--line:#2a2f3c;--text:#f3f4f8;--muted:#a0a8bb;--accent:#c3efd9;--accent-text:#18352b;--violet:#beb0fa;--amber:#f5cd8b;--red:#ffabb0;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;font-synthesis:none;font-size:16px;background:var(--bg);color:var(--text)}
+*{box-sizing:border-box}body{margin:0;background:radial-gradient(ellipse at 80% 0,#1b213038,transparent 42%),var(--bg);min-height:100dvh}button,input,select,textarea{font:inherit}button,a,input,textarea,select{-webkit-tap-highlight-color:transparent}button{cursor:pointer;touch-action:manipulation}button:disabled{opacity:.45;cursor:default}button:focus-visible,a:focus-visible,input:focus-visible,textarea:focus-visible,select:focus-visible{outline:2px solid var(--accent);outline-offset:4px}button{min-height:44px;display:inline-flex;align-items:center;justify-content:center;gap:9px;padding:12px 17px;border:1px solid transparent;border-radius:14px;background:var(--accent);color:var(--accent-text);font-weight:650;font-size:14px}button.ghost{background:var(--surface2);border-color:var(--line);color:var(--text)}button.quiet{background:none;color:var(--muted);padding:8px 0}button.danger{background:#3b222a;color:var(--red);border-color:#59313b}button.icon-button{width:46px;padding:10px;background:var(--surface2);border:1px solid var(--line);color:var(--text)}button.icon-button svg{width:20px;height:20px}svg{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round;flex-shrink:0}a{color:var(--accent)}.app{max-width:760px;margin:0 auto;padding:calc(env(safe-area-inset-top) + 22px) 22px 120px}.header{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:28px}.brand{display:flex;gap:10px;align-items:center}.brandmark{width:34px;height:34px;background:var(--accent);color:var(--accent-text);border-radius:11px;display:grid;place-items:center}.brand h1{font-size:19px;letter-spacing:-.5px;margin:0}.brand small{display:block;font-size:10px;color:var(--muted);letter-spacing:1.5px;margin-top:3px;text-transform:uppercase}.pill{font-size:11px;color:var(--accent);border:1px solid #355344;border-radius:24px;padding:6px 9px;white-space:nowrap;display:inline-flex;align-items:center;gap:5px}.pill svg{width:12px;height:12px}.eyebrow{font-size:11px;font-weight:650;letter-spacing:1.25px;text-transform:uppercase;color:var(--muted)}.muted{font-size:13px;color:var(--muted);line-height:1.6}.tiny{font-size:11px;color:var(--muted);line-height:1.5}h2{font-size:19px;letter-spacing:-.4px;margin:0 0 14px}h3{font-size:15px;margin:0 0 10px}p{line-height:1.6;margin:10px 0}strong{font-weight:650}.card{background:var(--surface);border:1px solid var(--line);border-radius:23px;padding:21px;margin-bottom:16px}.hero{padding:4px 0 20px}.hero .balance{font-size:clamp(36px,7vw,50px);letter-spacing:-2px;font-weight:650;font-variant-numeric:tabular-nums;margin:7px 0}.hero .muted{margin:0}.section-heading{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:27px 0 12px}.section-heading h2{margin:0;font-size:16px}.section-heading button{font-size:12px;min-height:32px}.budget-card{background:linear-gradient(130deg,#222737,#191e2b);border-color:#343b50;padding:21px}.budget-top{display:flex;align-items:center;justify-content:space-between;gap:12px}.budget-number{font-size:31px;font-weight:650;letter-spacing:-1px;margin:7px 0 2px}.budget-number.negative{color:var(--red)}.budget-symbol{color:var(--violet);width:40px;height:40px;border:1px solid #484359;background:#2b293c;border-radius:50%;display:grid;place-items:center}.track{height:5px;border-radius:99px;background:#3d4352;overflow:hidden;margin:16px 0 12px}.track div{height:100%;background:var(--violet);border-radius:99px;transition:width .25s ease}.split{display:flex;justify-content:space-between;gap:12px}.mini-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:15px}.mini{padding:15px;border:1px solid var(--line);border-radius:17px;background:var(--surface)}.mini .value{display:block;margin-top:6px;font-weight:600;font-size:18px;letter-spacing:-.3px}.composer{border-color:#3a4845}.composer-head{display:flex;align-items:center;gap:9px;margin-bottom:10px}.composer-head svg{color:var(--accent)}.composer h2{font-size:16px;margin:0}.composer textarea{width:100%;background:none;border:0;resize:vertical;min-height:90px;padding:8px 0;line-height:1.6;color:var(--text);font-size:16px}.composer textarea::placeholder{color:#788297}.composer textarea:focus{outline:none}.composer-controls{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-top:6px}.composer-controls .submit{min-width:140px}.hint{margin:11px 0 0}.notice{font-size:12px;line-height:1.6;border:1px solid #6a563c;background:#2b251c;color:var(--amber);padding:12px 14px;border-radius:13px;margin:12px 0}.notice.error{border-color:#68404a;background:#2c1f27;color:var(--red)}.notice.good{border-color:#365146;background:#1c2b24;color:var(--accent)}[hidden]{display:none!important}.row{width:100%;text-align:left;padding:14px 0;background:none;color:var(--text);border:0;border-radius:0;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;gap:12px;align-items:center;font-weight:400}.row:last-child{border-bottom:0}.row-left{display:flex;gap:12px;align-items:center;min-width:0}.cat-icon{background:var(--surface2);border:1px solid var(--line);color:var(--violet);border-radius:14px;width:42px;height:42px;display:grid;place-items:center;flex-shrink:0}.cat-icon.green{color:var(--accent)}.row-title{font-size:14px;font-weight:600;display:block;overflow-wrap:anywhere;line-height:1.4}.row-sub{font-size:11px;color:var(--muted);line-height:1.55;display:block;margin-top:4px}.row-money{font-size:15px;white-space:nowrap;font-weight:600;text-align:right;font-variant-numeric:tabular-nums}.row-money.income{color:var(--accent)}.row-money small{display:block;font-size:10px;font-weight:500;color:var(--muted);margin-top:6px}.row-money .planned{color:var(--amber)}.empty{color:var(--muted);text-align:center;padding:25px 12px;font-size:13px;line-height:1.7}.nav{position:fixed;bottom:0;left:0;right:0;z-index:5;padding:10px 15px calc(env(safe-area-inset-bottom) + 11px);background:#10131bf2;border-top:1px solid #292f3d;backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px)}.nav-inner{max-width:540px;margin:auto;display:flex;justify-content:space-between;gap:6px}.nav button{background:none;flex:1;flex-direction:column;gap:5px;padding:6px;color:#8992a7;font-size:10px;border-radius:12px;min-height:50px}.nav button svg{height:21px;width:21px}.nav button.active{color:var(--accent);background:#1c2925}.view-title{margin:4px 0 7px;font-size:27px;letter-spacing:-1px}.toolbar{display:flex;gap:8px;align-items:center;margin:15px 0}.toolbar select,.toolbar input{min-width:0}.toolbar .grow{flex:1}.segmented{display:flex;gap:4px;padding:4px;background:var(--bg);border-radius:12px}.segmented button{min-height:35px;font-size:12px;flex:1;background:none;color:var(--muted);padding:7px}.segmented button.active{background:var(--surface2);color:var(--text)}label{display:block;color:var(--muted);font-size:12px;margin-bottom:7px}input,select,textarea.field{color:var(--text);border:1px solid #363c4b;border-radius:12px;padding:12px;background:#10141d;min-height:46px;font-size:16px;width:100%;min-width:0;max-width:100%}input[type=checkbox]{width:18px;min-height:18px;height:18px;accent-color:var(--accent);flex-shrink:0}input[type=date]{-webkit-appearance:none;min-width:0}input::placeholder{color:#6f788a}.field-group{margin:15px 0}.fields{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:12px}.check-label{display:flex;gap:9px;align-items:flex-start;font-size:12px;line-height:1.6;color:var(--text);margin:12px 0}.check-label input{margin-top:2px}details{margin:15px 0}summary{cursor:pointer;font-size:13px;color:var(--muted);padding:8px 0}details p{font-size:12px;color:var(--muted)}.actions{display:flex;flex-wrap:wrap;gap:9px;margin-top:14px}.actions button{flex-grow:1}.line-item{display:flex;justify-content:space-between;gap:12px;font-size:13px;padding:8px 0;color:var(--muted)}.line-item strong{color:var(--text)}.line-item.total{border-top:1px solid var(--line);margin-top:6px;padding-top:14px}.tag{display:inline-block;border:1px solid var(--line);padding:4px 7px;border-radius:8px;color:var(--muted);font-size:10px}.dialog{width:min(650px,100%);max-width:calc(100vw - 32px);max-height:90dvh;padding:0;border:1px solid var(--line);background:var(--surface);color:var(--text);border-radius:25px;overflow:auto;box-shadow:0 20px 100px #0008}.dialog::backdrop{background:#05070bba;backdrop-filter:blur(5px)}.dialog-head{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:20px 21px 12px;position:sticky;top:0;z-index:1;background:var(--surface);border-bottom:1px solid var(--line)}.dialog-head h2{margin:0;font-size:18px}.dialog-head button{background:var(--surface2);color:var(--text);border-radius:50%;min-width:38px;min-height:38px;padding:8px}.dialog-body{padding:6px 21px 20px}.draft{padding:15px 0;border-bottom:1px solid var(--line)}.draft:last-child{border:0}.draft .reason{font-size:11px;color:var(--muted);line-height:1.6;margin:6px 0}.dialog-footer{background:var(--surface);border-top:1px solid var(--line);padding:16px 21px calc(env(safe-area-inset-bottom) + 16px);display:flex;gap:10px;position:sticky;bottom:0}.dialog-footer button{flex:1}.toast{position:fixed;bottom:100px;left:50%;transform:translateX(-50%);padding:13px 18px;background:var(--accent);color:var(--accent-text);border-radius:14px;z-index:20;width:max-content;max-width:90%;font-size:13px;box-shadow:0 8px 40px #0007}.report-bar{height:4px;background:var(--surface2);border-radius:9px;overflow:hidden;margin-top:7px}.report-bar div{height:100%;background:var(--violet)}.week-label{font-size:11px;text-transform:uppercase;letter-spacing:1px;color:var(--muted);margin:22px 0 4px}.welcome .big-title{font-size:30px;line-height:1.2;letter-spacing:-1px;max-width:290px;margin:18px 0}.welcome .brandmark{height:52px;width:52px;border-radius:17px}.setup-button{width:100%;margin-top:12px}.mic-listening{border-color:var(--red)!important;color:var(--red)!important}.bottom-note{text-align:center;color:#778195;font-size:11px;line-height:1.7;margin:24px 0}.install-hint{border-color:#3b4a4b;background:#172125;color:#b6d7cc}.divider{height:1px;background:var(--line);margin:16px 0}.category-summary{margin-bottom:17px}
+@media(min-width:680px){.app{padding-top:35px}.home-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;align-items:start}.home-grid .full{grid-column:1/-1}.hero{padding:4px 0 15px}.mini-grid{margin-top:0}.composer{margin-top:0}.balance{line-height:1.2}.nav-inner{max-width:540px}.budget-card{min-height:190px}}
+@media(max-width:420px){.app{padding-left:17px;padding-right:17px}.card{padding:18px}.header{margin-bottom:22px}.budget-number{font-size:29px}.dialog{margin:auto 0 0;max-height:93dvh;width:100%;border-bottom:0;border-radius:24px 24px 0 0}.dialog-head{padding:17px}.dialog-body{padding:3px 17px 18px}.dialog-footer{padding-left:17px;padding-right:17px}.row-title{font-size:13px}.row-money{font-size:14px}}
+@media(prefers-reduced-motion:reduce){*{transition:none!important;scroll-behavior:auto!important}}
+
+/* Use the full phone width for the confirmation sheet. */
+@media(max-width:420px){.dialog{max-width:100vw}}
+</style>
+</head>
+<body>
+<!-- Keep the shell generic: personal balances live only in an imported private file. -->
+<main class="app">
+  <header class="header">
+    <div class="brand"><span class="brandmark" data-icon="wallet"></span><div><h1>MyMoney</h1><small>Local edition · 02</small></div></div>
+    <span class="pill"><span data-icon="lock"></span>Solo su questo dispositivo</span>
+  </header>
+  <div id="environment" class="notice install-hint" hidden></div>
+  <div id="storage-warning" class="notice error" hidden role="alert"></div>
+  <section id="welcome" hidden>
+    <div class="card welcome">
+      <div class="brandmark" data-icon="wallet"></div>
+      <h2 class="big-title">Meno pensieri.<br>Più controllo.</h2>
+      <p class="muted">Un posto semplice per le tue spese.<br>Nessun account. Nessun archivio cloud.</p>
+      <button class="setup-button" data-import>Importa i miei dati <span data-icon="download"></span></button>
+      <p class="tiny">Scegli <strong>Dati_iniziali_PRIVATI.json</strong> dal pacchetto, oppure il backup esportato dal vecchio prototipo. Nessun dato viene inviato a un server.</p>
+      <button class="quiet setup-button" id="setup-new">Oppure configura da zero</button>
+    </div>
+  </section>
+  <section id="view-home">
+    <div class="hero"><div class="eyebrow">Il tuo saldo registrato</div><div class="balance" id="balance">—</div><p class="muted" id="balance-caption">Le previsioni non sono addebiti.</p></div>
+    <div class="home-grid">
+      <div class="card budget-card">
+        <div class="budget-top"><div><div class="eyebrow">Libero dopo gli impegni</div><div class="budget-number" id="available">—</div></div><span class="budget-symbol" data-icon="sparkles"></span></div>
+        <div class="track"><div id="budget-progress" style="width:0"></div></div>
+        <div class="split tiny"><span id="cycle-label">Ciclo stipendio</span><span id="budget-cap">—</span></div>
+        <div id="budget-warning" class="notice" hidden></div>
+      </div>
+      <div>
+        <div class="mini-grid">
+          <div class="mini"><span class="tiny">Obiettivo / mese</span><strong class="value" id="goal">—</strong></div>
+          <div class="mini"><span class="tiny">Fisse / mese equivalente</span><strong class="value" id="fixed">—</strong></div>
+        </div>
+        <p class="tiny" id="budget-caption">Una stima di budget, non un accantonamento bancario.</p>
+      </div>
+      <div class="card composer full">
+        <div class="composer-head"><span data-icon="sparkles"></span><h2>Scrivi. Oppure raccontala.</h2></div>
+        <label for="natural" class="tiny">Una spesa, una frase. Controlli sempre tu.</label>
+        <textarea id="natural" placeholder="50 euro domani tavolo Amazon" rows="2" maxlength="4000" autocomplete="off"></textarea>
+        <div class="composer-controls"><button class="icon-button" id="mic" aria-label="Detta una spesa" title="Detta una spesa"><span data-icon="mic"></span></button><button class="submit" id="interpret">Interpreta <span data-icon="arrow"></span></button></div>
+        <p class="tiny hint" id="voice-status" role="status">Interpretazione locale · nessun salvataggio senza conferma</p>
+        <button class="quiet" id="manual-add">Inserisci manualmente</button>
+      </div>
+    </div>
+    <div id="home-alerts"></div>
+    <div class="section-heading"><h2>Ultimi movimenti</h2><button class="quiet" data-go="history">Vedi tutti <span data-icon="arrow"></span></button></div>
+    <div id="recent"></div>
+    <p class="bottom-note">Il conto resta separato dal budget.<br>Le spese future restano “Da pagare”, finché le confermi.</p>
+  </section>
+  <section id="view-history" hidden>
+    <h2 class="view-title">Movimenti</h2><p class="muted">Quello che è successo. E quello che hai in programma.</p>
+    <div class="toolbar"><input id="search" class="grow" type="search" placeholder="Cerca una spesa…" aria-label="Cerca movimenti"><button class="icon-button" id="history-add" aria-label="Nuovo movimento"><span data-icon="plus"></span></button></div>
+    <div class="segmented" id="history-filters"><button data-filter="all" class="active">Tutti</button><button data-filter="paid">Pagati</button><button data-filter="planned">Da pagare</button></div>
+    <div id="all-transactions"></div>
+    <div class="section-heading"><h2>Il tuo resoconto</h2></div>
+    <div class="card"><div class="segmented" id="report-modes"><button data-report="week">Settimana</button><button data-report="month" class="active">Mese</button><button data-report="cycle">Ciclo</button></div><div class="toolbar"><button class="icon-button" id="report-prev" aria-label="Periodo precedente"><span data-icon="left"></span></button><strong class="grow tiny" id="report-title" style="text-align:center"></strong><button class="icon-button" id="report-next" aria-label="Periodo successivo"><span data-icon="arrow"></span></button></div><div id="report"></div></div>
+  </section>
+  <section id="view-plan" hidden>
+    <h2 class="view-title">Il tuo piano</h2><p class="muted">Gli impegni hanno un posto. Non diventano pagamenti da soli.</p>
+    <div class="card" id="plan-budget"></div>
+    <div class="section-heading"><h2>Spese ricorrenti</h2><button class="quiet" id="new-recurring">Aggiungi <span data-icon="plus"></span></button></div>
+    <div id="recurring-list"></div>
+    <div class="section-heading"><h2>Prossime scadenze</h2></div><div id="upcoming"></div>
+    <div class="section-heading"><h2>Da definire</h2></div><div class="card" id="plan-notes"></div>
+    <div class="card"><h3>Promemoria, senza server</h3><p class="muted">Esporta le scadenze nel Calendario. Gli avvisi saranno gestiti dal calendario, non dall’app. Non confermano i pagamenti e non seguono le modifiche successive.</p><button class="ghost" id="export-calendar"><span data-icon="calendar"></span>Esporta scadenze .ics</button><p class="tiny">Importa il file in un calendario e verifica gli avvisi. Non è un’attivazione automatica delle notifiche di MyMoney.</p></div>
+  </section>
+  <section id="view-settings" hidden>
+    <h2 class="view-title">I tuoi dati</h2><p class="muted">Sul dispositivo. Sotto il tuo controllo.</p>
+    <div class="card"><h3>Backup prima di tutto</h3><p class="muted">Se cancelli i dati dell’app o del browser, perdi l’archivio locale. Un backup salvato in File ti permette di recuperarlo.</p><div class="actions"><button id="export-json"><span data-icon="download"></span>Salva backup</button><button class="ghost" data-import>Importa</button><button class="ghost" id="export-csv">Esporta CSV</button></div><p class="tiny" id="backup-status">Nessun backup esportato.</p><p class="tiny">I backup non sono cifrati: conservali in un luogo privato. Puoi salvarli in File/iCloud Drive, ma l’archivio dell’app non si sincronizza da solo.</p></div>
+    <div class="card"><h3>Situazione iniziale e budget</h3><form id="settings-form">
+      <div class="fields"><div class="field-group"><label for="s-opening">Saldo iniziale (€)</label><input id="s-opening" inputmode="decimal" required></div><div class="field-group"><label for="s-date">Data iniziale</label><input id="s-date" type="date" required></div></div>
+      <div class="fields"><div class="field-group"><label for="s-salary">Stipendio netto (€)</label><input id="s-salary" inputmode="decimal" required></div><div class="field-group"><label for="s-day">Giorno stipendio (1–28)</label><input id="s-day" type="number" min="1" max="28" required></div></div>
+      <div class="fields"><div class="field-group"><label for="s-budget">Budget del ciclo (€)</label><input id="s-budget" inputmode="decimal" required></div><div class="field-group"><label for="s-goal">Risparmio obiettivo (€)</label><input id="s-goal" inputmode="decimal" required></div></div>
+      <div class="field-group"><label for="s-savings">Risparmi separati (€ · facoltativo)</label><input id="s-savings" inputmode="decimal" placeholder="Da definire"></div>
+      <p class="tiny">Lo stipendio è un riferimento, non un accredito automatico. Aggiornare il saldo iniziale non è il modo di registrare entrate successive.</p><button type="submit">Salva impostazioni</button>
+    </form></div>
+    <div class="card"><h3>Le tue preferenze</h3><p class="muted">Quando correggi una categoria puoi memorizzare una frase, per riconoscerla la prossima volta. Non è un modello AI generativo.</p><div id="learned-rules"></div></div>
+    <div class="card"><h3>iPhone, voce e modalità offline</h3><p class="muted" id="install-status"></p><p class="muted">Da una pagina HTTPS: Safari → Condividi → Aggiungi alla schermata Home. Apri l’icona, importa il backup lì e mantieni lo stesso indirizzo.</p><button class="ghost" id="request-storage">Richiedi conservazione persistente</button><p class="tiny" id="persistent-status"></p><details><summary>Che cosa funziona davvero</summary><p>Testo, categorie, conti e resoconti vengono elaborati localmente. Il riconoscimento vocale è fornito dal browser/sistema: può usare servizi online. Puoi sempre usare il microfono della tastiera dell’iPhone.</p><p>Non è presente un servizio push. A pagina chiusa non vengono calcolati avvisi o resoconti automatici. Gli avvisi di budget compaiono quando apri l’app o salvi un movimento.</p><p>Non c’è sincronizzazione con Mac o ChatGPT. Per trasferire i dati usa un backup. Non condividere pubblicamente i backup personali.</p></details></div>
+    <p class="bottom-note">MyMoney Local 2 · nessun tracker · nessuna libreria esterna<br>Interpretazione a regole con conferma, non un’AI generale.</p>
+  </section>
+</main>
+<nav class="nav" aria-label="Navigazione principale"><div class="nav-inner"><button data-go="home" class="active"><span data-icon="home"></span>Oggi</button><button data-go="history"><span data-icon="list"></span>Movimenti</button><button data-go="plan"><span data-icon="calendar"></span>Piano</button><button data-go="settings"><span data-icon="settings"></span>Dati</button></div></nav>
+<input id="import-file" type="file" accept="application/json,.json" hidden>
+<dialog class="dialog" id="editor" aria-labelledby="editor-title"><div class="dialog-head"><h2 id="editor-title">Controlla prima di salvare</h2><button id="close-editor" aria-label="Chiudi"><span data-icon="close"></span></button></div><form id="editor-form"><div class="dialog-body"><div id="drafts"></div><div class="notice error" id="editor-error" hidden role="alert"></div></div><div class="dialog-footer"><button type="button" class="danger" id="delete-transaction" hidden>Elimina</button><button type="submit" id="save-drafts">Conferma e salva</button></div></form></dialog>
+<dialog class="dialog" id="rec-editor" aria-labelledby="rec-title"><div class="dialog-head"><h2 id="rec-title">Spesa ricorrente</h2><button id="close-rec" aria-label="Chiudi"><span data-icon="close"></span></button></div><form id="rec-form"><div class="dialog-body"><div class="field-group"><label for="r-name">Nome</label><input id="r-name" maxlength="150" required></div><div class="fields"><div class="field-group"><label for="r-amount">Importo rata (€)</label><input id="r-amount" inputmode="decimal" required></div><div class="field-group"><label for="r-months">Ogni quanti mesi</label><select id="r-months"><option value="1">1 · mensile</option><option value="2">2 · bimestrale</option><option value="3">3 · trimestrale</option><option value="6">6 · semestrale</option><option value="12">12 · annuale</option></select></div></div><div class="field-group"><label for="r-date">Prima scadenza nel piano</label><input id="r-date" type="date"></div><div class="field-group"><label for="r-category">Categoria</label><select id="r-category"></select></div><label class="check-label"><input id="r-active" type="checkbox">Attiva nel budget (richiede una data)</label><label class="check-label"><input id="r-auto" type="checkbox">Addebito automatico sul conto</label><label class="check-label"><input id="r-estimated" type="checkbox">Importo o scadenza da verificare</label><p class="tiny">“Automatico” è una nota: MyMoney non legge la banca e non segna la rata come pagata.</p><div class="notice error" id="rec-error" hidden role="alert"></div></div><div class="dialog-footer"><button type="submit">Salva ricorrenza</button></div></form></dialog>
+<div class="toast" id="toast" hidden role="status"></div>
+<noscript><p>Questa app richiede JavaScript. Se stai usando l’anteprima File di iPhone, apri la versione HTTPS in Safari.</p></noscript>
+<script>/* MyMoney Local 2 — deterministic, offline interpretation and accounting. */
+(function (root) {
+  'use strict';
+  const CATEGORIES = ['Casa', 'Spesa', 'Mangiare fuori', 'Trasporti', 'Auto', 'Viaggi', 'Salute', 'Sport', 'Shopping', 'Abbonamenti', 'Assicurazioni', 'Pensione', 'Utenze', 'Regali', 'Lavoro', 'Stipendio', 'Rimborsi', 'Altro'];
+  const MONTHS = ['gennaio', 'febbraio', 'marzo', 'aprile', 'maggio', 'giugno', 'luglio', 'agosto', 'settembre', 'ottobre', 'novembre', 'dicembre'];
+  const DAYS = ['domenica', 'lunedi', 'martedi', 'mercoledi', 'giovedi', 'venerdi', 'sabato'];
+  const LIMIT = 9000000000;
+  const norm = s => String(s).normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase().replace(/[’‘]/g, "'");
+  const pad = n => String(n).padStart(2, '0');
+  const iso = d => `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
+  const dateObj = s => new Date(`${s}T12:00:00`);
+  const today = () => iso(new Date());
+  const clone = o => JSON.parse(JSON.stringify(o));
+  const money = n => new Intl.NumberFormat('it-IT', {style:'currency', currency:'EUR', useGrouping:'always'}).format(n / 100);
+  const id = () => globalThis.crypto?.randomUUID?.() || `m-${Date.now()}-${Math.random().toString(36).slice(2)}`;
+
+  // Reject invalid calendar dates rather than rolling into the next month.
+  function validDate(s) {
+    if (typeof s !== 'string' || !/^\d{4}-\d{2}-\d{2}$/.test(s)) return false;
+    const d = dateObj(s);
+    return Number.isFinite(+d) && iso(d) === s && +s.slice(0, 4) >= 2000 && +s.slice(0, 4) <= 2199;
+  }
+  function makeDate(y, m, d) {
+    const result = `${y}-${pad(m)}-${pad(d)}`;
+    return validDate(result) ? result : null;
+  }
+  function shiftDays(s, n) { const d = dateObj(s); d.setDate(d.getDate() + n); return iso(d); }
+  function shiftMonths(s, n) {
+    const d = dateObj(s), day = d.getDate();
+    d.setDate(1); d.setMonth(d.getMonth() + n);
+    d.setDate(Math.min(day, new Date(d.getFullYear(), d.getMonth() + 1, 0).getDate()));
+    return iso(d);
+  }
+
+  // Store money as integer cents and accept Italian or decimal-dot input.
+  function cents(value) {
+    let s = String(value).trim().replace(/\s/g, '').replace(/€/g, '');
+    if (/^-/.test(s)) throw Error('Usa un importo positivo e scegli Entrata o Uscita.');
+    if (/^\d{1,3}(\.\d{3})+(,\d{1,2})?$/.test(s)) s = s.replace(/\./g, '').replace(',', '.');
+    else if (/^\d+(?:[.,]\d{1,2})?$/.test(s)) s = s.replace(',', '.');
+    else throw Error('Importo non valido. Esempio: 50,00 oppure 1.250,50.');
+    const [a, b = ''] = s.split('.');
+    const n = Number(a) * 100 + Number(b.padEnd(2, '0'));
+    if (!Number.isSafeInteger(n) || n > LIMIT) throw Error('Importo troppo grande.');
+    return n;
+  }
+  function numberWord(n) {
+    const small = ['zero','uno','due','tre','quattro','cinque','sei','sette','otto','nove','dieci','undici','dodici','tredici','quattordici','quindici','sedici','diciassette','diciotto','diciannove'];
+    if (n < 20) return small[n];
+    if (n < 100) {
+      const tens = ['','','venti','trenta','quaranta','cinquanta','sessanta','settanta','ottanta','novanta'];
+      let t = tens[Math.floor(n / 10)], u = n % 10;
+      if (u === 1 || u === 8) t = t.slice(0, -1);
+      return t + (u ? small[u] : '');
+    }
+    if (n < 1000) {
+      let h = (n < 200 ? '' : small[Math.floor(n / 100)]) + 'cento', rem = n % 100;
+      if (rem === 8 || (rem >= 80 && rem < 90)) h = h.slice(0, -1);
+      return h + (rem ? numberWord(rem) : '');
+    }
+    return (n < 2000 ? 'mille' : numberWord(Math.floor(n / 1000)) + 'mila') + (n % 1000 ? numberWord(n % 1000) : '');
+  }
+  const WORDS = new Map();
+  for (let n = 0; n <= 9999; n++) WORDS.set(numberWord(n), n);
+  WORDS.set('un', 1); WORDS.set('una', 1);
+  const wordNumber = s => /^\d+$/.test(s) ? Number(s) : WORDS.get(norm(s).replace(/\s+/g, ''));
+  const has = (s, phrase) => ` ${norm(s).replace(/[^a-z0-9]+/g, ' ').trim()} `.includes(` ${norm(phrase).replace(/[^a-z0-9]+/g, ' ').trim()} `);
+
+  // Recognize local payment dates before searching for an amount.
+  function parseDate(text, ref = today()) {
+    if (!validDate(ref)) throw Error('Data di riferimento non valida.');
+    const s = norm(text), hits = [], spans = [], base = dateObj(ref);
+    const past = /\b(pagato|speso|comprato|acquistato|ricevuto|ieri|scorso|scorsa)\b/.test(s);
+    const add = (match, value, reason) => {
+      const start = match.index, end = start + match[0].length;
+      if (spans.some(p => start < p[1] && end > p[0])) return;
+      spans.push([start, end]); hits.push({date:value, reason, text:match[0]});
+    };
+    const each = (re, fn) => { for (const m of s.matchAll(re)) fn(m); };
+    each(/\b(20\d{2})-(\d{1,2})-(\d{1,2})\b/g, m => add(m, makeDate(+m[1], +m[2], +m[3]), 'Data esplicita'));
+    each(/\b(\d{1,2})[\/-](\d{1,2})(?:[\/-](\d{2}|20\d{2}))?\b/g, m => {
+      if(/\brat[ae]\s*$/.test(s.slice(0,m.index)))return;
+      let y = m[3] ? (+m[3] < 100 ? 2000 + +m[3] : +m[3]) : base.getFullYear();
+      let d = makeDate(y, +m[2], +m[1]);
+      if (!m[3] && d && !past && d < ref) d = makeDate(y + 1, +m[2], +m[1]);
+      if (!m[3] && d && past && d > ref) d = makeDate(y - 1, +m[2], +m[1]);
+      add(m, d, m[3] ? 'Data esplicita' : 'Anno dedotto: controllalo');
+    });
+    each(new RegExp(`\\b(\\d{1,2})\\s+(?:di\\s+)?(${MONTHS.join('|')})(?:\\s+(20\\d{2}))?\\b`, 'g'), m => {
+      let y = m[3] ? +m[3] : base.getFullYear(), month = MONTHS.indexOf(m[2]) + 1;
+      let d = makeDate(y, month, +m[1]);
+      if (!m[3] && d && !past && d < ref) d = makeDate(y + 1, month, +m[1]);
+      if (!m[3] && d && past && d > ref) d = makeDate(y - 1, month, +m[1]);
+      add(m, d, m[3] ? 'Data esplicita' : 'Anno dedotto: controllalo');
+    });
+    each(/\b(dopodomani|domani|avantieri|l'altro ieri|ieri|oggi|stasera|stamattina)\b/g, m => {
+      const offset = {dopodomani:2, domani:1, avantieri:-2, "l'altro ieri":-2, ieri:-1, oggi:0, stasera:0, stamattina:0};
+      add(m, shiftDays(ref, offset[m[1]]), `${m[1]} rispetto al ${ref}`);
+    });
+    each(/\b(?:tra|fra)\s+(\d+|[a-z]+)\s+(giorn[oi]|settiman[ae]|mesi|mese)\b/g, m => {
+      const n = wordNumber(m[1]);
+      add(m, Number.isFinite(n) ? (m[2].startsWith('mes') ? shiftMonths(ref, n) : shiftDays(ref, n * (m[2].startsWith('settiman') ? 7 : 1))) : null, 'Intervallo dalla data di oggi');
+    });
+    each(/\b(\d+|[a-z]+)\s+(giorn[oi]|settiman[ae]|mesi|mese)\s+fa\b/g, m => {
+      const n = wordNumber(m[1]);
+      add(m, Number.isFinite(n) ? (m[2].startsWith('mes') ? shiftMonths(ref, -n) : shiftDays(ref, -n * (m[2].startsWith('settiman') ? 7 : 1))) : null, 'Intervallo nel passato');
+    });
+    each(new RegExp(`\\b(${DAYS.join('|')})(?:\\s+(prossim[oa]|scors[oa]|passat[oa]))?\\b`, 'g'), m => {
+      let diff = (DAYS.indexOf(m[1]) - base.getDay() + 7) % 7;
+      if (m[2]?.startsWith('scors') || m[2]?.startsWith('passat')) diff = diff === 0 ? -7 : diff - 7;
+      else if (m[2] && diff === 0) diff = 7;
+      add(m, shiftDays(ref, diff), m[2] ? 'Giorno della settimana' : 'Prossima occorrenza del giorno indicato');
+    });
+    each(/\b(fine mese|fine del mese|inizio del prossimo mese|inizio mese prossimo)\b/g, m => {
+      add(m, m[1].startsWith('fine') ? iso(new Date(base.getFullYear(), base.getMonth() + 1, 0, 12)) : iso(new Date(base.getFullYear(), base.getMonth() + 1, 1, 12)), 'Confine del mese');
+    });
+    each(/\b(?:il|giorno)\s+(\d{1,2})(?:\s+del\s+(mese prossimo|prossimo mese))?\b/g, m => {
+      let d = makeDate(base.getFullYear(), base.getMonth() + 1, +m[1]);
+      if (m[2] || (d && !past && d < ref)) {
+        const next = dateObj(shiftMonths(ref, 1)); d = makeDate(next.getFullYear(), next.getMonth() + 1, +m[1]);
+      }
+      add(m, d, 'Mese dedotto: controllalo');
+    });
+    let masked = s.split(''); for (const [a,b] of spans) for (let i=a; i<b; i++) masked[i] = ' ';
+    const dates = [...new Set(hits.map(h => h.date))];
+    if (hits.some(h => !h.date)) return {date:null, masked:masked.join(''), explicit:true, warning:'La data non è valida o non è precisa. Sceglila tu.', reason:''};
+    if (dates.length > 1) return {date:null, masked:masked.join(''), explicit:true, warning:'Hai indicato più date. Scegli la data del pagamento, non quella del viaggio o della consegna.', reason:''};
+    if (dates.length === 1) return {date:dates[0], masked:masked.join(''), explicit:true, warning:'', reason:hits.map(h=>h.reason).join(' · ')};
+    if (/\b(prossim[oa]|scors[oa]|settimana|mese|natale|pasqua|tra qualche|fra qualche)\b/.test(s)) return {date:null, masked:s, explicit:true, warning:'La data è poco precisa. Indica un giorno o selezionalo.', reason:''};
+    return {date:ref, masked:s, explicit:false, warning:'', reason:'Oggi: nessuna data indicata'};
+  }
+
+  // Currency markers take priority; dates and installment numbers are excluded.
+  function parseAmount(text) {
+    const s = norm(text), numeric = '(?:\\d{1,3}(?:[. ]\\d{3})+(?:,\\d{1,2})?|\\d+(?:[.,]\\d{1,2})?)';
+    let found = [], spans = [];
+    if(/[-−]\s*\d/.test(s))return {amountCents:null,warning:'Indica un importo positivo e scegli il tipo di movimento.'};
+    for(const m of s.matchAll(/(?:€\s*(\d[\d.,]*(?:[ ]\d{3})*)|(\d[\d.,]*(?:[ ]\d{3})*)\s*(?:euro|eur\b|€))/g)){try{cents(m[1]||m[2]);}catch(_){return {amountCents:null,warning:'Importo non valido: controlla separatori e decimali.'};}}
+    const store = (m, amount, end = m.index + m[0].length) => {
+      if (!spans.some(([a,b])=>m.index < b && end > a)) { found.push(amount); spans.push([m.index,end]); }
+    };
+    for (const m of s.matchAll(new RegExp(`(?:€\\s*(${numeric})|\\b(${numeric})\\s*(?:euro|eur\\b|€))`, 'g'))) {
+      try {
+        let amount = cents(m[1] || m[2]), end = m.index + m[0].length;
+        const tail = s.slice(end).match(/^\s+e\s+(\d{1,2}|[a-z]+)(?:\s+centesimi)?\b/);
+        if (tail && !/[.,]\d{1,2}$/.test(m[1] || m[2])) {
+          const fraction = wordNumber(tail[1]);
+          if (fraction > 0 && fraction < 100) { amount += fraction; end += tail[0].length; }
+        }
+        store(m, amount, end);
+      } catch (_) { return {amountCents:null, warning:'Importo non valido.'}; }
+    }
+    // Support spoken amounts such as "cinquanta euro" and "ventidue euro e cinquanta".
+    for (const m of s.matchAll(/\b([a-z]+(?:\s+[a-z]+){0,3})\s+euro\b/g)) {
+      const parts = m[1].split(/\s+/); let whole;
+      for (let i=0; i<parts.length; i++) { whole = wordNumber(parts.slice(i).join('')); if (whole !== undefined) break; }
+      if (whole === undefined) continue;
+      let amount = whole*100, end = m.index + m[0].length;
+      const tail = s.slice(end).match(/^\s+e\s+(\d{1,2}|[a-z]+)(?:\s+centesimi)?\b/);
+      if (tail) { const n = wordNumber(tail[1]); if (n >= 0 && n < 100) { amount += n; end += tail[0].length; } }
+      store(m, amount, end);
+    }
+    if (found.length > 1) return {amountCents:null, warning:'Ci sono più importi: separa i movimenti con un punto e virgola o una nuova riga.'};
+    if (!found.length) {
+      const cleaned = s.replace(/\b(?:rata\s*)?\d+\s*(?:di|\/)\s*\d+\b/g,' ').replace(/\b\d+\s+rate\b/g,' ');
+      const candidates = [...cleaned.matchAll(new RegExp(`\\b${numeric}\\b`, 'g'))];
+      if (candidates.length === 1) { try { found = [cents(candidates[0][0])]; } catch (_) { /* Leave invalid input unresolved. */ } }
+      if (candidates.length > 1) return {amountCents:null, warning:'Più numeri senza valuta: indica chiaramente l’importo in euro.'};
+    }
+    if (!found.length || found[0] <= 0) return {amountCents:null, warning:'Non ho trovato un importo positivo. Inseriscilo nel campo Importo.'};
+    return {amountCents:found[0], warning:''};
+  }
+
+  // Score complete words and phrases; product context beats generic retailers.
+  const RULES = [
+    ['Casa',10,'tavolo|tavolino|sedia|sedie|divano|poltrona|letto|materasso|armadio|libreria|comodino|lampada|lampadario|scaffale|arredamento|mobili|lenzuola|asciugamani|pentola|padella|aspirapolvere|lavatrice|lavastoviglie|frigorifero|affitto|mutuo'],
+    ['Casa',5,'ikea|leroy merlin|mondo convenienza'],
+    ['Spesa',8,'supermercato|conad|lidl|coop|esselunga|carrefour|eurospin|aldi|md discount|fruttivendolo|macelleria|pescheria|alimentari|spesa alimentare'],
+    ['Spesa',4,'pane|latte|frutta|verdura|uova|spesa al mercato'],
+    ['Mangiare fuori',9,'ristorante|ristoranti|pizzeria|pizza|cena|pranzo|colazione|aperitivo|apericena|sushi|cappuccino|cornetto|spritz|pub|bar|trattoria|gelato|mcdonald|mcdonalds|burger king|deliveroo|glovo|just eat|ho mangiato fuori'],
+    ['Trasporti',10,'benzina|carburante|gasolio|diesel|pieno|distributore|ricarica tesla|ricarica auto|colonnina|colonnine|supercharger|parcheggio|pedaggio|casello|telepass|taxi|uber|autobus|metro|metropolitana'],
+    ['Trasporti',7,'eni|q8|esso|ip distributore|enilive'],
+    ['Auto',10,'rata macchina|rata auto|meccanico|gommista|pneumatici|tagliando|revisione auto|bollo|carrozziere'],
+    ['Auto',2,'auto|macchina|tesla'],
+    ['Viaggi',10,'volo|voli|aereo|aerei|biglietto aereo|hotel|albergo|ostello|airbnb|ryanair|easyjet|wizzair|wizz air|ita airways|booking|vacanza|vacanze|traghetto|trenitalia|italo|treno'],
+    ['Salute',10,'farmacia|farmaci|medicine|medicinali|tachipirina|dentista|medico|visita medica|analisi|fisioterapia|oculista|ottico|lenti'],
+    ['Sport',10,'palestra|piscina|padel|padbol|calcetto|personal trainer|abbonamento palestra|tennis|yoga|pilates|crossfit'],
+    ['Sport',4,'decathlon'],
+    ['Shopping',9,'scarpe|maglietta|maglione|pantaloni|vestiti|jeans|giacca|zaino|borsa|telefono|iphone|computer|macbook|auricolari|cuffie|libro|videogioco'],
+    ['Shopping',2,'amazon|ebay|zalando|zara|h&m|shein|vinted|aliexpress'],
+    ['Abbonamenti',12,'wifi tesla|wi fi tesla|wi-fi tesla|netflix|spotify|disney|icloud|youtube premium|prime video|chatgpt|abbonamento streaming'],
+    ['Pensione',15,'fondo pensione|pensione privata|fondo pensionistico|fondo pensione privato'],
+    ['Assicurazioni',13,'assicurazione|polizza|rc auto'],
+    ['Utenze',12,'bolletta|bollette|elettricita|fibra|internet casa|luce e gas|luce|gas|acqua|ricarica telefonica|ricarica cellulare|ricarica vodafone|ricarica tim|ricarica iliad|vodafone|iliad|fastweb'],
+    ['Regali',15,'regalo|regali|compleanno|donazione|beneficenza'],
+    ['Lavoro',12,'commercialista|ordine professionale|partita iva|cancelleria'],
+    ['Stipendio',20,'stipendio|busta paga'],
+    ['Rimborsi',16,'rimborso|rimborsato|rimborso ricevuto']
+  ];
+  function classify(text, learned = []) {
+    const scores = new Map(), evidence = new Map();
+    const add = (cat, score, why) => { scores.set(cat, (scores.get(cat)||0)+score); evidence.set(cat, [...(evidence.get(cat)||[]),why]); };
+    for (const [cat,score,phrases] of RULES) {
+      const matches = phrases.split('|').filter(p=>has(text,p));
+      if (matches.length) add(cat, score + Math.min(3,matches.length-1), matches.join(', '));
+    }
+    for (const r of learned) if (CATEGORIES.includes(r.category) && r.phrase.length >= 3 && has(text,r.phrase)) add(r.category,25,`Preferenza: ${r.phrase}`);
+    const sorted = [...scores].sort((a,b)=>b[1]-a[1]);
+    if (!sorted.length) return {category:'', confidence:'low', reason:'Descrizione non riconosciuta: scegli la categoria, senza supposizioni.'};
+    const [cat,score] = sorted[0], margin = score-(sorted[1]?.[1]||0);
+    if (sorted[1] && margin < 3) return {category:'', confidence:'low', reason:`Categoria ambigua: ${cat} oppure ${sorted[1][0]}. Scegli tu.`};
+    return {category:cat, confidence:score >= 8 ? 'high' : 'medium', reason:`${cat}: ${evidence.get(cat).join(' · ')}${score < 8 ? '. Negozio generico: controlla la categoria.' : ''}`};
+  }
+
+  // Multiple amounts must be separate drafts, never silently merged.
+  function splitEntries(text) {
+    const chunks = text.split(/[;\n]+/).map(s=>s.trim()).filter(Boolean);
+    return chunks.flatMap(s=>s.split(/\s+(?:e(?:\s+poi)?|poi|inoltre)\s+(?=(?:(?:oggi|ieri|domani|dopodomani)\s+)?\d+(?:[.,]\d{1,2})?\s*(?:€|euro)\b)/i)).filter(Boolean);
+  }
+  function parseEntry(text, ref = today(), learned = []) {
+    const d = parseDate(text,ref), a = parseAmount(d.masked), cat = classify(text,learned);
+    const type = /\b(stipendio|accreditato|accredito|ricevuto|incassato|incasso|entrata|rimborso|rimborsato)\b/.test(norm(text)) ? 'income' : 'expense';
+    const futureIntent = /\b(devo pagare|da pagare|paghero|spendero|comprero|previsto|prevista|preventivo|mi costera)\b/.test(norm(text));
+    return {id:id(), amountCents:a.amountCents, date:d.date, type, category:cat.category, status:(d.date && d.date > ref)||futureIntent ? 'planned' : 'paid', note:text.trim(), includedInOpening:false, countBudget:true, recurringId:null, dueDate:null, confidence:cat.confidence, reason:cat.reason, dateReason:d.reason, warnings:[d.warning,a.warning].filter(Boolean)};
+  }
+  function interpret(text, ref = today(), learned = []) {
+    if (!String(text).trim()) throw Error('Scrivi o detta una spesa.');
+    if (text.length > 4000) throw Error('Testo troppo lungo: usa meno di 4.000 caratteri.');
+    const chunks = splitEntries(text);
+    if (chunks.length > 12) throw Error('Inserisci al massimo 12 movimenti alla volta.');
+    return chunks.map(s=>parseEntry(s,ref,learned));
+  }
+
+  // Recurrences are commitments, not bank movements until explicitly confirmed.
+  function occurrences(r, start, end) {
+    if (!r.active || !r.startDate || !validDate(r.startDate)) return [];
+    const out = [];
+    for (let n=0; n<2400; n++) {
+      const d = shiftMonths(r.startDate,n*r.months);
+      if (d >= end) break;
+      if (d >= start) out.push(d);
+    }
+    return out;
+  }
+  function cycle(ref, payday) {
+    const d = dateObj(ref);
+    let start = makeDate(d.getFullYear(),d.getMonth()+1,Math.min(payday,28));
+    if (start > ref) start = shiftMonths(start,-1);
+    return {start, end:shiftMonths(start,1)};
+  }
+  const within = (d,b) => d >= b.start && d < b.end;
+  function totals(state, ref = today()) {
+    const b = cycle(ref,state.settings.payday);
+    const paid = state.transactions.filter(t=>t.status==='paid');
+    const balance = state.settings.openingBalanceCents + paid.filter(t=>!t.includedInOpening && t.date <= ref).reduce((s,t)=>s+(t.type==='income'?t.amountCents:-t.amountCents),0);
+    const expenses = paid.filter(t=>t.type==='expense' && t.countBudget && within(t.date,b) && t.date<=ref);
+    const active = state.recurring.filter(r=>r.active && r.startDate);
+    const fixedEquivalent = Math.round(active.reduce((s,r)=>s+r.amountCents/r.months,0));
+    const activeIds = new Set(active.map(r=>r.id));
+    const paidVariable = expenses.filter(t=>!activeIds.has(t.recurringId)).reduce((s,t)=>s+t.amountCents,0);
+    const plannedVariable = state.transactions.filter(t=>t.status==='planned' && t.type==='expense' && t.countBudget && within(t.date,b) && !activeIds.has(t.recurringId)).reduce((s,t)=>s+t.amountCents,0);
+    const spent = expenses.reduce((s,t)=>s+t.amountCents,0);
+    return {...b, balance, spent, fixedEquivalent, paidVariable, plannedVariable, available:state.settings.budgetCents-fixedEquivalent-paidVariable-plannedVariable};
+  }
+  function blank() {
+    return {schemaVersion:2, revision:0, updatedAt:new Date().toISOString(), settings:{initialized:false, openingDate:today(), openingBalanceCents:0, salaryCents:0, budgetCents:0, savingsGoalCents:0, separateSavingsCents:null, payday:27}, transactions:[], recurring:[], rules:[], notes:[], lastBackup:null};
+  }
+
+  // Reject malformed imports before touching the existing local archive.
+  function validate(raw) {
+    if (!raw || raw.schemaVersion!==2 || !raw.settings || !Array.isArray(raw.transactions) || !Array.isArray(raw.recurring) || !Array.isArray(raw.rules)) throw Error('Backup MyMoney 2 non valido.');
+    const s=raw.settings, checkAmount=(n,name,positive=false)=>{if(!Number.isSafeInteger(n)||n<(positive?1:0)||n>LIMIT)throw Error(`Importo non valido: ${name}.`);};
+    if (!validDate(s.openingDate) || !Number.isInteger(s.payday) || s.payday<1 || s.payday>28 || typeof s.initialized!=='boolean') throw Error('Impostazioni non valide.');
+    ['openingBalanceCents','salaryCents','budgetCents','savingsGoalCents'].forEach(k=>checkAmount(s[k],k));
+    if (s.separateSavingsCents!==null)checkAmount(s.separateSavingsCents,'risparmi separati');
+    if (raw.transactions.length>40000 || raw.recurring.length>200 || raw.rules.length>300)throw Error('Backup troppo grande.');
+    const ids=new Set();
+    for(const r of raw.recurring){
+      if(typeof r.id!=='string'||ids.has(r.id)||typeof r.name!=='string'||r.name.length>150||!CATEGORIES.includes(r.category)||!Number.isInteger(r.months)||r.months<1||r.months>60||typeof r.active!=='boolean'||typeof r.automatic!=='boolean'||(r.startDate!==null&&!validDate(r.startDate))||(r.active&&!r.startDate))throw Error('Ricorrenza non valida.');
+      checkAmount(r.amountCents,'ricorrenza',true);ids.add(r.id);
+    }
+    const txIds=new Set();
+    for(const t of raw.transactions){
+      if(typeof t.id!=='string'||txIds.has(t.id)||!validDate(t.date)||!['income','expense'].includes(t.type)||!['paid','planned'].includes(t.status)||!CATEGORIES.includes(t.category)||typeof t.note!=='string'||t.note.length>4000||typeof t.includedInOpening!=='boolean'||typeof t.countBudget!=='boolean')throw Error('Movimento non valido.');
+      if(t.recurringId!==null&&!ids.has(t.recurringId))throw Error('Ricorrenza collegata non trovata.');
+      if(t.dueDate!==null&&!validDate(t.dueDate))throw Error('Scadenza collegata non valida.');
+      if(t.status==='planned'&&t.includedInOpening)throw Error('Una previsione non può essere già nel saldo iniziale.');
+      checkAmount(t.amountCents,'movimento',true);txIds.add(t.id);
+    }
+    for(const r of raw.rules)if(typeof r.phrase!=='string'||r.phrase.length<3||r.phrase.length>100||!CATEGORIES.includes(r.category))throw Error('Regola non valida.');
+    if(!Array.isArray(raw.notes)||raw.notes.some(n=>typeof n!=='string'||n.length>2000))throw Error('Note non valide.');
+    const clean=clone(raw);
+    clean.revision=Number.isSafeInteger(raw.revision)?raw.revision:0;
+    clean.lastBackup=typeof raw.lastBackup==='string'?raw.lastBackup:null;
+    return clean;
+  }
+
+  // Migrate the original prototype without discarding user-entered movements.
+  function migrate(old, ref=today(), knownSettings=null) {
+    if(old?.schemaVersion===2)return validate(old);
+    if(!old||!Array.isArray(old.transactions)||!Array.isArray(old.recurring))throw Error('Backup non riconosciuto.');
+    const data=blank();
+    if(knownSettings?.initialized)data.settings=clone(knownSettings);
+    else data.settings.initialized=false;
+    const categoryMap={Alimentari:'Spesa',Benzina:'Trasporti',Ristoranti:'Mangiare fuori'};
+    data.recurring=old.recurring.map((r,i)=>{
+      const name=String(r.name||'Ricorrenza'), n=norm(name);
+      const parsed=parseDate(String(r.due||''),ref);
+      let startDate=parsed.explicit?parsed.date:null;
+      const day=String(r.due||'').match(/^(\d{1,2}) di ogni mese/);
+      if(day){const b=dateObj(ref);startDate=makeDate(b.getFullYear(),b.getMonth()+1,+day[1]);if(startDate&&startDate<ref)startDate=shiftMonths(startDate,1);}
+      return {id:`legacy-rec-${i}`,name,amountCents:Math.round(Number(r.amount)*100),months:Number(r.months),startDate,active:!!startDate,automatic:!!r.automatic,estimated:n.includes('assicura'),category:n.includes('pension')?'Pensione':n.includes('assicura')?'Assicurazioni':n.includes('wifi')||n.includes('wi-fi')?'Abbonamenti':'Auto'};
+    });
+    data.transactions=old.transactions.map(t=>({id:String(t.id||id()),date:String(t.date),type:t.type,amountCents:Math.round(Number(t.amount)*100),category:categoryMap[t.category]||t.category||'Altro',note:String(t.note||''),includedInOpening:!!t.included,status:t.date>ref?'planned':'paid',countBudget:true,recurringId:null,dueDate:null}));
+    data.notes=['Importazione dal prototipo: il vecchio backup non contiene il saldo iniziale. Se necessario configurarlo in Dati. Rivedi i movimenti interpretati male nella vecchia versione. Le spese incluse nel saldo iniziale ora possono contare nel budget, senza modificare il conto.'];
+    return validate(data);
+  }
+  const api={CATEGORIES,MONTHS,norm,iso,today,dateObj,validDate,makeDate,shiftDays,shiftMonths,cents,money,id,clone,has,parseDate,parseAmount,classify,splitEntries,parseEntry,interpret,occurrences,cycle,within,totals,blank,validate,migrate};
+  if(typeof module!=='undefined'&&module.exports)module.exports=api;
+  root.MM=api;
+})(typeof globalThis!=='undefined'?globalThis:this);
+</script>
+<script>/* Local-first UI: no financial records are uploaded or synchronized. */
+(function () {
+  'use strict';
+  const M=window.MM, KEY='mymoney-local-v2', PREVIOUS=KEY+'-previous', LEGACY='mymoney-ai-v1';
+  const $=s=>document.querySelector(s), $$=s=>[...document.querySelectorAll(s)];
+  let state=M.blank(), storageOK=true, readOnly=false, currentView='home', historyFilter='all', reportMode='month', reportOffset=0, editingId=null, recEditingId=null, drafts=[], speech=null, toastTimer;
+  const ICONS={
+    wallet:'<path d="M4 6h14a2 2 0 0 1 2 2v10H4a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h13v2"/><path d="M20 10h-5v4h5"/>',
+    lock:'<rect x="5" y="10" width="14" height="11" rx="3"/><path d="M8 10V7a4 4 0 0 1 8 0v3M12 14v3"/>',
+    home:'<path d="m3 10 9-7 9 7v10H3zM9 20v-7h6v7"/>',
+    list:'<path d="M9 6h12M9 12h12M9 18h12M3 6h1M3 12h1M3 18h1"/>',
+    calendar:'<rect x="3" y="5" width="18" height="16" rx="3"/><path d="M7 3v4M17 3v4M3 11h18M8 15h2M14 15h2"/>',
+    settings:'<path d="M4 6h16M4 12h16M4 18h16"/><circle cx="8" cy="6" r="2" fill="currentColor"/><circle cx="16" cy="12" r="2" fill="currentColor"/><circle cx="10" cy="18" r="2" fill="currentColor"/>',
+    mic:'<rect x="9" y="2" width="6" height="13" rx="3"/><path d="M5 10v2a7 7 0 0 0 14 0v-2M12 19v3M8 22h8"/>',
+    arrow:'<path d="M4 12h16m-6-6 6 6-6 6"/>', left:'<path d="M20 12H4m6-6-6 6 6 6"/>',
+    sparkles:'<path d="m12 3 2.5 6.5L21 12l-6.5 2.5L12 21l-2.5-6.5L3 12l6.5-2.5zM20 2v4M18 4h4"/>',
+    download:'<path d="M12 3v12m-5-5 5 5 5-5M4 16v5h16v-5"/>', plus:'<path d="M12 4v16M4 12h16"/>', close:'<path d="m6 6 12 12M6 18 18 6"/>',
+    plane:'<path d="m3 14 7-3 1-8 2-1 2 9 6 4v2l-7-2v5l-2 1-2-6-7 1z"/>',
+    cart:'<path d="M2 3h3l3 12h11l3-9H6"/><circle cx="9" cy="20" r="1"/><circle cx="18" cy="20" r="1"/>',
+    car:'<path d="m4 9 2-5h12l2 5M3 10h18v8H3zM5 18v3M19 18v3M6 13h2M16 13h2"/>',
+    cup:'<path d="M4 4h12v9a5 5 0 0 1-10 0V4M16 6h3a3 3 0 0 1 0 6h-3M3 21h16"/>',
+    heart:'<path d="M12 21 3 12a5.5 5.5 0 0 1 9-7 5.5 5.5 0 0 1 9 7z"/>',
+    bag:'<path d="M4 7h16l1 14H3zM8 7V5a4 4 0 0 1 8 0v2"/>',
+    income:'<path d="m6 12 6 6 6-6M12 3v15M4 21h16"/>',
+    repeat:'<path d="M4 8a8 8 0 0 1 14-4l3 3M21 2v5h-5M20 16a8 8 0 0 1-14 4l-3-3M3 22v-5h5"/>'
+  };
+  // Insert only trusted SVG templates; user text always uses textContent.
+  function icon(name){const span=document.createElement('span');span.innerHTML=`<svg viewBox="0 0 24 24" aria-hidden="true">${ICONS[name]||ICONS.wallet}</svg>`;return span.firstChild;}
+  function decorate(){for(const e of $$('[data-icon]'))e.replaceChildren(icon(e.dataset.icon));}
+  function el(tag, cls, text){const e=document.createElement(tag);if(cls)e.className=cls;if(text!==undefined)e.textContent=String(text);return e;}
+  function say(message){clearTimeout(toastTimer);$('#toast').textContent=message;$('#toast').hidden=false;toastTimer=setTimeout(()=>$('#toast').hidden=true,4200);}
+  function errBox(selector,message){const box=$(selector);box.textContent=message;box.hidden=!message;}
+  const formatDate=(s,year=false)=>M.validDate(s)?new Intl.DateTimeFormat('it-IT',{day:'numeric',month:'short',...(year?{year:'numeric'}:{})}).format(M.dateObj(s)):'Da definire';
+  const val=n=>(n/100).toFixed(2).replace('.',',');
+  const catIcon=c=>({Casa:'home',Spesa:'cart','Mangiare fuori':'cup',Auto:'car',Trasporti:'car',Viaggi:'plane',Salute:'heart',Sport:'heart',Shopping:'bag',Stipendio:'income',Rimborsi:'income'})[c]||'repeat';
+  function option(select,value,label){const o=el('option',null,label);o.value=value;select.append(o);}
+  function categoryOptions(select,value=''){select.replaceChildren();option(select,'','Scegli categoria…');M.CATEGORIES.forEach(c=>option(select,c,c));select.value=value;}
+
+  // Never claim a write succeeded when browser storage rejects it.
+  function load(){
+    let raw=null;
+    try{
+      const probe=KEY+'-probe';localStorage.setItem(probe,'1');localStorage.removeItem(probe);
+      raw=localStorage.getItem(KEY);
+      if(raw)state=M.validate(JSON.parse(raw));
+      else if(localStorage.getItem(LEGACY)){
+        state=M.migrate(JSON.parse(localStorage.getItem(LEGACY)));
+        localStorage.setItem(KEY,JSON.stringify(state));
+        say('Archivio precedente importato. Controlla date e categorie storiche.');
+      }
+    }catch(error){
+      if(raw){readOnly=true;errBox('#storage-warning','Archivio non leggibile: non lo sovrascrivo. Importa un backup valido per recuperarlo. '+error.message);}
+      else{storageOK=false;errBox('#storage-warning','Salvataggio locale non disponibile. Nessun movimento verrà registrato: apri l’app in un browser con archiviazione abilitata.');}
+    }
+  }
+  function commit(next,{replace=false}={}){
+    if(!storageOK)throw Error('Archiviazione locale bloccata. Non ho salvato.');
+    if(readOnly&&!replace)throw Error('Archivio protetto per errore di lettura: importa un backup valido.');
+    const clean=M.validate(next), disk=localStorage.getItem(KEY);
+    if(disk&&!replace&&!readOnly){
+      const latest=JSON.parse(disk);
+      if((latest.revision||0)!==(state.revision||0))throw Error('Archivio modificato in un’altra scheda. Riapri la modifica sui dati aggiornati.');
+    }
+    clean.revision=(state.revision||0)+1;clean.updatedAt=new Date().toISOString();
+    // Preserve the previous snapshot on a best-effort basis, without blocking the main write.
+    if(disk&&!readOnly){try{localStorage.setItem(PREVIOUS,disk);}catch(_){/* Primary storage still gets a chance to save. */}}
+    try{localStorage.setItem(KEY,JSON.stringify(clean));}catch(_){throw Error('Spazio locale esaurito o salvataggio bloccato. Nessuna modifica salvata.');}
+    state=clean;readOnly=false;errBox('#storage-warning','');render();
+  }
+  window.addEventListener('storage',e=>{if(e.key===KEY&&e.newValue){try{state=M.validate(JSON.parse(e.newValue));render();say('Dati aggiornati da un’altra scheda.');}catch(_){errBox('#storage-warning','Aggiornamento da un’altra scheda non valido.');}}});
+
+  function go(view){currentView=view;for(const v of ['home','history','plan','settings'])$(`#view-${v}`).hidden=(v!==view)||(!state.settings.initialized&&v!=='settings');$('#welcome').hidden=state.settings.initialized||view==='settings';for(const b of $$('.nav [data-go]')){b.classList.toggle('active',b.dataset.go===view);if(b.dataset.go===view)b.setAttribute('aria-current','page');else b.removeAttribute('aria-current');}window.scrollTo({top:0,behavior:'auto'});}
+  function transactionRow(t){
+    const row=el('button','row');row.type='button';row.setAttribute('aria-label',`Modifica ${t.note||t.category}, ${M.money(t.amountCents)}`);row.addEventListener('click',()=>editTransaction(t));
+    const left=el('span','row-left'), badge=el('span','cat-icon'+(t.type==='income'?' green':''));badge.append(icon(catIcon(t.category)));
+    const texts=el('span');texts.append(el('span','row-title',t.note||t.category),el('span','row-sub',`${formatDate(t.date)} · ${t.category}${t.includedInOpening?' · già nel saldo':''}`));left.append(badge,texts);
+    const right=el('span','row-money'+(t.type==='income'?' income':''),(t.type==='income'?'+ ':'− ')+M.money(t.amountCents));right.append(el('small',t.status==='planned'?'planned':'',t.status==='planned'?'Da pagare':'Registrato'));
+    row.append(left,right);return row;
+  }
+  function transactionsInto(container,items){container.replaceChildren();if(!items.length)container.append(el('div','empty','Nessun movimento in questa vista.'));else items.forEach(t=>container.append(transactionRow(t)));}
+  function sortedTransactions(){return [...state.transactions].sort((a,b)=>b.date.localeCompare(a.date)||(b.createdAt||'').localeCompare(a.createdAt||''));}
+  function renderHome(){
+    const x=M.totals(state), s=state.settings;
+    $('#balance').textContent=M.money(x.balance);$('#balance-caption').textContent=`Saldo iniziale ${M.money(s.openingBalanceCents)} · ${formatDate(s.openingDate,true)}`;
+    $('#available').textContent=M.money(x.available);$('#available').classList.toggle('negative',x.available<0);
+    $('#goal').textContent=M.money(s.savingsGoalCents);$('#fixed').textContent=M.money(x.fixedEquivalent);
+    $('#cycle-label').textContent=`${formatDate(x.start)} — ${formatDate(M.shiftDays(x.end,-1))}`;
+    $('#budget-cap').textContent=`Budget ${M.money(s.budgetCents)}`;
+    const used=s.budgetCents-x.available;$('#budget-progress').style.width=Math.max(0,Math.min(100,s.budgetCents?used/s.budgetCents*100:0))+'%';
+    $('#budget-caption').textContent=`Fisse equivalenti + ${M.money(x.paidVariable)} variabili pagate + ${M.money(x.plannedVariable)} previste. Gli accantonamenti sono una stima, non denaro spostato.`;
+    const warning=x.available<0?'Il budget è superato, considerando anche gli impegni.':s.budgetCents&&used>=s.budgetCents*.8?'Hai impegnato almeno l’80% del budget.':'';
+    errBox('#budget-warning',warning);
+    const alerts=$('#home-alerts');alerts.replaceChildren();
+    const late=state.transactions.filter(t=>t.status==='planned'&&t.date<=M.today());
+    if(late.length)alerts.append(el('div','notice',`${late.length} moviment${late.length===1?'o':'i'} da verificare: la scadenza è arrivata, ma non risultano pagati. Apri Movimenti → Da pagare.`));
+    const overdue=[];
+    for(const r of state.recurring)for(const d of M.occurrences(r,s.openingDate,M.shiftDays(M.today(),1)))if(!isPaidOccurrence(r.id,d))overdue.push({r,d});
+    if(overdue.length)alerts.append(el('div','notice',`${overdue.length} scadenz${overdue.length===1?'a':'e'} ricorrent${overdue.length===1?'e':'i'} da confermare nel Piano. Anche gli addebiti automatici richiedono verifica.`));
+    const sinceBackup=state.lastBackup?Math.floor((+new Date()-+new Date(state.lastBackup))/86400000):Infinity;
+    if(sinceBackup>=7)alerts.append(el('div','notice install-hint','Proteggi il tuo archivio: Dati → Salva backup. È l’unica copia recuperabile fuori da questo browser.'));
+    transactionsInto($('#recent'),sortedTransactions().slice(0,5));
+  }
+  function renderHistory(){
+    const query=M.norm($('#search').value||'');
+    const list=sortedTransactions().filter(t=>(historyFilter==='all'||t.status===historyFilter)&&M.norm(t.note+' '+t.category).includes(query));
+    transactionsInto($('#all-transactions'),list);renderReport();
+  }
+  function reportBounds(){
+    const ref=M.today(),d=M.dateObj(ref);let start,end;
+    if(reportMode==='week'){start=M.shiftDays(ref,-((d.getDay()+6)%7)+reportOffset*7);end=M.shiftDays(start,7);}
+    else if(reportMode==='cycle'){const c=M.cycle(ref,state.settings.payday);start=M.shiftMonths(c.start,reportOffset);end=M.shiftMonths(start,1);}
+    else{start=M.iso(new Date(d.getFullYear(),d.getMonth()+reportOffset,1,12));end=M.shiftMonths(start,1);}
+    return {start,end};
+  }
+  function line(parent,label,value,total=false){const row=el('div','line-item'+(total?' total':''));row.append(el('span',null,label),el('strong',null,value));parent.append(row);}
+  function renderReport(){
+    const b=reportBounds(), paid=state.transactions.filter(t=>t.status==='paid'&&M.within(t.date,b)&&t.date<=M.today());
+    const income=paid.filter(t=>t.type==='income').reduce((s,t)=>s+t.amountCents,0),expense=paid.filter(t=>t.type==='expense').reduce((s,t)=>s+t.amountCents,0);
+    const p=$('#report');p.replaceChildren();$('#report-title').textContent=`${formatDate(b.start,true)} — ${formatDate(M.shiftDays(b.end,-1),true)}`;
+    line(p,'Entrate registrate',M.money(income));line(p,'Uscite registrate',M.money(expense));line(p,'Differenza del periodo',M.money(income-expense),true);
+    p.append(el('p','tiny','Solo movimenti confermati. “Già nel saldo iniziale” non duplica il conto, ma resta nello storico. La differenza non è risparmio già accantonato.'));
+    const cats=new Map();paid.filter(t=>t.type==='expense').forEach(t=>cats.set(t.category,(cats.get(t.category)||0)+t.amountCents));
+    for(const [cat,n] of [...cats].sort((a,b)=>b[1]-a[1])){const box=el('div','category-summary');line(box,cat,M.money(n));const bar=el('div','report-bar'),fill=el('div');fill.style.width=(expense?n/expense*100:0)+'%';bar.append(fill);box.append(bar);p.append(box);}
+  }
+  function isPaidOccurrence(recId,date){return state.transactions.some(t=>t.recurringId===recId&&t.dueDate===date&&t.status==='paid');}
+  function renderPlan(){
+    const x=M.totals(state),b=$('#plan-budget');b.replaceChildren();b.append(el('h3',null,'Dove va il budget'));
+    line(b,'Budget del ciclo',M.money(state.settings.budgetCents));line(b,'Fisse: equivalente mensile','− '+M.money(x.fixedEquivalent));line(b,'Variabili già pagate','− '+M.money(x.paidVariable));line(b,'Variabili previste nel ciclo','− '+M.money(x.plannedVariable));line(b,'Libero dopo gli impegni',M.money(x.available),true);
+    b.append(el('p','tiny',`Uscite effettivamente registrate nel ciclo: ${M.money(x.spent)}. Le rate bimestrali o semestrali sono ripartite per il budget: sul conto esce l’importo intero alla conferma del pagamento. Gli importi già accantonati prima dell’avvio non sono noti.`));
+    const list=$('#recurring-list');list.replaceChildren();
+    for(const r of state.recurring){const row=el('button','row');row.type='button';const l=el('span');l.append(el('span','row-title',r.name),el('span','row-sub',`${r.active?'Attiva':'Non ancora attiva'} · ${r.automatic?'addebito automatico':'pagamento manuale'}${r.estimated?' · da verificare':''}`));const right=el('span','row-money',M.money(r.amountCents));right.append(el('small',null,`ogni ${r.months} mes${r.months===1?'e':'i'} · ${M.money(Math.round(r.amountCents/r.months))}/mese`));row.append(l,right);row.addEventListener('click',()=>editRecurring(r));list.append(row);}
+    if(!state.recurring.length)list.append(el('p','empty','Nessuna spesa fissa. Aggiungine una.'));
+    const upcoming=[];
+    for(const r of state.recurring)for(const date of M.occurrences(r,state.settings.openingDate,M.shiftMonths(M.today(),7)))if(!isPaidOccurrence(r.id,date))upcoming.push({r,date});
+    upcoming.sort((a,b)=>a.date.localeCompare(b.date));const u=$('#upcoming');u.replaceChildren();
+    for(const {r,date} of upcoming.slice(0,12)){const row=el('button','row');row.type='button';const l=el('span');l.append(el('span','row-title',r.name),el('span','row-sub',`${formatDate(date,true)}${date<M.today()?' · scadenza passata, verifica':''}${r.estimated?' · da verificare':''}`));const right=el('span','row-money',M.money(r.amountCents));right.append(el('small',null,'Tocca per registrare'));row.append(l,right);row.addEventListener('click',()=>draftRecurring(r,date));u.append(row);}
+    if(!upcoming.length)u.append(el('p','empty','Nessuna scadenza nei prossimi mesi.'));
+    const notes=$('#plan-notes');notes.replaceChildren();if(state.notes.length)state.notes.forEach(n=>notes.append(el('p','muted',n)));else notes.append(el('p','muted','Nessuna voce in sospeso.'));
+  }
+  function renderSettings(){
+    const s=state.settings;
+    $('#s-opening').value=val(s.openingBalanceCents);$('#s-date').value=s.openingDate;$('#s-salary').value=val(s.salaryCents);$('#s-day').value=s.payday;$('#s-budget').value=val(s.budgetCents);$('#s-goal').value=val(s.savingsGoalCents);$('#s-savings').value=s.separateSavingsCents===null?'':val(s.separateSavingsCents);
+    $('#backup-status').textContent=state.lastBackup?`Ultima esportazione avviata: ${new Date(state.lastBackup).toLocaleString('it-IT')}. Verifica di aver salvato il file.`:'Nessun backup esportato.';
+    const r=$('#learned-rules');r.replaceChildren();
+    for(const [index,rule] of state.rules.entries()){const row=el('div','row'),text=el('span','row-sub',`${rule.phrase} → ${rule.category}`),button=el('button','quiet','Rimuovi');button.type='button';button.addEventListener('click',()=>{try{const next=M.clone(state);next.rules.splice(index,1);commit(next);say('Preferenza rimossa.');}catch(e){say(e.message);}});row.append(text,button);r.append(row);}
+    if(!state.rules.length)r.append(el('p','tiny','Ancora nessuna preferenza memorizzata.'));
+  }
+  function render(){
+    if(state.settings.initialized){renderHome();renderHistory();renderPlan();}
+    renderSettings();goQuiet(currentView);
+  }
+  function goQuiet(view){for(const v of ['home','history','plan','settings'])$(`#view-${v}`).hidden=(v!==view)||(!state.settings.initialized&&v!=='settings');$('#welcome').hidden=state.settings.initialized||view==='settings';}
+
+  // Draft fields are editable and no parser output is committed automatically.
+  function field(label,type,value){const wrap=el('div','field-group'),input=document.createElement(type==='select'?'select':'input');const id='f-'+M.id();input.id=id;if(type!=='select')input.type=type;input.value=value??'';const lab=el('label',null,label);lab.htmlFor=id;wrap.append(lab,input);return {wrap,input};}
+  function check(label,value){const wrap=el('label','check-label'),input=document.createElement('input');input.type='checkbox';input.checked=!!value;wrap.append(input,document.createTextNode(label));return {wrap,input};}
+  function openDrafts(items,editId=null){
+    if(!state.settings.initialized){say('Importa i dati iniziali prima di aggiungere movimenti.');go('settings');return;}
+    editingId=editId;drafts=M.clone(items);const list=$('#drafts');list.replaceChildren();errBox('#editor-error','');
+    $('#editor-title').textContent=editId?'Modifica movimento':items.length>1?`Controlla ${items.length} movimenti`:'Controlla prima di salvare';
+    $('#delete-transaction').hidden=!editId;$('#save-drafts').textContent=editId?'Salva modifiche':`Conferma e salva${items.length>1?' tutto':''}`;
+    drafts.forEach((d,i)=>{
+      const box=el('section','draft');box.dataset.index=i;
+      if(d.warnings?.length)box.append(el('div','notice',d.warnings.join(' ')));
+      if(d.reason)box.append(el('p','reason',d.reason));
+      const grid=el('div','fields'),a=field('Importo (€)','text',d.amountCents!==null?val(d.amountCents):''),date=field('Data del pagamento','date',d.date||'');a.input.inputMode='decimal';a.input.required=true;date.input.required=true;a.input.dataset.field='amount';date.input.dataset.field='date';grid.append(a.wrap,date.wrap);box.append(grid);
+      const grid2=el('div','fields'),cat=field('Categoria','select',d.category),status=field('Stato','select',d.status);categoryOptions(cat.input,d.category);cat.input.required=true;cat.input.dataset.field='category';option(status.input,'paid','Pagato');option(status.input,'planned','Da pagare');status.input.value=d.status;status.input.dataset.field='status';grid2.append(cat.wrap,status.wrap);box.append(grid2);
+      const note=field('Descrizione / nota','text',d.note);note.input.maxLength=4000;note.input.dataset.field='note';box.append(note.wrap);
+      const datePreview=el('p','tiny');box.append(datePreview);
+      const info=el('div','notice install-hint');box.append(info);
+      const more=el('details'),sum=el('summary',null,'Tipo, budget e preferenze');more.append(sum);
+      const type=field('Tipo di movimento','select',d.type);option(type.input,'expense','Uscita');option(type.input,'income','Entrata');type.input.value=d.type;type.input.dataset.field='type';more.append(type.wrap);
+      const included=check('Già compreso nel saldo iniziale: non modificare il conto',d.includedInOpening);included.input.dataset.field='included';
+      const count=check('Considera nel budget (per le uscite)',d.countBudget);count.input.dataset.field='budget';more.append(included.wrap,count.wrap);
+      const rec=field('Collega a una spesa fissa (evita il doppio budget)','select',d.recurringId||'');option(rec.input,'','Nessuna · spesa variabile');for(const r of state.recurring)option(rec.input,r.id,r.name);rec.input.value=d.recurringId||'';rec.input.dataset.field='recurring';more.append(rec.wrap);
+      const due=field('Scadenza della rata collegata','date',d.dueDate||'');due.input.dataset.field='dueDate';more.append(due.wrap);
+      const learn=check('Ricorda la categoria per questa frase',false);learn.input.dataset.field='learn';more.append(learn.wrap);
+      const phrase=field('Frase da riconoscere (es. tavolo Amazon)','text','');phrase.input.maxLength=100;phrase.input.placeholder='Meglio specifica, non solo “Amazon”';phrase.input.dataset.field='phrase';more.append(phrase.wrap);
+      box.append(more);
+      const sync=()=>{
+        if(date.input.value>M.today())status.input.value='planned';
+        const planned=status.input.value==='planned';
+        status.input.options[0].textContent=type.input.value==='income'?'Incassato':'Pagato';
+        status.input.options[1].textContent=type.input.value==='income'?'Da incassare':'Da pagare';
+        datePreview.textContent=date.input.value?`Data: ${formatDate(date.input.value,true)}`:'Scegli la data del pagamento.';
+        if(planned)included.input.checked=false;
+        included.input.disabled=planned;
+        if(date.input.value&&date.input.value<state.settings.openingDate&&!planned)included.input.checked=true;
+        info.textContent=planned?'Previsione: nessun addebito sul saldo. Resta da confermare anche quando arriva la data.':included.input.checked?'Già nel saldo iniziale: nessun doppio addebito. Il budget è gestito separatamente.':'Movimento effettivo: modificherà il saldo quando confermi.';
+      };
+      type.input.addEventListener('change',sync);date.input.addEventListener('change',sync);status.input.addEventListener('change',sync);included.input.addEventListener('change',sync);
+      rec.input.addEventListener('change',()=>{if(rec.input.value){const rr=state.recurring.find(r=>r.id===rec.input.value);cat.input.value=rr.category;if(!due.input.value)due.input.value=date.input.value;}});
+      sync();list.append(box);
+    });
+    $('#editor').showModal();
+  }
+  function manual(){openDrafts([{id:M.id(),date:M.today(),type:'expense',amountCents:null,category:'',note:'',status:'paid',includedInOpening:false,countBudget:true,recurringId:null,dueDate:null}]);}
+  function editTransaction(t){openDrafts([t],t.id);}
+  function draftRecurring(r,due){
+    const existing=state.transactions.find(t=>t.recurringId===r.id&&t.dueDate===due);
+    if(existing){editTransaction(existing);return;}
+    openDrafts([{id:M.id(),date:due>M.today()?due:M.today(),amountCents:r.amountCents,type:'expense',category:r.category,note:r.name,status:due>M.today()?'planned':'paid',includedInOpening:false,countBudget:true,recurringId:r.id,dueDate:due,reason:'Rata collegata: nel budget è già compresa nelle spese fisse equivalenti.'}]);
+  }
+  function analyze(){try{
+    const items=M.interpret($('#natural').value,M.today(),state.rules);
+    for(const d of items){
+      if(!d.date||!d.amountCents||d.type!=='expense')continue;
+      const matches=state.recurring.filter(r=>r.active&&r.amountCents===d.amountCents&&r.category===d.category&&M.occurrences(r,d.date,M.shiftDays(d.date,1)).length);
+      if(matches.length===1){d.recurringId=matches[0].id;d.dueDate=d.date;d.reason+=` · Collegata alla rata: ${matches[0].name}.`;
+      }
+    }
+    openDrafts(items);
+  }catch(e){say(e.message);}}
+  $('#editor-form').addEventListener('submit',event=>{
+    event.preventDefault();errBox('#editor-error','');
+    try{
+      const next=M.clone(state), additions=[], rules=[];
+      for(const box of $$('#drafts .draft')){
+        const d=drafts[Number(box.dataset.index)],get=k=>box.querySelector(`[data-field="${k}"]`);
+        const amountCents=M.cents(get('amount').value),date=get('date').value,status=get('status').value;
+        if(!amountCents||!M.validDate(date)||!M.CATEGORIES.includes(get('category').value))throw Error('Completa importo, data e categoria.');
+        if(status==='paid'&&date>M.today())throw Error('Una data futura deve restare “Da pagare”.');
+        const included=status==='paid'&&get('included').checked;
+        if(date<state.settings.openingDate&&status==='paid'&&!included)throw Error('Un pagamento precedente al saldo iniziale va segnato come già incluso.');
+        const recurringId=get('recurring').value||null,dueDate=recurringId?(get('dueDate').value||date):null;
+        if(recurringId&&next.transactions.some(t=>t.id!==editingId&&t.recurringId===recurringId&&t.dueDate===dueDate))throw Error('Questa rata è già registrata. Modifica il movimento esistente.');
+        const t={id:editingId||d.id||M.id(),date,type:get('type').value,amountCents,category:get('category').value,note:get('note').value.trim(),status,includedInOpening:included,countBudget:get('budget').checked,recurringId,dueDate,createdAt:d.createdAt||new Date().toISOString()};
+        additions.push(t);
+        if(get('learn').checked){const phrase=M.norm(get('phrase').value).trim();if(phrase.length<3)throw Error('Per memorizzare una preferenza indica una frase di almeno 3 caratteri.');rules.push({phrase,category:t.category});}
+      }
+      if(editingId)next.transactions=next.transactions.filter(t=>t.id!==editingId);
+      const duplicates=additions.some(a=>next.transactions.some(t=>t.date===a.date&&t.amountCents===a.amountCents&&t.type===a.type&&t.note===a.note));
+      if(duplicates&&!window.confirm('Un movimento uguale esiste già. Aggiungerlo comunque?'))return;
+      next.transactions.push(...additions);
+      for(const r of rules){next.rules=next.rules.filter(x=>x.phrase!==r.phrase);next.rules.push(r);}
+      commit(next);$('#editor').close();$('#natural').value='';say(editingId?'Movimento aggiornato.':'Salvato sul dispositivo.');
+    }catch(e){errBox('#editor-error',e.message);}
+  });
+  $('#delete-transaction').addEventListener('click',()=>{if(!editingId||!confirm('Eliminare questo movimento? Il saldo e il budget saranno ricalcolati.'))return;try{const next=M.clone(state);next.transactions=next.transactions.filter(t=>t.id!==editingId);commit(next);$('#editor').close();say('Movimento eliminato.');}catch(e){errBox('#editor-error',e.message);}});
+
+  function editRecurring(r=null){
+    recEditingId=r?.id||null;$('#r-name').value=r?.name||'';$('#r-amount').value=r?val(r.amountCents):'';$('#r-months').value=r?.months||1;$('#r-date').value=r?.startDate||'';$('#r-category').value=r?.category||'Altro';$('#r-active').checked=r?.active??true;$('#r-auto').checked=!!r?.automatic;$('#r-estimated').checked=!!r?.estimated;errBox('#rec-error','');$('#rec-editor').showModal();
+  }
+  $('#rec-form').addEventListener('submit',e=>{e.preventDefault();try{
+    const next=M.clone(state),r={id:recEditingId||M.id(),name:$('#r-name').value.trim(),amountCents:M.cents($('#r-amount').value),months:Number($('#r-months').value),startDate:$('#r-date').value||null,category:$('#r-category').value,active:$('#r-active').checked,automatic:$('#r-auto').checked,estimated:$('#r-estimated').checked};
+    if(!r.name||!r.amountCents||r.active&&!r.startDate)throw Error('Indica nome, importo e prima scadenza se la ricorrenza è attiva.');
+    if(recEditingId)next.recurring=next.recurring.map(x=>x.id===recEditingId?r:x);else next.recurring.push(r);
+    commit(next);$('#rec-editor').close();say('Piano aggiornato, nessun pagamento registrato.');
+  }catch(err){errBox('#rec-error',err.message);}});
+  $('#settings-form').addEventListener('submit',e=>{e.preventDefault();try{
+    const next=M.clone(state);next.settings={initialized:true,openingDate:$('#s-date').value,openingBalanceCents:M.cents($('#s-opening').value),salaryCents:M.cents($('#s-salary').value),budgetCents:M.cents($('#s-budget').value),savingsGoalCents:M.cents($('#s-goal').value),payday:Number($('#s-day').value),separateSavingsCents:$('#s-savings').value.trim()?M.cents($('#s-savings').value):null};
+    if(state.settings.initialized&&(next.settings.openingBalanceCents!==state.settings.openingBalanceCents||next.settings.openingDate!==state.settings.openingDate)&&!confirm('Modificare la situazione iniziale ricalcolerà tutto il saldo. Non usare questa funzione per registrare una nuova entrata. Continuare?'))return;
+    commit(next);say('Impostazioni salvate.');
+  }catch(err){say(err.message);}});
+
+  // Offer file sharing on mobile and a download fallback on desktop.
+  async function saveFile(content,name,type){
+    const blob=new Blob([content],{type}),file=new File([blob],name,{type});
+    const mobile=/iPhone|iPad|iPod/.test(navigator.userAgent);
+    if(mobile&&navigator.canShare?.({files:[file]})){
+      try{await navigator.share({files:[file],title:name});return true;}catch(e){if(e.name==='AbortError')return false;}
+    }
+    const url=URL.createObjectURL(blob),a=el('a');a.href=url;a.download=name;document.body.append(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),30000);return true;
+  }
+  async function exportJSON(){try{
+    const next=M.clone(state);next.lastBackup=new Date().toISOString();
+    const saved=await saveFile(JSON.stringify(next,null,2),`MyMoney-backup-${M.today()}.json`,'application/json');
+    if(saved){commit(next);say('Esportazione avviata: verifica il file salvato.');}
+  }catch(e){say(e.message);}}
+  $('#import-file').addEventListener('change',async event=>{
+    const file=event.target.files[0];if(!file)return;
+    try{
+      if(file.size>12*1024*1024)throw Error('File troppo grande. Limite: 12 MB.');
+      const raw=JSON.parse(await file.text()),next=M.migrate(raw,M.today(),state.settings);
+      // Preserve known future commitments when importing the older, incomplete schema.
+      if(raw.schemaVersion!==2&&state.settings.initialized){
+        const names=new Set(next.recurring.map(r=>M.norm(r.name)));
+        for(const r of state.recurring)if(!names.has(M.norm(r.name)))next.recurring.push(M.clone(r));
+        next.notes=[...new Set([...state.notes,...next.notes])];
+      }
+      if(state.settings.initialized&&!confirm('L’importazione sostituirà l’archivio locale. Esporta prima un backup. Continuare?'))return;
+      commit(next,{replace:true});go('home');say('Archivio importato. I dati restano su questo dispositivo.');
+    }catch(e){say('Importazione annullata: '+e.message);}
+    finally{event.target.value='';}
+  });
+  function safeCSV(v){let s=String(v??'');if(/^[\s]*[=+@-]/.test(s))s="'"+s;return '"'+s.replace(/"/g,'""')+'"';}
+  async function exportCSV(){const rows=[['Data','Tipo','Importo EUR','Categoria','Nota','Stato','Gia nel saldo iniziale','Conta nel budget'],...sortedTransactions().map(t=>[t.date,t.type==='income'?'Entrata':'Uscita',val(t.amountCents),t.category,t.note,t.status==='paid'?'Confermato':'Previsto',t.includedInOpening?'Si':'No',t.countBudget?'Si':'No'])];await saveFile('\ufeff'+rows.map(r=>r.map(safeCSV).join(';')).join('\r\n'),`MyMoney-movimenti-${M.today()}.csv`,'text/csv;charset=utf-8');}
+  function icsEscape(s){return String(s).replace(/\\/g,'\\\\').replace(/\r?\n/g,'\\n').replace(/;/g,'\\;').replace(/,/g,'\\,');}
+  function foldICS(line){let out='',part='',bytes=0;for(const char of line){const n=new TextEncoder().encode(char).length;if(bytes+n>73){out+=part+'\r\n ';part='';bytes=1;}part+=char;bytes+=n;}return out+part;}
+  async function exportCalendar(){
+    const lines=['BEGIN:VCALENDAR','VERSION:2.0','PRODID:-//MyMoney Local//Scadenze//IT','CALSCALE:GREGORIAN','X-WR-CALNAME:MyMoney - scadenze'];
+    const now=new Date().toISOString().replace(/[-:]/g,'').replace(/\.\d{3}Z/,'Z'),end=M.shiftMonths(M.today(),12);
+    const events=[];
+    for(const r of state.recurring)for(const d of M.occurrences(r,M.today(),end))if(!isPaidOccurrence(r.id,d))events.push({id:`${r.id}-${d}`,date:d,title:`${r.name}${r.estimated?' (da verificare)':''}`,note:`Importo previsto: ${M.money(r.amountCents)}. ${r.automatic?'Verifica l’addebito automatico.':'Pagamento manuale.'} Apri MyMoney per confermare.`,tentative:!!r.estimated});
+    for(const t of state.transactions.filter(t=>t.status==='planned'&&!t.recurringId&&t.date>=M.today()&&t.date<end))events.push({id:t.id,date:t.date,title:t.note||t.category,note:`Previsto: ${M.money(t.amountCents)}. Conferma nell’app solo dopo il pagamento.`,tentative:true});
+    if(!events.length){say('Nessuna scadenza futura da esportare.');return;}
+    for(const ev of events){const date=ev.date.replace(/-/g,'');lines.push('BEGIN:VEVENT',`UID:${icsEscape(ev.id)}@mymoney.local`,`DTSTAMP:${now}`,`DTSTART:${date}T090000`,`DTEND:${date}T091500`,`SUMMARY:${icsEscape(ev.title)}`,`DESCRIPTION:${icsEscape(ev.note)}`,`STATUS:${ev.tentative?'TENTATIVE':'CONFIRMED'}`,'BEGIN:VALARM','TRIGGER:-P1D','ACTION:DISPLAY',`DESCRIPTION:${icsEscape(ev.title)}`,'END:VALARM','BEGIN:VALARM','TRIGGER:PT0M','ACTION:DISPLAY',`DESCRIPTION:${icsEscape(ev.title)}`,'END:VALARM','END:VEVENT');}
+    lines.push('END:VCALENDAR');await saveFile(lines.map(foldICS).join('\r\n')+'\r\n',`MyMoney-scadenze-${M.today()}.ics`,'text/calendar');
+    say('File creato. Importalo nel Calendario e verifica gli avvisi.');
+  }
+
+  // Speech is optional; typed input and the iPhone keyboard microphone remain available.
+  function startVoice(){
+    if(speech){speech.stop();return;}
+    const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
+    if(!SR){$('#natural').focus();$('#voice-status').textContent='Usa il microfono della tastiera dell’iPhone: la dettatura integrata non è disponibile in questo browser.';return;}
+    if(!sessionStorage.getItem('mymoney-voice-consent')){
+      if(!confirm('La dettatura usa il servizio vocale del browser o del sistema e potrebbe inviare l’audio al relativo fornitore. MyMoney non conserva l’audio. Continuare?'))return;
+      sessionStorage.setItem('mymoney-voice-consent','yes');
+    }
+    try{
+      const r=new SR();speech=r;r.lang='it-IT';r.interimResults=true;r.continuous=false;
+      $('#mic').classList.add('mic-listening');$('#voice-status').textContent='Ti ascolto… tocca di nuovo il microfono per fermare.';
+      r.onresult=e=>{let text='';for(let i=0;i<e.results.length;i++)text+=e.results[i][0].transcript+' ';$('#natural').value=text.trim();if(e.results[e.results.length-1].isFinal){$('#voice-status').textContent='Dettatura pronta. Premi Interpreta per controllarla.';}};
+      r.onerror=e=>{$('#voice-status').textContent=`Dettatura non riuscita (${e.error}). Usa il microfono della tastiera oppure scrivi.`;};
+      r.onend=()=>{speech=null;$('#mic').classList.remove('mic-listening');};
+      r.start();
+    }catch(e){speech=null;$('#mic').classList.remove('mic-listening');$('#voice-status').textContent='Dettatura non disponibile qui. Usa il microfono della tastiera.';}
+  }
+  async function setupOffline(){
+    const local=location.protocol==='file:';
+    if(local){errBox('#environment','Anteprima da file: funziona per la prova su computer. Su iPhone usa la versione HTTPS installata dalla Home. Fai sempre un backup.');$('#install-status').textContent='File locale: nessuna installazione offline PWA attiva.';return;}
+    if(!('serviceWorker' in navigator)||!window.isSecureContext){$('#install-status').textContent='Offline non disponibile in questo contesto: serve HTTPS per installare questa PWA.';return;}
+    try{
+      const registration=await navigator.serviceWorker.register('./sw.js',{scope:'./'});await navigator.serviceWorker.ready;
+      $('#install-status').textContent='App predisposta per l’uso offline. Installa dalla Home e aprila almeno una volta con connessione.';
+      if(registration.waiting)$('#install-status').textContent+=' Una nuova versione sarà usata dopo la chiusura di tutte le finestre dell’app.';
+    }catch(_){$('#install-status').textContent='Cache offline non attiva. Verifica che sw.js e gli altri file siano pubblicati insieme all’HTML.';}
+    if(navigator.storage?.persisted){try{$('#persistent-status').textContent=await navigator.storage.persisted()?'Conservazione persistente concessa. Il backup resta necessario.':'Conservazione standard: il sistema può eliminare i dati in alcune condizioni. Fai backup regolari.';}catch(_){/* Storage status is informative only. */}}
+  }
+  $('#request-storage').addEventListener('click',async()=>{try{const granted=await navigator.storage?.persist?.();$('#persistent-status').textContent=granted?'Conservazione persistente concessa. La cancellazione manuale elimina comunque i dati.':'Conservazione persistente non concessa o non disponibile. Mantieni un backup.';}catch(e){say('Richiesta non disponibile in questo browser.');}});
+
+  // Bind controls after the document is loaded; no inline event attributes are used.
+  decorate();categoryOptions($('#r-category'),'Altro');
+  $$('[data-go]').forEach(b=>b.addEventListener('click',()=>go(b.dataset.go)));
+  $$('[data-import]').forEach(b=>b.addEventListener('click',()=>$('#import-file').click()));
+  $('#setup-new').addEventListener('click',()=>go('settings'));$('#interpret').addEventListener('click',analyze);$('#manual-add').addEventListener('click',manual);$('#history-add').addEventListener('click',manual);
+  $('#close-editor').addEventListener('click',()=>$('#editor').close());$('#close-rec').addEventListener('click',()=>$('#rec-editor').close());$('#new-recurring').addEventListener('click',()=>editRecurring());
+  $('#search').addEventListener('input',renderHistory);
+  $$('#history-filters button').forEach(b=>b.addEventListener('click',()=>{historyFilter=b.dataset.filter;$$('#history-filters button').forEach(x=>x.classList.toggle('active',x===b));renderHistory();}));
+  $$('#report-modes button').forEach(b=>b.addEventListener('click',()=>{reportMode=b.dataset.report;reportOffset=0;$$('#report-modes button').forEach(x=>x.classList.toggle('active',x===b));renderReport();}));
+  $('#report-prev').addEventListener('click',()=>{reportOffset--;renderReport();});$('#report-next').addEventListener('click',()=>{reportOffset++;renderReport();});
+  $('#export-json').addEventListener('click',exportJSON);$('#export-csv').addEventListener('click',()=>exportCSV().catch(e=>say(e.message)));$('#export-calendar').addEventListener('click',()=>exportCalendar().catch(e=>say(e.message)));$('#mic').addEventListener('click',startVoice);
+  load();render();setupOffline();
+  // Refresh date-sensitive views when the user returns, never in the background.
+  document.addEventListener('visibilitychange',()=>{if(!document.hidden)render();});
+})();
+</script>
+</body>
+</html>
