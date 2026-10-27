@@ -3,7 +3,14 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="theme-color" content="#070b15">
+<meta name="theme-color" content="#030507">
+<meta name="description" content="Le tue spese, in un istante. Su iPhone, Mac e web.">
+<meta property="og:title" content="MyMoney">
+<meta property="og:description" content="Le tue spese, in un istante. Su iPhone, Mac e web.">
+<meta property="og:image" content="https://manuelpilato.github.io/mymoney/preview.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
 <meta name="color-scheme" content="dark">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -38,7 +45,16 @@ dialog::backdrop {
   background: oklch(8% .02 265 / .18);
   backdrop-filter: blur(3px);
   -webkit-backdrop-filter: blur(3px);
+  animation: backdrop-in 220ms var(--ease) both;
 }
+dialog.is-closing::backdrop { animation: backdrop-out 170ms ease both; }
+@keyframes backdrop-in { from { opacity: 0; } to { opacity: 1; } }
+@keyframes backdrop-out { from { opacity: 1; } to { opacity: 0; } }
+/* Long holds never select interface labels; editing text retains native selection. */
+#experience,dialog { -webkit-user-select: none; user-select: none; -webkit-touch-callout: none; }
+dialog input,dialog textarea { -webkit-user-select: text; user-select: text; -webkit-touch-callout: default; }
+html.surface-held,html.surface-held * { -webkit-user-select: none!important; user-select: none!important; -webkit-touch-callout: none!important; }
+dialog h2:focus { outline: none; }
 .dialog,.data-sheet {
   position: fixed;
   inset: auto 0 calc(var(--keyboard-bottom) + max(10px,env(safe-area-inset-bottom,0px)));
@@ -54,11 +70,12 @@ dialog::backdrop {
   transform-origin: 50% 100%;
 }
 .dialog::-webkit-scrollbar,.data-scroll::-webkit-scrollbar { display: none; }
-.dialog[open] { animation: sheet-in 240ms var(--ease) both; }
+.dialog { inset: max(12px,env(safe-area-inset-top,0px)) 0 calc(var(--keyboard-bottom) + max(12px,env(safe-area-inset-bottom,0px))); margin:auto; height:fit-content; max-height:calc(var(--vv-height) - max(12px,env(safe-area-inset-top,0px)) - max(12px,env(safe-area-inset-bottom,0px))); transform-origin:50% 50%; --panel-exit:translateY(12px) scale(.975); }
+.dialog[open] { animation: window-in 220ms var(--ease) both; }
 .data-sheet[open] { display: flex; flex-direction: column; animation: data-in 280ms var(--drawer) both; }
 .dialog.is-closing,.data-sheet.is-closing { pointer-events: none; animation: none; }
 .data-sheet { height: min(87dvh,850px); --surface: oklch(18% .025 255 / .87); }
-@keyframes sheet-in { from { opacity: 0; transform: translateY(28px) scale(.985); } to { opacity: 1; transform: none; } }
+@keyframes window-in { from { opacity: 0; transform: translateY(14px) scale(.975); } to { opacity: 1; transform: none; } }
 @keyframes data-in { from { opacity: 0; transform: translateY(54px) scale(.99); } to { opacity: 1; transform: none; } }
 .data-header{position:relative;flex-shrink:0;padding:18px 20px 0;touch-action:none;user-select:none;-webkit-user-select:none}.sheet-grip{display:block;width:32px;height:4px;border-radius:8px;background:oklch(48% .02 250);margin:0 auto 12px}.data-heading{display:flex;align-items:center;justify-content:space-between;gap:15px}.data-heading h2{font-size:17px;letter-spacing:-.4px}.data-heading button{background:none}.nav{display:flex;gap:5px;margin:14px 22px 10px;padding:4px;background:oklch(12% .02 265 / .7);border-radius:16px;flex-shrink:0}.nav button{flex:1;background:none;color:var(--muted);padding:9px 7px;font-size:12px;min-height:40px;border-radius:12px;font-weight:500}.nav button.active{background:var(--raised);color:var(--text)}.data-scroll{padding:8px 25px calc(env(safe-area-inset-bottom,0px) + 28px);overflow-y:auto;overscroll-behavior-y:contain;touch-action:pan-y;min-height:0;flex:1}.balance-panel{text-align:center;padding:27px 0 25px}.balance{font-size:42px;font-weight:450;letter-spacing:-1.8px;font-variant-numeric:tabular-nums;line-height:1.4;margin-top:5px}.budget-panel{margin:0 3px 30px}.split{display:flex;justify-content:space-between;align-items:center;gap:12px;font-size:12px;color:var(--muted)}.split strong{color:var(--accent);font-size:15px;font-weight:500;font-variant-numeric:tabular-nums}.split strong.negative{color:var(--red)}.budget-panel>.tiny{display:block;text-align:center;font-size:10px;margin-top:10px}.track{height:3px;border-radius:9px;background:var(--raised);overflow:hidden;margin-top:15px}.track div{height:100%;max-width:100%;background:var(--accent);border-radius:9px}.section-heading{display:flex;justify-content:space-between;align-items:center;gap:14px;margin:20px 0 6px}.section-heading h3{font-size:14px}.section-heading .icon-button{color:var(--accent)}.row{width:100%;display:flex;justify-content:space-between;align-items:center;text-align:left;gap:13px;background:transparent;color:var(--text);padding:16px 0;border-radius:0;border:0;border-bottom:1px solid var(--line);font-weight:400}.row:last-child{border-bottom:0}.row-left{display:flex;align-items:center;gap:11px;min-width:0}.row-left>span:last-child{min-width:0}.cat-icon{width:34px;height:34px;border-radius:50%;background:var(--raised);color:var(--muted);display:grid;place-items:center;flex-shrink:0}.cat-icon svg{width:16px;height:16px}.cat-icon.green{color:var(--accent)}.row-title{display:block;font-size:13px;font-weight:500;line-height:1.5;overflow-wrap:anywhere}.row-sub{display:block;font-size:10px;color:var(--muted);margin-top:3px;line-height:1.5}.row-money{font-size:14px;white-space:nowrap;text-align:right;font-variant-numeric:tabular-nums;font-weight:500}.row-money small{display:none}.row-money.income{color:var(--accent)}.empty{padding:25px 5px;font-size:12px;color:var(--muted);line-height:1.7;text-align:center}.empty svg{width:23px;height:23px;margin:0 auto 10px;display:block;opacity:.5}.empty strong{display:block;font-size:14px;color:var(--text);margin-bottom:4px;font-weight:450}.disclosure{margin-top:18px;border-top:1px solid var(--line)}summary{cursor:pointer;padding:16px 0;min-height:48px;color:var(--muted);font-size:13px;line-height:1.5}details p{font-size:12px;color:var(--muted)}.disclosure>summary{display:flex;align-items:center;justify-content:space-between;gap:10px;list-style:none}.disclosure>summary::-webkit-details-marker{display:none}.disclosure>summary:after{content:'+';font-size:17px;font-weight:300;color:var(--muted)}.disclosure[open]>summary:after{content:'−'}.line-item{display:flex;align-items:flex-start;justify-content:space-between;gap:14px;font-size:12px;line-height:1.6;color:var(--muted);padding:9px 0}.line-item strong{color:var(--text);white-space:nowrap}.line-item.total{padding-top:14px;margin-top:7px;border-top:1px solid var(--line)}.upcoming-mini{width:100%;text-align:left;justify-content:space-between;padding:14px 0;border-bottom:1px solid var(--line);background:none;color:var(--text);border-radius:0;font-size:13px;gap:12px}.upcoming-mini strong{font-size:13px}.upcoming-mini small{display:block;color:var(--muted);font-size:11px;margin-top:4px}.upcoming-mini>span:last-child{white-space:nowrap}.welcome{margin:12px 0 0;text-align:center;border:1px solid var(--line);border-radius:18px;padding:12px 15px}.welcome p{font-size:13px;margin:0 0 8px}.welcome button{font-size:12px;min-height:44px}.welcome .quiet{margin-left:8px}.toolbar{display:flex;gap:9px;align-items:center;margin:13px 0 17px}.toolbar input{flex:1}.toolbar .icon-button{background:var(--raised)}.toolbar #report-title{text-align:center;font-size:11px}.segmented{display:flex;gap:4px;border-radius:12px;background:oklch(13% .02 265);padding:4px;margin-bottom:10px}.segmented button{flex:1;min-height:38px;padding:7px;font-size:12px;background:none;color:var(--muted);border-radius:9px}.segmented button.active{background:var(--raised);color:var(--text)}.category-summary{margin:16px 0}.report-bar{height:3px;background:var(--raised);border-radius:8px;overflow:hidden}.report-bar div{height:100%;background:var(--accent)}
 .dialog-head{position:sticky;top:0;z-index:2;display:flex;align-items:center;justify-content:space-between;gap:15px;padding:22px 24px 7px;background:var(--surface);border-radius:30px 30px 0 0}.dialog-head h2{font-size:22px}.dialog-head>button{width:40px;min-height:40px;height:40px;padding:11px;border-radius:50%;background:var(--raised);color:var(--muted);flex-shrink:0}.dialog-head>button svg{width:17px;height:17px}.dialog-body{padding:7px 26px 18px}.dialog-footer{position:sticky;bottom:0;z-index:2;display:flex;gap:10px;padding:12px 26px calc(env(safe-area-inset-bottom,0px) + 22px);background:var(--surface)}.dialog-footer button{flex:1;min-height:52px}.dialog-body label{display:block;font-size:11px;color:var(--muted);margin-bottom:8px}label{font-size:11px;color:var(--muted);display:block;margin-bottom:8px}input,select,textarea{width:100%;max-width:100%;min-width:0;color:var(--text);font-size:16px;min-height:48px;border:1px solid var(--line);background:oklch(14% .022 265);border-radius:12px;padding:12px;-webkit-tap-highlight-color:transparent}input::placeholder,textarea::placeholder{color:oklch(57% .023 250);opacity:1}textarea{line-height:1.65;resize:vertical}input[type=date]{-webkit-appearance:none;min-width:0}input[type=checkbox]{width:18px;height:18px;min-height:18px;accent-color:var(--accent);margin:0;flex-shrink:0}.field-group{margin:13px 0}.fields{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:12px}.check-label,.dialog-body .check-label{display:flex;gap:10px;align-items:center;font-size:12px;line-height:1.6;color:var(--muted);margin:15px 0}.amount-entry{padding:15px 0 18px}.amount-input{display:flex;align-items:center;gap:12px}.amount-input>span{font-size:29px;font-weight:300;color:var(--muted)}.amount-input input{font-size:48px;font-weight:350;font-variant-numeric:tabular-nums;letter-spacing:-1.6px;line-height:1.2;background:none;border:0;border-radius:0;padding:2px 0;min-height:65px;box-shadow:none}.amount-input input:focus-visible{outline:none}.amount-entry:focus-within>label{color:var(--accent)}.amount-input input::placeholder{color:oklch(50% .025 250)}.quick-date-row{display:flex;align-items:flex-end;gap:16px}.quick-date-row>div{flex:1}.quick-date-row input{min-height:46px}.quick-date-row>button{background:var(--raised);margin-bottom:1px}#quick-hint{font-size:10px;margin:12px 0 0;min-height:17px}.quick-details{margin-top:18px;padding-top:15px;border-top:1px solid var(--line)}.notice{margin:12px 0;font-size:12px;line-height:1.6;padding:12px 14px;border:1px solid oklch(42% .04 75);background:oklch(23% .022 75);color:var(--amber);border-radius:12px}.notice.error{background:oklch(23% .03 20);border-color:oklch(40% .055 20);color:var(--red)}.install-hint{color:var(--muted);border-color:var(--line);background:var(--raised)}.actions{display:flex;gap:8px;flex-wrap:wrap;margin:12px 0}.actions button{flex:1;font-size:12px;padding:12px}.draft{border-bottom:1px solid var(--line);padding:6px 0 16px}.draft:last-child{border-bottom:0}.draft .reason{display:none}.draft>details{border-top:1px solid var(--line);margin-top:14px}.draft>p.tiny{display:none}.draft>.notice{font-size:11px}.draft>.notice.install-hint{background:none;border:0;padding:0;color:var(--muted);font-size:11px}.draft summary{font-size:12px}.voice-sheet .dialog-body{padding-top:14px;padding-bottom:calc(env(safe-area-inset-bottom,0px) + 24px)}.voice-status{font-size:12px;color:var(--muted);margin:4px 0 15px;min-height:20px}.voice-status.attention{color:var(--amber)}#natural{min-height:114px;background:none;padding:8px 0;border:0;border-radius:0;font-size:20px;line-height:1.5;resize:none;letter-spacing:-.3px}#natural:focus-visible{outline:none}#voice-compose:focus-within #natural{box-shadow:0 1px var(--accent)}.voice-actions{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-top:22px}.voice-actions .icon-button{width:56px;height:56px;background:var(--raised);color:var(--text);border:1px solid var(--line)}.voice-actions .mic-listening{color:var(--accent);border-color:var(--accent);animation:mic-breathe 1.4s ease-in-out infinite}.mic-listening svg{width:20px;height:20px}.voice-actions>button:last-child{min-width:140px}.preview-line{display:flex;justify-content:space-between;gap:14px;align-items:center;padding:17px 0;border-bottom:1px solid var(--line);font-size:14px;line-height:1.4}.preview-line>span{overflow-wrap:anywhere;min-width:0}.preview-line small{display:block;font-size:11px;color:var(--muted);line-height:1.5;margin-top:8px}.preview-line strong{font-size:17px;white-space:nowrap;font-weight:500}.preview-actions{display:flex;gap:10px;margin-top:24px}.preview-actions button{flex:1}#command-title{font-size:20px;font-weight:450;letter-spacing:-.5px}#command-description{margin:14px 0 0}#voice-consent p{color:var(--muted);font-size:14px;margin:0 0 24px}#view-settings>.disclosure:first-child{border-top:0;margin-top:0}#view-settings .disclosure>summary{color:var(--text)}#view-settings form>button{margin:12px 0 8px}#plan-budget>h3{display:none}
@@ -292,7 +309,6 @@ dialog input[type=checkbox] { padding: 0; }
   .desktop-controls svg { width: 16px; height: 16px; }
   .desktop-controls kbd { font-family: inherit; font-size: 10px; font-weight: 400; color: oklch(71% .025 235); line-height: 1; padding: 4px 5px; min-width: 19px; border: 1px solid oklch(85% .02 230 / .13); border-radius: 5px; margin-left: 6px; }
   html:not([data-scene=idle]) .desktop-controls { opacity: 0; pointer-events: none; transform: translate(-50%,8px); }
-  @keyframes window-in { from { opacity: 0; transform: translateY(14px) scale(.975); } to { opacity: 1; transform: none; } }
 }
 @media (hover: hover) and (pointer: fine) {
   dialog button:hover:not(:disabled),.desktop-controls button:hover { filter: brightness(1.09); }
@@ -311,7 +327,13 @@ dialog input[type=checkbox] { padding: 0; }
 }
 @media (prefers-reduced-motion: reduce) {
   *,*:before,*:after { animation: none!important; transition: none!important; scroll-behavior: auto!important; }
+  dialog::backdrop { animation: none!important; }
   .wordmark { filter: none!important; }
+}
+
+/* Let supported installed desktop apps use the titlebar area as part of the scene. */
+@media (display-mode: window-controls-overlay) {
+  body::before { content:""; position:fixed; left:env(titlebar-area-x,0px); top:env(titlebar-area-y,0px); width:env(titlebar-area-width,100%); height:env(titlebar-area-height,0px); z-index:10; -webkit-app-region:drag; app-region:drag; }
 }
 </style>
 </head>
@@ -421,7 +443,7 @@ dialog input[type=checkbox] { padding: 0; }
   <div class="dialog-head"><h2 id="voice-title">Dimmi pure.</h2><button id="close-voice" class="icon-button" aria-label="Chiudi dettatura"><span data-icon="close"></span></button></div>
   <div class="dialog-body">
     <section id="voice-consent" hidden><p>La dettatura usa il servizio vocale del browser, che può elaborare l’audio online.</p><button id="voice-enable" class="full-width">Attiva microfono <span data-icon="mic"></span></button><button id="voice-write" class="quiet full-width">Preferisco scrivere</button></section>
-    <div id="voice-compose"><p class="voice-status" id="voice-status" role="status"></p><label class="sr-only" for="natural">Scrivi una spesa o una modifica</label><textarea id="natural" rows="3" maxlength="4000" placeholder="Una spesa. O quello che vuoi cambiare."></textarea><div class="voice-actions"><button class="icon-button" id="mic" aria-label="Avvia dettatura"><span data-icon="mic"></span></button><button id="interpret">Continua <span data-icon="arrow"></span></button></div></div>
+    <div id="voice-compose"><p class="voice-status" id="voice-status" role="status"></p><label class="sr-only" for="natural">Scrivi una spesa o una modifica</label><textarea id="natural" rows="3" maxlength="4000" placeholder="Una spesa. O quello che vuoi cambiare."></textarea><div class="voice-actions"><button class="icon-button" id="mic" aria-label="Avvia dettatura"><span data-icon="mic"></span></button><button id="interpret">Continua <span data-icon="arrow"></span></button></div><p class="tiny">La voce usa il servizio del browser, anche online. MyMoney non conserva audio.</p></div>
     <section id="command-preview" hidden aria-label="Proposta da confermare" aria-live="polite"><h3 id="command-title"></h3><p id="command-description" class="tiny"></p><div id="command-lines"></div><div class="preview-actions"><button class="ghost" id="command-edit">Modifica</button><button id="command-save">Conferma</button></div><button class="quiet full-width" id="command-close">Riprova</button><div id="command-error" class="notice error" role="alert" hidden></div></section>
   </div>
 </dialog>
@@ -866,7 +888,14 @@ dialog input[type=checkbox] { padding: 0; }
   function open(dialog,focus){
     const pending=closing.get(dialog);if(pending){pending.cancel();closing.delete(dialog);}
     dialog.classList.remove('is-closing');dialog.style.transform='';
-    if(!dialog.open)dialog.showModal();
+    if(!dialog.open){
+      // Native dialog autofocus must never summon the keyboard or highlight a button.
+      const heading=dialog.querySelector('h2');
+      heading.tabIndex=-1;heading.setAttribute('autofocus','');
+      dialog.showModal();heading.removeAttribute('autofocus');
+      heading.focus({preventScroll:true});
+      dialog.scrollTop=0;
+    }
     scene();
     if(focus)focus.focus({preventScroll:true});
   }
@@ -887,6 +916,9 @@ dialog input[type=checkbox] { padding: 0; }
     // Suppress compatibility mouse focus after touchup opens the keyboard.
     e.preventDefault();
     cancelGesture();gesture={id:e.pointerId,x:e.clientX,y:e.clientY,time:performance.now(),moved:false,held:false};
+    root.classList.add('surface-held');
+    const ring=$('.hold-ring');ring.style.left=e.clientX+'px';ring.style.top=e.clientY+'px';
+    window.dispatchEvent(new CustomEvent('mm:touch',{detail:{x:e.clientX,y:e.clientY}}));
     try{surface.setPointerCapture(e.pointerId);}catch(_){}
     scene();holdTimer=setTimeout(()=>{
       if(!gesture||gesture.moved||dialogs().length)return;
@@ -915,6 +947,11 @@ dialog input[type=checkbox] { padding: 0; }
     surface.addEventListener('pointerdown',down);surface.addEventListener('pointermove',move);surface.addEventListener('pointerup',up);
     surface.addEventListener('pointercancel',cancelGesture);surface.addEventListener('lostpointercapture',()=>{if(gesture)cancelGesture();});
     surface.addEventListener('contextmenu',e=>e.preventDefault());
+    // Keep the entire hold unselectable, even after showModal makes the surface inert.
+    const releaseHold=()=>root.classList.remove('surface-held');
+    window.addEventListener('pointerup',releaseHold,true);window.addEventListener('pointercancel',releaseHold,true);
+    document.addEventListener('selectstart',e=>{if(root.classList.contains('surface-held'))e.preventDefault();});
+    document.addEventListener('contextmenu',e=>{if(root.classList.contains('surface-held'))e.preventDefault();});
     // A tap opens on its click, so the compatibility click cannot hit the new popup.
     window.addEventListener('pointerdown',()=>{suppressClick=false;pendingTap=false;},true);
     window.addEventListener('click',e=>{if(suppressClick&&e.detail!==0){suppressClick=false;e.preventDefault();e.stopImmediatePropagation();}},true);
@@ -944,7 +981,9 @@ dialog input[type=checkbox] { padding: 0; }
     sheet.addEventListener('close',()=>{sheet.style.animation='';drag=null;});
     window.visualViewport?.addEventListener('resize',viewport);window.visualViewport?.addEventListener('scroll',viewport);window.addEventListener('resize',viewport);
     const suspend=()=>{cancelGesture();callbacks.suspend?.();};
-    window.addEventListener('blur',suspend);document.addEventListener('visibilitychange',()=>{if(document.hidden)suspend();else viewport();});
+    // The browser's microphone permission prompt may blur the window: do not abort it.
+    window.addEventListener('blur',()=>{cancelGesture();releaseHold();});
+    document.addEventListener('visibilitychange',()=>{if(document.hidden){releaseHold();suspend();}else viewport();});
   }
   window.MMUI={init,open,close,scene,dialogs,setVoice(active){voiceActive=active;scene();}};
 })();
@@ -1607,7 +1646,8 @@ window.MM_FIREBASE_CONFIG = Object.freeze({
       if(duplicates&&!window.confirm('Un movimento uguale esiste già. Aggiungerlo comunque?'))return;
       next.transactions.push(...additions);
       for(const r of rules){next.rules=next.rules.filter(x=>x.phrase!==r.phrase);next.rules.push(r);}
-      commit(next);UI.close($('#editor'));$('#natural').value='';closeProposal();sayUndo(editingId?'Movimento aggiornato.':'Movimento salvato.',before);
+      const message=editingId?'Movimento aggiornato.':'Movimento salvato.';
+      commit(next);UI.close($('#editor'));$('#natural').value='';closeProposal();sayUndo(message,before);
     }catch(e){errBox('#editor-error',e.message);}
   });
   $('#delete-transaction').addEventListener('click',()=>{if(!editingId||!confirm('Eliminare questo movimento? Il saldo e il budget saranno ricalcolati.'))return;try{if(editingRevision!==state.revision)throw Error('I dati sono cambiati. Chiudi e riapri il movimento.');const before=M.clone(state),next=M.clone(state);next.transactions=next.transactions.filter(t=>t.id!==editingId);commit(next);UI.close($('#editor'));sayUndo('Movimento eliminato.',before);}catch(e){errBox('#editor-error',e.message);}});
@@ -1677,16 +1717,16 @@ window.MM_FIREBASE_CONFIG = Object.freeze({
   }
 
   // Recognition stays optional. Each callback belongs to exactly one live session.
-  let speechTimers=[], voiceConsent=false;
+  let speechTimers=[];
   function voiceStatus(text,attention=false){$('#voice-status').textContent=text;$('#voice-status').classList.toggle('attention',attention);}
   function voiceUI(active){UI.setVoice(active);$('#mic').classList.toggle('mic-listening',active);$('#mic').setAttribute('aria-pressed',String(active));$('#mic').setAttribute('aria-label',active?'Termina dettatura':'Avvia dettatura');}
   function clearSpeechTimers(){speechTimers.forEach(clearTimeout);speechTimers=[];}
   function cancelVoice(){const previous=speech;speech=null;clearSpeechTimers();voiceUI(false);if(previous){try{previous.abort();}catch(_){}}}
   function beginRecognition(){
+    cancelVoice();closeProposal();$('#natural').value='';
     $('#voice-consent').hidden=true;$('#voice-compose').hidden=false;
     const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
-    if(!SR){voiceStatus('Scrivi qui o usa il microfono della tastiera.',true);$('#natural').focus();return;}
-    cancelVoice();
+    if(!SR){voiceStatus('Scrivi qui o usa il microfono della tastiera.',true);return;}
     try{
       const r=new SR();speech=r;r.lang='it-IT';r.interimResults=true;r.continuous=false;
       let finalText='',failed=false;
@@ -1703,20 +1743,31 @@ window.MM_FIREBASE_CONFIG = Object.freeze({
   function startVoice(){
     if(speech){try{speech.stop();}catch(_){cancelVoice();}return;}
     closeProposal();UI.open($('#voice-sheet'));$('#voice-title').textContent='Dimmi pure.';
-    if(!(window.SpeechRecognition||window.webkitSpeechRecognition)){beginRecognition();return;}
-    try{voiceConsent=voiceConsent||localStorage.getItem('mymoney-voice-consent')==='yes';}catch(_){}
-    if(!voiceConsent){$('#voice-consent').hidden=false;$('#voice-compose').hidden=true;return;}
     beginRecognition();
   }
-  $('#voice-enable').addEventListener('click',()=>{voiceConsent=true;try{localStorage.setItem('mymoney-voice-consent','yes');}catch(_){}beginRecognition();});
+  $('#voice-enable').addEventListener('click',beginRecognition);
   $('#voice-write').addEventListener('click',()=>{$('#voice-consent').hidden=true;$('#voice-compose').hidden=false;voiceStatus('Scrivi una spesa o una modifica.');$('#natural').focus();});
   $('#close-voice').addEventListener('click',()=>UI.close($('#voice-sheet')));
   $('#close-quick').addEventListener('click',()=>UI.close($('#quick-sheet')));
   $('#settings-voice').addEventListener('click',startVoice);
   document.addEventListener('mm:closing',e=>{
-    if(e.target.id==='voice-sheet'){cancelVoice();closeProposal();}
+    if(e.target.id==='voice-sheet')cancelVoice();
     const toast=$('#toast');if(e.target.contains(toast))(UI.dialogs().filter(d=>d!==e.target).at(-1)||document.body).append(toast);
   });
+  // Discard drafts after the exit animation, without collapsing the visible panel.
+  document.addEventListener('close',e=>{
+    if(e.target.tagName!=='DIALOG'||e.target.open)return;
+    if(e.target.id==='voice-sheet'){cancelVoice();closeProposal();$('#natural').value='';voiceStatus('');$('#command-lines').replaceChildren();}
+    if(e.target.id==='quick-sheet'){resetQuick();}
+    if(e.target.id==='editor'){drafts=[];editingId=null;editingRevision=null;$('#drafts').replaceChildren();errBox('#editor-error','');}
+    if(e.target.id==='rec-editor'){$('#rec-form').reset();recEditingId=null;recRevision=null;errBox('#rec-error','');}
+    if(e.target.id==='data-sheet'){
+      settingsDirty=false;settingsRevision=null;$('#search').value='';historyFilter='all';reportMode='month';reportOffset=0;
+      $('#history-filters [data-filter="all"]').click();$('#report-modes [data-report="month"]').click();
+      renderSettings();
+    }
+    e.target.querySelectorAll('details').forEach(d=>{d.open=d.dataset.initialOpen==='true';});
+  },true);
   async function setupOffline(){
     const local=location.protocol==='file:';
     if(local){errBox('#environment','Anteprima da file: funziona per la prova su computer. Su iPhone usa la versione HTTPS installata dalla Home. Fai sempre un backup.');$('#install-status').textContent='File locale: nessuna installazione offline PWA attiva.';return;}
@@ -1736,7 +1787,11 @@ window.MM_FIREBASE_CONFIG = Object.freeze({
     button.addEventListener('click',()=>{try{if(state.revision!==revision)throw Error('Ci sono modifiche successive. Apri il movimento per correggerlo.');commit(before);say('Operazione annullata.');}catch(e){say(e.message);}});
     toast.append(button);toast.hidden=false;toastTimer=setTimeout(()=>{if(!toast.contains(document.activeElement))toast.hidden=true;},12000);
   }
-  function quickFocus(){if($('#q-date').dataset.chosen!=='true')$('#q-date').value=M.today();updateQuickHint();UI.open($('#quick-sheet'),$('#q-name'));}
+  function resetQuick(){
+    $('#quick-form').reset();$('#q-date').value=M.today();$('#q-date').dataset.chosen='false';
+    $('#quick-details').hidden=true;$('#quick-options').setAttribute('aria-expanded','false');errBox('#quick-error','');updateQuickHint();
+  }
+  function quickFocus(){if(!$('#quick-sheet').open||$('#quick-sheet').classList.contains('is-closing'))resetQuick();UI.open($('#quick-sheet'));}
   function updateQuickHint(){
     const name=$('#q-name').value.trim(),type=$('#q-type').value==='auto'?M.inferType(name):$('#q-type').value;
     const category=$('#q-category').value||M.inferCategory(name,state.rules),future=$('#q-date').value>M.today();
@@ -1769,7 +1824,7 @@ window.MM_FIREBASE_CONFIG = Object.freeze({
     $('#natural').addEventListener('keydown',e=>{if(e.key==='Enter'&&!e.shiftKey&&!e.isComposing){e.preventDefault();analyze();}});
     $('#natural').addEventListener('input',closeProposal);
     $$('[data-example]').forEach(b=>b.addEventListener('click',()=>{$('#natural').value=b.dataset.example;closeProposal();$('#natural').focus();}));
-    $('#command-close').addEventListener('click',()=>{closeProposal();voiceStatus('Una spesa, uno stipendio, una modifica.');$('#natural').focus();});
+    $('#command-close').addEventListener('click',beginRecognition);
     $('#command-edit').addEventListener('click',()=>{
       if(proposalRevision!==state.revision){errBox('#command-error','I dati sono cambiati. Ripeti la richiesta.');return;}
       const p=proposal;UI.close($('#voice-sheet'),{immediate:true});closeProposal();if(p.kind==='transactions')openDrafts(p.items);else if(p.kind==='salary')openDrafts([p.transaction],p.existingId);else if(p.kind==='recurring'){editRecurring(p.recurring);if(p.isNew){recEditingId=null;$('#delete-recurring').hidden=true;}}
@@ -1802,6 +1857,7 @@ window.MM_FIREBASE_CONFIG = Object.freeze({
   $$('#report-modes button').forEach(b=>b.addEventListener('click',()=>{reportMode=b.dataset.report;reportOffset=0;$$('#report-modes button').forEach(x=>x.classList.toggle('active',x===b));renderReport();}));
   $('#report-prev').addEventListener('click',()=>{reportOffset--;renderReport();});$('#report-next').addEventListener('click',()=>{reportOffset++;renderReport();});
   $('#export-json').addEventListener('click',exportJSON);$('#export-csv').addEventListener('click',()=>exportCSV().catch(e=>say(e.message)));$('#export-calendar').addEventListener('click',()=>exportCalendar().catch(e=>say(e.message)));$('#mic').addEventListener('click',startVoice);
+  $$('dialog details').forEach(d=>d.dataset.initialOpen=String(d.open));
   load();render();setupQuick();UI.init({manual:quickFocus,voice:startVoice,data:()=>go('home'),suspend:()=>{if(speech){cancelVoice();voiceStatus('Dettatura interrotta. Tocca il microfono per riprendere.');}}});setupOffline();
   window.MMSync?.init({getState:()=>M.clone(state),replaceState:next=>{state=M.validate(next);readOnly=false;render();},notify:say,resetDrafts:()=>{
     cancelVoice();closeProposal();settingsDirty=false;editingId=null;recEditingId=null;drafts=[];editingRevision=null;recRevision=null;proposalRevision=null;
@@ -1813,7 +1869,7 @@ window.MM_FIREBASE_CONFIG = Object.freeze({
   document.addEventListener('visibilitychange',()=>{if(!document.hidden){renderHome();renderHistory();renderPlan();}});
 })();
 </script>
-<script>/* MyMoney's living backdrop. Decorative, local, and deliberately independent of input. */
+<script>/* MyMoney's living backdrop. Input feedback shares the existing low-power render loop. */
 (() => {
   'use strict';
   const canvas = document.querySelector('#orb-canvas');
@@ -1826,6 +1882,7 @@ window.MM_FIREBASE_CONFIG = Object.freeze({
   };
   let frame = 0, lastFrame = 0, lastPaint = 0, time = 14, width = 1, height = 1;
   let energy = 0, luminosity = 1, lost = false, renderer = null, destroyed = false;
+  let touchX=.5,touchY=.5,touchPulse=0;
   let scene = document.documentElement.dataset.scene || 'idle';
   let target = sceneTargets[scene] || sceneTargets.idle;
   const listeners = [];
@@ -1848,6 +1905,7 @@ window.MM_FIREBASE_CONFIG = Object.freeze({
     uniform float u_time;
     uniform float u_energy;
     uniform float u_light;
+    uniform vec3 u_touch;
 
     float hash(vec2 p) {
       p = fract(p * vec2(123.34, 456.21));
@@ -1873,6 +1931,9 @@ window.MM_FIREBASE_CONFIG = Object.freeze({
     void main() {
       vec2 uv = gl_FragCoord.xy / u_resolution;
       vec2 p = (gl_FragCoord.xy - .5 * u_resolution) / u_resolution.y;
+      vec2 contact=(uv-u_touch.xy)*vec2(u_resolution.x/u_resolution.y,1.0);
+      float ripple=exp(-dot(contact,contact)*14.0)*u_touch.z;
+      p += contact*ripple*.22;
       float t = u_time * .105;
       // A slow domain warp makes light behave like folded silk, without a mesh.
       vec2 q = vec2(cloud(p * 2.7 + vec2(.13 * t, -.17 * t)),
@@ -1892,6 +1953,7 @@ window.MM_FIREBASE_CONFIG = Object.freeze({
       vec3 blue = vec3(.19, .32, .62);
       vec3 mint = vec3(.29, .63, .56);
       vec3 color = ink;
+      color += cyan*ripple*.08;
       // Broad translucent bodies give the thin caustics room to breathe.
       float leftBody = exp(-abs(left - .028) * 12.0) * leftFlow;
       float rightBody = exp(-abs(right + .05) * 10.0) * rightFlow;
@@ -1956,6 +2018,7 @@ window.MM_FIREBASE_CONFIG = Object.freeze({
       const clock = gl.getUniformLocation(program, 'u_time');
       const activity = gl.getUniformLocation(program, 'u_energy');
       const light = gl.getUniformLocation(program, 'u_light');
+      const touch = gl.getUniformLocation(program, 'u_touch');
       compiled.forEach(shader => gl.deleteShader(shader));
       compiled.length = 0;
       return {
@@ -1965,6 +2028,7 @@ window.MM_FIREBASE_CONFIG = Object.freeze({
           gl.uniform1f(clock, time);
           gl.uniform1f(activity, energy);
           gl.uniform1f(light, luminosity);
+          gl.uniform3f(touch,touchX,1-touchY,touchPulse);
           gl.drawArrays(gl.TRIANGLES, 0, 3);
         },
         dispose() {
@@ -1999,6 +2063,11 @@ window.MM_FIREBASE_CONFIG = Object.freeze({
         ctx.fillStyle = '#030507';
         ctx.fillRect(0, 0, w, h);
         ctx.globalCompositeOperation = 'screen';
+        if(touchPulse>0.01){
+          const glow=ctx.createRadialGradient(touchX*w,touchY*h,0,touchX*w,touchY*h,h*.35);
+          glow.addColorStop(0,`rgba(131,208,217,${touchPulse*.13})`);glow.addColorStop(1,'rgba(131,208,217,0)');
+          ctx.fillStyle=glow;ctx.fillRect(0,0,w,h);
+        }
         const glows = [
           [.15 + Math.sin(t) * .09, .65 + Math.cos(t * .7) * .09, '50,139,140'],
           [.9 + Math.cos(t * .6) * .12, .3 + Math.sin(t * .8) * .15, '53,82,155'],
@@ -2055,6 +2124,7 @@ window.MM_FIREBASE_CONFIG = Object.freeze({
       const ease = 1 - Math.exp(-delta * 4.5);
       energy += (target[0] - energy) * ease;
       luminosity += (target[1] - luminosity) * ease;
+      touchPulse*=Math.exp(-delta*2.8);
       draw();
     }
     frame = requestAnimationFrame(tick);
@@ -2086,6 +2156,11 @@ window.MM_FIREBASE_CONFIG = Object.freeze({
   if (resizeObserver) resizeObserver.observe(stage);
   else on(window, 'resize', resize, { passive: true });
   on(document, 'visibilitychange', resume);
+  on(window,'mm:touch',event=>{
+    if(reducedMotion.matches)return;
+    touchX=event.detail.x/width;touchY=event.detail.y/height;touchPulse=1;
+    draw();
+  });
   if (reducedMotion.addEventListener) on(reducedMotion, 'change', resume);
   else reducedMotion.addListener(resume);
   on(canvas, 'webglcontextlost', event => {
