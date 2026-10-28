@@ -3774,26 +3774,37 @@ window.MM_FIREBASE_CONFIG = Object.freeze({
     varying vec3 v_color;
     varying float v_alpha;
     ${fieldFunctions}
+    float volumeNoise(vec3 p) {
+      float plane=floor(p.z),f=fract(p.z);f=f*f*(3.0-2.0*f);
+      vec2 stride=vec2(37.0,17.0);
+      return mix(noise(p.xy+plane*stride),noise(p.xy+(plane+1.0)*stride),f);
+    }
     void main() {
       float m=u_morph,radius=u_focus.z,t=u_time*.105;
-      float seed=a_particle.z,phase=a_particle.w;
-      float longitude=a_particle.x+u_time*.055;
+      float seed=a_particle.z,phase=abs(a_particle.w),mote=1.0-step(0.0,a_particle.w);
+      float drift=u_time*.035;
+      float longitude=a_particle.x+u_time*.018;
       float z=a_particle.y;
       float latitude=sqrt(max(0.0,1.0-z*z));
       vec3 n=vec3(cos(longitude)*latitude,sin(longitude)*latitude,z);
       // True 3D circulation: points move around a shell, rather than flicker in place.
-      float tilt=.32+sin(u_time*.09)*.08;
+      float tilt=.46+sin(u_time*.025)*.065;
       n.yz=mat2(cos(tilt),-sin(tilt),sin(tilt),cos(tilt))*n.yz;
       float theta=atan(n.y,n.x);
-      float folds=.035*sin(theta*5.0+n.z*7.0-u_time*.32)
-                 +.020*sin(theta*9.0-n.z*5.0+u_time*.21);
+      // Spatial detail and temporal speed are separate: intricate, unhurried motion.
+      float macro=volumeNoise(n*3.1+vec3(drift,-drift*.6,drift*.35));
+      float detail=volumeNoise(n*8.6+vec3(6.4,-drift*.5,drift*.3));
+      float fine=volumeNoise(n*19.2+vec3(-drift*.3,3.7,drift*.2));
+      float folds=(macro-.5)*.23+(detail-.5)*.095+(fine-.5)*.035;
+      float filaments=pow(.5+.5*sin(n.z*19.0+macro*8.0+n.y*3.0),5.0);
       float ridges=pow(.5+.5*sin(theta*3.0+n.z*5.0-u_time*1.6),3.0);
       float lifted=smoothstep(.68,.98,seed);
       float audio=(u_voice*.045+u_bands.x*.14)*ridges
                  +u_bands.y*.025*sin(theta*12.0+n.z*8.0-u_time*4.0)
                  +lifted*u_voice*.065*(.5+.5*sin(phase*40.0+u_time*9.0));
       float jitter=u_bands.z*.016*sin(u_time*22.0+phase*75.0);
-      float shell=1.0+folds+(seed-.5)*.052+audio+jitter;
+      float dust=mote*(.025+.14*pow(phase,3.0))*(.35+detail);
+      float shell=1.0+folds+(seed-.5)*mix(.012,.07,mote)+dust+audio+jitter;
       vec2 projected=n.xy*shell/(1.0-n.z*.10);
       vec2 diff=projected-u_probe.xy;
       float local=(exp(-dot(diff,diff)*9.0)+.26*exp(-dot(u_probe.xy,u_probe.xy)*4.0))*u_probe.z;
@@ -3823,15 +3834,17 @@ window.MM_FIREBASE_CONFIG = Object.freeze({
       vec2 anchor=mix(rest,u_focus.xy+vec2(-side*radius,0.0),m);
       vec2 position=anchor+side*bent;
       gl_Position=vec4(position*vec2(2.0*u_resolution.y/u_resolution.x,2.0),0.0,1.0);
-      float limb=pow(max(0.0,1.0-abs(n.z)),2.7);
+      float limb=pow(max(0.0,1.0-abs(n.z)),2.1);
       float corona=smoothstep(.44,.88,radial);
-      float depth=mix(.55,1.0,smoothstep(-.7,.5,n.z));
-      float light=(.015+limb*1.10+corona*.085)*depth;
+      float depth=mix(.34,1.0,smoothstep(-.7,.5,n.z));
+      float light=(.075+.38*filaments+limb*.90+corona*.075)*depth;
+      light*=mix(1.0,.48*smoothstep(.18,.65,detail)*(.25+limb),mote);
       v_alpha=light*smoothstep(.32,.88,m)*(1.0+local*.9+u_voice*lifted*.6);
-      vec3 teal=vec3(.23,.58,.57),cyan=vec3(.36,.70,.76),blue=vec3(.22,.37,.64);
-      v_color=mix(teal,blue,.32+.25*sin(theta+.7));
-      v_color=mix(v_color,cyan,.35+.35*seed);
-      float speck=mix(1.05,1.85,seed)+lifted*u_bands.z*.35;
+      vec3 teal=vec3(.21,.58,.55),cyan=vec3(.43,.76,.81),blue=vec3(.22,.37,.65);
+      vec3 pigment=mix(teal,blue,.40+.32*sin(theta+.7+macro));
+      v_color=mix(pigment*.90,cyan,smoothstep(.30,1.0,limb)*(.40+.45*seed));
+      v_color=mix(v_color,vec3(.59,.84,.86),smoothstep(.97,1.0,seed)*.65);
+      float speck=mix(1.05,2.15,seed)+filaments*.2+lifted*u_bands.z*.35;
       gl_PointSize=max(1.0,speck*u_pixel);
     }
   `;
@@ -3842,19 +3855,29 @@ window.MM_FIREBASE_CONFIG = Object.freeze({
     void main() {
       float d=length(gl_PointCoord-.5)*2.0;
       if(d>1.0)discard;
-      float core=1.0-smoothstep(.15,1.0,d);
+      float core=(1.0-smoothstep(.55,1.0,d))*.8+(1.0-smoothstep(0.0,.38,d))*.2;
       gl_FragColor=vec4(v_color,v_alpha*core);
     }
   `;
-  const particleCount=saveData?7000:16000;
-  const particleSeeds=new Float32Array(particleCount*4);
-  for(let i=0;i<particleCount;i++){
-    const j=i*4;
-    particleSeeds[j]=(i*2.399963229728653)%(Math.PI*2);
-    particleSeeds[j+1]=1-2*(i+.5)/particleCount;
-    particleSeeds[j+2]=(i*.7548776662466927)%1;
-    particleSeeds[j+3]=(i*.5698402909980532)%1;
+  // Curved rows form the fine woven surface; sparse motes lift beyond its silhouette.
+  // Fixed seeds keep the grain stable between frames instead of temporal sparkle.
+  const seedData=[],rows=saveData?80:144,equator=saveData?120:240;
+  let seedIndex=0;
+  const appendSeed=(longitude,z,mote=false)=>{
+    const i=++seedIndex,seed=(i*.7548776662466927)%1,phase=.01+.98*((i*.5698402909980532)%1);
+    seedData.push(longitude,z,seed,mote?-phase:phase);
+  };
+  for(let row=0;row<rows;row++){
+    const latitude=Math.PI*(row+.5)/rows,columns=Math.max(12,Math.round(equator*Math.sin(latitude)));
+    for(let col=0;col<columns;col++){
+      const longitude=(col+(row%2)*.5)/columns*Math.PI*2+.16*Math.sin(latitude*4);
+      appendSeed(longitude,Math.cos(latitude));
+    }
   }
+  const moteCount=saveData?1000:3600;
+  for(let i=0;i<moteCount;i++)appendSeed((i*2.399963229728653)%(Math.PI*2),.76*(1-2*(i+.5)/moteCount),true);
+  const particleSeeds=new Float32Array(seedData),particleCount=particleSeeds.length/4;
+  seedData.length=0;
   function orbGeometry(){
     const visible=Math.min(height,window.visualViewport?.height||height),short=visible<600;
     const diameter=short?Math.min(165,width*.62):Math.min(420,width<700?width*.75:visible*.46);
@@ -4033,10 +4056,10 @@ window.MM_FIREBASE_CONFIG = Object.freeze({
           const fade=smooth(.2,.84,m),cx=w*.5,centreY=cy*h,r=radius*h;
           ctx.fillStyle='#66b5bd';
           for(let i=0;i<particleCount;i+=8){
-            const j=i*4,seed=particleSeeds[j+2],theta=particleSeeds[j]+time*.055;
+            const j=i*4,seed=particleSeeds[j+2],theta=particleSeeds[j]+time*.018;
             const z=particleSeeds[j+1],lat=Math.sqrt(1-z*z);
             const nx=Math.cos(theta)*lat,ny=Math.sin(theta)*lat;
-            const fold=.035*Math.sin(theta*5+z*7-time*.32)+.020*Math.sin(theta*9-z*5+time*.21);
+            const fold=.035*Math.sin(theta*5+z*7-time*.10)+.020*Math.sin(theta*9-z*5+time*.065);
             const lift=(audioLevel*.045+bass*.14)*Math.pow(.5+.5*Math.sin(theta*3+z*5-time*1.6),3);
             const shell=1+fold+(seed-.5)*.052+lift;
             let ox=nx*shell/(1-z*.1),oy=ny*shell/(1-z*.1);
