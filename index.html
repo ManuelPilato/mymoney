@@ -29,7 +29,7 @@
 *{box-sizing:border-box}html,body{margin:0;width:100%;height:100vh;overflow:hidden;overscroll-behavior:none}body{-webkit-text-size-adjust:100%}button,input,textarea,select{font:inherit}button{cursor:pointer;touch-action:manipulation;-webkit-tap-highlight-color:transparent;display:inline-flex;justify-content:center;align-items:center;gap:9px;min-height:48px;padding:13px 19px;border:1px solid transparent;border-radius:16px;background:var(--accent);color:var(--ink);font-size:15px;font-weight:550;transition:transform 140ms var(--ease),background 160ms ease,color 160ms ease}button:active{transform:scale(.97)}button:disabled{opacity:.45;cursor:default}button:focus-visible,input:focus-visible,textarea:focus-visible,select:focus-visible,summary:focus-visible{outline:2px solid var(--accent);outline-offset:4px}button.quiet{background:none;color:var(--muted);font-size:13px;padding:10px 5px}button.ghost{background:var(--raised);color:var(--text);border-color:var(--line)}button.danger{background:oklch(25% .035 20);color:var(--red)}button.icon-button{width:44px;min-height:44px;height:44px;padding:12px;background:transparent;color:var(--muted);border-radius:50%;flex-shrink:0}svg{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:1.65;stroke-linecap:round;stroke-linejoin:round;flex-shrink:0}[data-icon]{display:inline-flex;align-items:center;justify-content:center}[hidden]{display:none!important}h1,h2,h3,p{margin:0}h2{font-size:22px;font-weight:500;letter-spacing:-.7px}h3{font-size:15px;font-weight:500;letter-spacing:-.2px}p{font-size:14px;line-height:1.6;max-width:70ch;margin:12px 0}strong{font-weight:550}.tiny,.muted{font-size:12px;color:var(--muted);line-height:1.7}.label{font-size:13px;color:var(--muted)}.sr-only{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;padding:0;border:0}.full-width{width:100%}.grow{flex:1;min-width:0}
 #experience{position:fixed;inset:0;isolation:isolate;overflow:hidden;background:var(--bg)}#orb-canvas{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:-2}.scene-shade{position:absolute;inset:0;background:radial-gradient(ellipse at 50% 47%,oklch(9% 0.006 265 / .05),transparent 45%,oklch(8% 0.006 265 / .22));pointer-events:none;z-index:-1}#touch-surface{position:absolute;inset:0;border:0;border-radius:0;background:none;width:100%;height:100%;padding:0;touch-action:none;-webkit-touch-callout:none;user-select:none;-webkit-user-select:none}#touch-surface:active{transform:none}#touch-surface:focus-visible{outline-offset:-7px}.wordmark{position:absolute;top:47%;left:50%;transform:translate(-50%,-50%);font-size:41px;font-weight:400;letter-spacing:-2.2px;line-height:1.2;color:oklch(97% 0.006 240);pointer-events:none;text-shadow:0 2px 35px oklch(9% 0.006 265 / .3);transition:opacity 250ms var(--ease),filter 300ms var(--ease);white-space:nowrap}.wordmark-point{color:var(--accent);font-weight:300}.data-handle{position:absolute;left:50%;bottom:calc(env(safe-area-inset-bottom,0px) + 16px);transform:translateX(-50%);width:76px;height:48px;border-radius:30px;background:none;padding:18px}.data-handle:active{transform:translateX(-50%) scale(.95)}.data-handle span{width:28px;height:3px;background:oklch(88% 0.006 245 / .5);border-radius:4px;transition:width 180ms ease}.focus-action{position:fixed;top:calc(env(safe-area-inset-top,0px) + 15px);left:16px;opacity:0;pointer-events:none}.focus-action:focus-visible{opacity:1;pointer-events:auto;z-index:50}.hold-ring{position:absolute;left:50%;top:47%;width:220px;height:220px;border:1px solid oklch(85% 0.006 220 / .4);border-radius:50%;transform:translate(-50%,-50%) scale(.9);opacity:0;pointer-events:none;transition:transform 400ms var(--ease),opacity 180ms ease}html[data-scene=pressing] .hold-ring{opacity:.5;transform:translate(-50%,-50%) scale(1.06)}html[data-scene=data] .wordmark,html[data-scene=modal] .wordmark,html[data-scene=listening] .wordmark{opacity:.14;filter:blur(5px)}html:not([data-scene=idle]) .data-handle{opacity:0;pointer-events:none}
 /* A single floating material keeps each task connected to the fluid scene. */
-dialog {
+dialog,.glass-panel {
   --line: oklch(81% 0.006 235 / .13);
   --raised: oklch(79% 0.006 235 / .075);
   --surface: oklch(20% .004 250 / .30);
@@ -81,7 +81,7 @@ dialog h2:focus { outline: none; }
 @keyframes window-in { from { opacity: 0; transform: translateY(14px) scale(.975); } to { opacity: 1; transform: none; } }
 @keyframes data-in { from { opacity: 0; transform: translateY(54px) scale(.99); } to { opacity: 1; transform: none; } }
 .data-header{position:relative;flex-shrink:0;padding:18px 20px 0;touch-action:none;user-select:none;-webkit-user-select:none}.sheet-grip{display:block;width:32px;height:4px;border-radius:8px;background:oklch(48% 0.006 250);margin:0 auto 12px}.data-heading{display:flex;align-items:center;justify-content:space-between;gap:15px}.data-heading h2{font-size:17px;letter-spacing:-.4px}.data-heading button{background:none}.nav{display:flex;gap:5px;margin:14px 22px 10px;padding:4px;background:oklch(12% 0.006 265 / .7);border-radius:16px;flex-shrink:0}.nav button{flex:1;background:none;color:var(--muted);padding:9px 7px;font-size:12px;min-height:40px;border-radius:12px;font-weight:500}.nav button.active{background:var(--raised);color:var(--text)}.data-scroll{padding:8px 25px calc(env(safe-area-inset-bottom,0px) + 28px);overflow-y:auto;overscroll-behavior-y:contain;touch-action:pan-y;min-height:0;flex:1}.balance-panel{text-align:center;padding:27px 0 25px}.balance{font-size:42px;font-weight:450;letter-spacing:-1.8px;font-variant-numeric:tabular-nums;line-height:1.4;margin-top:5px}.budget-panel{margin:0 3px 30px}.split{display:flex;justify-content:space-between;align-items:center;gap:12px;font-size:12px;color:var(--muted)}.split strong{color:var(--accent);font-size:15px;font-weight:500;font-variant-numeric:tabular-nums}.split strong.negative{color:var(--red)}.budget-panel>.tiny{display:block;text-align:center;font-size:10px;margin-top:10px}.track{height:3px;border-radius:9px;background:var(--raised);overflow:hidden;margin-top:15px}.track div{height:100%;max-width:100%;background:var(--accent);border-radius:9px}.section-heading{display:flex;justify-content:space-between;align-items:center;gap:14px;margin:20px 0 6px}.section-heading h3{font-size:14px}.section-heading .icon-button{color:var(--accent)}.row{width:100%;display:flex;justify-content:space-between;align-items:center;text-align:left;gap:13px;background:transparent;color:var(--text);padding:16px 0;border-radius:0;border:0;border-bottom:1px solid var(--line);font-weight:400}.row:last-child{border-bottom:0}.row-left{display:flex;align-items:center;gap:11px;min-width:0}.row-left>span:last-child{min-width:0}.cat-icon{width:34px;height:34px;border-radius:50%;background:var(--raised);color:var(--muted);display:grid;place-items:center;flex-shrink:0}.cat-icon svg{width:16px;height:16px}.cat-icon.green{color:var(--accent)}.row-title{display:block;font-size:13px;font-weight:500;line-height:1.5;overflow-wrap:anywhere}.row-sub{display:block;font-size:10px;color:var(--muted);margin-top:3px;line-height:1.5}.row-money{font-size:14px;white-space:nowrap;text-align:right;font-variant-numeric:tabular-nums;font-weight:500}.row-money small{display:none}.row-money.income{color:var(--accent)}.empty{padding:25px 5px;font-size:12px;color:var(--muted);line-height:1.7;text-align:center}.empty svg{width:23px;height:23px;margin:0 auto 10px;display:block;opacity:.5}.empty strong{display:block;font-size:14px;color:var(--text);margin-bottom:4px;font-weight:450}.disclosure{margin-top:18px;border-top:1px solid var(--line)}summary{cursor:pointer;padding:16px 0;min-height:48px;color:var(--muted);font-size:13px;line-height:1.5}details p{font-size:12px;color:var(--muted)}.disclosure>summary{display:flex;align-items:center;justify-content:space-between;gap:10px;list-style:none}.disclosure>summary::-webkit-details-marker{display:none}.disclosure>summary:after{content:'+';font-size:17px;font-weight:300;color:var(--muted)}.disclosure[open]>summary:after{content:'−'}.line-item{display:flex;align-items:flex-start;justify-content:space-between;gap:14px;font-size:12px;line-height:1.6;color:var(--muted);padding:9px 0}.line-item strong{color:var(--text);white-space:nowrap}.line-item.total{padding-top:14px;margin-top:7px;border-top:1px solid var(--line)}.upcoming-mini{width:100%;text-align:left;justify-content:space-between;padding:14px 0;border-bottom:1px solid var(--line);background:none;color:var(--text);border-radius:0;font-size:13px;gap:12px}.upcoming-mini strong{font-size:13px}.upcoming-mini small{display:block;color:var(--muted);font-size:11px;margin-top:4px}.upcoming-mini>span:last-child{white-space:nowrap}.welcome{margin:12px 0 0;text-align:center;border:1px solid var(--line);border-radius:18px;padding:12px 15px}.welcome p{font-size:13px;margin:0 0 8px}.welcome button{font-size:12px;min-height:44px}.welcome .quiet{margin-left:8px}.toolbar{display:flex;gap:9px;align-items:center;margin:13px 0 17px}.toolbar input{flex:1}.toolbar .icon-button{background:var(--raised)}.toolbar #report-title{text-align:center;font-size:11px}.segmented{display:flex;gap:4px;border-radius:12px;background:oklch(13% 0.006 265);padding:4px;margin-bottom:10px}.segmented button{flex:1;min-height:38px;padding:7px;font-size:12px;background:none;color:var(--muted);border-radius:9px}.segmented button.active{background:var(--raised);color:var(--text)}.category-summary{margin:16px 0}.report-bar{height:3px;background:var(--raised);border-radius:8px;overflow:hidden}.report-bar div{height:100%;background:var(--accent)}
-.dialog-head{position:sticky;top:0;z-index:2;display:flex;align-items:center;justify-content:space-between;gap:15px;padding:22px 24px 7px;background:var(--surface);border-radius:30px 30px 0 0}.dialog-head h2{font-size:22px}.dialog-head>button{width:40px;min-height:40px;height:40px;padding:11px;border-radius:50%;background:var(--raised);color:var(--muted);flex-shrink:0}.dialog-head>button svg{width:17px;height:17px}.dialog-body{padding:7px 26px 18px}.dialog-footer{position:sticky;bottom:0;z-index:2;display:flex;gap:10px;padding:12px 26px calc(env(safe-area-inset-bottom,0px) + 22px);background:var(--surface)}.dialog-footer button{flex:1;min-height:52px}.dialog-body label{display:block;font-size:11px;color:var(--muted);margin-bottom:8px}label{font-size:11px;color:var(--muted);display:block;margin-bottom:8px}input,select,textarea{width:100%;max-width:100%;min-width:0;color:var(--text);font-size:16px;min-height:48px;border:1px solid var(--line);background:oklch(14% 0.006 265);border-radius:12px;padding:12px;-webkit-tap-highlight-color:transparent}input::placeholder,textarea::placeholder{color:oklch(57% 0.006 250);opacity:1}textarea{line-height:1.65;resize:vertical}input[type=date]{-webkit-appearance:none;min-width:0}input[type=checkbox]{width:18px;height:18px;min-height:18px;accent-color:var(--accent);margin:0;flex-shrink:0}.field-group{margin:13px 0}.fields{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:12px}.check-label,.dialog-body .check-label{display:flex;gap:10px;align-items:center;font-size:12px;line-height:1.6;color:var(--muted);margin:15px 0}.amount-entry{padding:15px 0 18px}.amount-input{display:flex;align-items:center;gap:12px}.amount-input>span{font-size:29px;font-weight:300;color:var(--muted)}.amount-input input{font-size:48px;font-weight:350;font-variant-numeric:tabular-nums;letter-spacing:-1.6px;line-height:1.2;background:none;border:0;border-radius:0;padding:2px 0;min-height:65px;box-shadow:none}.amount-input input:focus-visible{outline:none}.amount-entry:focus-within>label{color:var(--accent)}.amount-input input::placeholder{color:oklch(50% 0.006 250)}.quick-date-row{display:flex;align-items:flex-end;gap:16px}.quick-date-row>div{flex:1}.quick-date-row input{min-height:46px}.quick-date-row>button{background:var(--raised);margin-bottom:1px}#quick-hint{font-size:10px;margin:12px 0 0;min-height:17px}.quick-details{margin-top:18px;padding-top:15px;border-top:1px solid var(--line)}.notice{margin:12px 0;font-size:12px;line-height:1.6;padding:12px 14px;border:1px solid oklch(42% .04 75);background:oklch(23% .022 75);color:var(--amber);border-radius:12px}.notice.error{background:oklch(23% .03 20);border-color:oklch(40% .055 20);color:var(--red)}.install-hint{color:var(--muted);border-color:var(--line);background:var(--raised)}.actions{display:flex;gap:8px;flex-wrap:wrap;margin:12px 0}.actions button{flex:1;font-size:12px;padding:12px}.draft{border-bottom:1px solid var(--line);padding:6px 0 16px}.draft:last-child{border-bottom:0}.draft .reason{display:none}.draft>details{border-top:1px solid var(--line);margin-top:14px}.draft>p.tiny{display:none}.draft>.notice{font-size:11px}.draft>.notice.install-hint{background:none;border:0;padding:0;color:var(--muted);font-size:11px}.draft summary{font-size:12px}.voice-sheet .dialog-body{padding-top:14px;padding-bottom:calc(env(safe-area-inset-bottom,0px) + 24px)}.voice-status{font-size:12px;color:var(--muted);margin:4px 0 15px;min-height:20px}.voice-status.attention{color:var(--amber)}#natural{min-height:114px;background:none;padding:8px 0;border:0;border-radius:0;font-size:20px;line-height:1.5;resize:none;letter-spacing:-.3px}#natural:focus-visible{outline:none}#voice-compose:focus-within #natural{box-shadow:0 1px var(--accent)}.voice-actions{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-top:22px}.voice-actions .icon-button{width:56px;height:56px;background:var(--raised);color:var(--text);border:1px solid var(--line)}.voice-actions .mic-listening{color:var(--accent);border-color:var(--accent);animation:mic-breathe 1.4s ease-in-out infinite}.mic-listening svg{width:20px;height:20px}.voice-actions>button:last-child{min-width:140px}.preview-line{display:flex;justify-content:space-between;gap:14px;align-items:center;padding:17px 0;border-bottom:1px solid var(--line);font-size:14px;line-height:1.4}.preview-line>span{overflow-wrap:anywhere;min-width:0}.preview-line small{display:block;font-size:11px;color:var(--muted);line-height:1.5;margin-top:8px}.preview-line strong{font-size:17px;white-space:nowrap;font-weight:500}.preview-actions{display:flex;gap:10px;margin-top:24px}.preview-actions button{flex:1}#command-title{font-size:20px;font-weight:450;letter-spacing:-.5px}#command-description{margin:14px 0 0}#voice-consent p{color:var(--muted);font-size:14px;margin:0 0 24px}#view-settings>.disclosure:first-child{border-top:0;margin-top:0}#view-settings .disclosure>summary{color:var(--text)}#view-settings form>button{margin:12px 0 8px}#plan-budget>h3{display:none}
+.dialog-head{position:sticky;top:0;z-index:2;display:flex;align-items:center;justify-content:space-between;gap:15px;padding:22px 24px 7px;background:var(--surface);border-radius:30px 30px 0 0}.dialog-head h2{font-size:22px}.dialog-head>button{width:40px;min-height:40px;height:40px;padding:11px;border-radius:50%;background:var(--raised);color:var(--muted);flex-shrink:0}.dialog-head>button svg{width:17px;height:17px}.dialog-body{padding:7px 26px 18px}.dialog-footer{position:sticky;bottom:0;z-index:2;display:flex;gap:10px;padding:12px 26px calc(env(safe-area-inset-bottom,0px) + 22px);background:var(--surface)}.dialog-footer button{flex:1;min-height:52px}.dialog-body label{display:block;font-size:11px;color:var(--muted);margin-bottom:8px}label{font-size:11px;color:var(--muted);display:block;margin-bottom:8px}input,select,textarea{width:100%;max-width:100%;min-width:0;color:var(--text);font-size:16px;min-height:48px;border:1px solid var(--line);background:oklch(14% 0.006 265);border-radius:12px;padding:12px;-webkit-tap-highlight-color:transparent}input::placeholder,textarea::placeholder{color:oklch(57% 0.006 250);opacity:1}textarea{line-height:1.65;resize:vertical}input[type=date]{-webkit-appearance:none;min-width:0}input[type=checkbox]{width:18px;height:18px;min-height:18px;accent-color:var(--accent);margin:0;flex-shrink:0}.field-group{margin:13px 0}.fields{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:12px}.check-label,.dialog-body .check-label{display:flex;gap:10px;align-items:center;font-size:12px;line-height:1.6;color:var(--muted);margin:15px 0}.amount-entry{padding:15px 0 18px}.amount-input{display:flex;align-items:center;gap:12px}.amount-input>span{font-size:29px;font-weight:300;color:var(--muted)}.amount-input input{font-size:48px;font-weight:350;font-variant-numeric:tabular-nums;letter-spacing:-1.6px;line-height:1.2;background:none;border:0;border-radius:0;padding:2px 0;min-height:65px;box-shadow:none}.amount-input input:focus-visible{outline:none}.amount-input input::placeholder{color:oklch(50% 0.006 250)}.quick-date-row{display:flex;align-items:flex-end;gap:16px}.quick-date-row>div{flex:1}.quick-date-row input{min-height:46px}.quick-date-row>button{background:var(--raised);margin-bottom:1px}#quick-hint{font-size:10px;margin:12px 0 0;min-height:17px}.quick-details{margin-top:18px;padding-top:15px;border-top:1px solid var(--line)}.notice{margin:12px 0;font-size:12px;line-height:1.6;padding:12px 14px;border:1px solid oklch(42% .04 75);background:oklch(23% .022 75);color:var(--amber);border-radius:12px}.notice.error{background:oklch(23% .03 20);border-color:oklch(40% .055 20);color:var(--red)}.install-hint{color:var(--muted);border-color:var(--line);background:var(--raised)}.actions{display:flex;gap:8px;flex-wrap:wrap;margin:12px 0}.actions button{flex:1;font-size:12px;padding:12px}.draft{border-bottom:1px solid var(--line);padding:6px 0 16px}.draft:last-child{border-bottom:0}.draft .reason{display:none}.draft>details{border-top:1px solid var(--line);margin-top:14px}.draft>p.tiny{display:none}.draft>.notice{font-size:11px}.draft>.notice.install-hint{background:none;border:0;padding:0;color:var(--muted);font-size:11px}.draft summary{font-size:12px}.voice-sheet .dialog-body{padding-top:14px;padding-bottom:calc(env(safe-area-inset-bottom,0px) + 24px)}.voice-status{font-size:12px;color:var(--muted);margin:4px 0 15px;min-height:20px}.voice-status.attention{color:var(--amber)}#natural{min-height:114px;background:none;padding:8px 0;border:0;border-radius:0;font-size:20px;line-height:1.5;resize:none;letter-spacing:-.3px}#natural:focus-visible{outline:none}.voice-actions{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-top:22px}.voice-actions .icon-button{width:56px;height:56px;background:var(--raised);color:var(--text);border:1px solid var(--line)}.voice-actions .mic-listening{color:var(--accent);border-color:var(--accent);animation:mic-breathe 1.4s ease-in-out infinite}.mic-listening svg{width:20px;height:20px}.voice-actions>button:last-child{min-width:140px}.preview-line{display:flex;justify-content:space-between;gap:14px;align-items:center;padding:17px 0;border-bottom:1px solid var(--line);font-size:14px;line-height:1.4}.preview-line>span{overflow-wrap:anywhere;min-width:0}.preview-line small{display:block;font-size:11px;color:var(--muted);line-height:1.5;margin-top:8px}.preview-line strong{font-size:17px;white-space:nowrap;font-weight:500}.preview-actions{display:flex;gap:10px;margin-top:24px}.preview-actions button{flex:1}#command-title{font-size:20px;font-weight:450;letter-spacing:-.5px}#command-description{margin:14px 0 0}#voice-consent p{color:var(--muted);font-size:14px;margin:0 0 24px}#view-settings>.disclosure:first-child{border-top:0;margin-top:0}#view-settings .disclosure>summary{color:var(--text)}#view-settings form>button{margin:12px 0 8px}#plan-budget>h3{display:none}
 .toast{position:fixed;bottom:calc(env(safe-area-inset-bottom,0px) + 42px);left:50%;transform:translateX(-50%);z-index:100;max-width:calc(100vw - 32px);width:max-content;display:flex;align-items:center;gap:14px;padding:12px 16px;border:1px solid oklch(52% 0.006 230 / .4);background:oklch(24% 0.006 255 / .96);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);color:var(--text);border-radius:18px;font-size:12px;line-height:1.5;box-shadow:0 10px 40px oklch(5% 0.006 265 / .3);animation:toast-in 220ms var(--ease)}.toast button{min-height:38px;padding:9px 11px;border-radius:11px;color:var(--accent);background:var(--raised);font-size:12px;flex-shrink:0}@keyframes toast-in{from{opacity:0;transform:translate(-50%,10px)}to{opacity:1;transform:translate(-50%,0)}}@keyframes mic-breathe{50%{box-shadow:0 0 0 8px oklch(86% 0.006 220 / .06)}}
 .ambient-fallback{z-index:-2}
 
@@ -135,10 +135,6 @@ dialog input,dialog select,dialog textarea {
   padding: 13px 14px;
   transition: border-color 150ms ease, background-color 150ms ease;
 }
-dialog input:focus,dialog select:focus,dialog textarea:focus {
-  border-color: oklch(83% 0.006 220 / .42);
-  background-color: oklch(11% 0.006 255 / .28);
-}
 dialog input::placeholder,dialog textarea::placeholder { color: oklch(65% 0.006 240); }
 dialog label { color: oklch(74% 0.006 240); }
 dialog input[type=checkbox] { padding: 0; }
@@ -155,12 +151,11 @@ dialog input[type=checkbox] { padding: 0; }
   letter-spacing: -.4px;
   min-height: 46px;
 }
-#q-name:focus { border-color: oklch(85% 0.006 220 / .45); }
 #q-name:focus-visible { outline: none; }
 .amount-entry { padding: 23px 0 24px; }
 .amount-input { gap: 10px; }
 .amount-input>span { font-size: 29px; font-weight: 300; color: oklch(79% 0.006 235); }
-.amount-input input,.amount-input input:focus {
+.amount-input input {
   padding: 0;
   min-height: 72px;
   font-size: 58px;
@@ -374,7 +369,7 @@ html:not([data-scene=idle]) #dismiss-hints { pointer-events:none; }
   .voice-status { min-height:18px; margin:0 0 8px; }
   .voice-actions { margin-top:8px; }
   #voice-compose>.tiny { margin:10px 0 0; font-size:10px; line-height:1.5; }
-  dialog { backdrop-filter:blur(10px) saturate(1.12) brightness(1.18); -webkit-backdrop-filter:blur(10px) saturate(1.12) brightness(1.18); }
+  dialog,.glass-panel { backdrop-filter:blur(10px) saturate(1.12) brightness(1.18); -webkit-backdrop-filter:blur(10px) saturate(1.12) brightness(1.18); }
 }
 @media (max-height:500px) { .gesture-hints { top:calc(47dvh + 42px); gap:4px; } .hint-swipe { display:none; } }
 @media (prefers-reduced-motion:reduce) { .gesture-hints { transition:none; } }
@@ -396,8 +391,14 @@ html:not([data-scene=idle]) #dismiss-hints { pointer-events:none; }
 #quick-save,#quick-save:active { transform:none; transition:background-color 140ms ease,color 140ms ease; }
 #quick-save:active { background:oklch(96% .004 250 / .23); }
 dialog input,dialog select,dialog textarea { background-color:oklch(96% .004 250 / .035); border-color:oklch(93% .004 250 / .12); }
-dialog input:focus,dialog select:focus,dialog textarea:focus { background-color:oklch(96% .004 250 / .055); border-color:oklch(93% .004 250 / .32); }
-#q-name,.amount-input input,.amount-input input:focus,#natural,#natural:focus { background:transparent; }
+/* Pointer focus never paints a white ring or changes a field's geometry. */
+dialog label { -webkit-tap-highlight-color:transparent; }
+html[data-input-modality=pointer] dialog :is(input,select,textarea):focus { outline:none; box-shadow:none; }
+html[data-input-modality=keyboard] dialog :is(input,select,textarea):focus-visible { outline:1px solid var(--muted); outline-offset:3px; }
+dialog input[type=date]::-webkit-datetime-edit-day-field:focus,
+dialog input[type=date]::-webkit-datetime-edit-month-field:focus,
+dialog input[type=date]::-webkit-datetime-edit-year-field:focus { background:transparent; color:inherit; }
+#q-name,.amount-input input,#natural,#natural:focus { background:transparent; }
 .nav,.segmented { background:oklch(8% .004 250 / .12); border-color:oklch(94% .004 250 / .06); }
 .nav button.active,.segmented button.active { background:oklch(96% .004 250 / .12); box-shadow:inset 0 1px 0 oklch(98% .004 250 / .08); }
 .desktop-controls,.toast {
@@ -409,11 +410,11 @@ dialog input:focus,dialog select:focus,dialog textarea:focus { background-color:
 .gesture-hint { background:oklch(90% .004 250 / .04); border-color:oklch(90% .004 250 / .10); }
 .hint-swipe { background:transparent; border-color:transparent; }
 @supports not ((backdrop-filter:blur(1px)) or (-webkit-backdrop-filter:blur(1px))) {
-  dialog,.desktop-controls,.toast { background:oklch(20% .004 250 / .98); }
+  dialog,.glass-panel,.desktop-controls,.toast { background:oklch(20% .004 250 / .98); }
 }
 @media (prefers-reduced-transparency:reduce),(prefers-contrast:more) {
-  dialog,.desktop-controls,.toast { background:oklch(20% .004 250); backdrop-filter:none; -webkit-backdrop-filter:none; }
-  dialog { --line:oklch(85% .004 250 / .35); --muted:oklch(85% .004 250); }
+  dialog,.glass-panel,.desktop-controls,.toast { background:oklch(20% .004 250); backdrop-filter:none; -webkit-backdrop-filter:none; }
+  dialog,.glass-panel { --line:oklch(85% .004 250 / .35); --muted:oklch(85% .004 250); }
 }
 
 /* Shared control geometry: variants change size/material, not their construction. */
@@ -456,11 +457,19 @@ html.assistant-open .wordmark { opacity:0; }
 #voice-sheet .voice-status { text-align:center; min-height:24px; margin:0 0 16px; font-size:15px; line-height:1.5; max-width:none; color:var(--text); }
 #voice-sheet .voice-status.attention { color:var(--muted); font-size:13px; }
 #voice-text { position:relative; margin:0 0 14px; }
-#voice-sheet #natural { display:block; width:100%; min-height:66px; height:76px; max-height:180px; padding:12px 48px 12px 14px; font-size:19px; line-height:1.4; text-align:left; font-weight:400; background:rgb(230 240 245 / .04); border:1px solid rgb(230 240 245 / .09); border-radius:var(--radius-control); resize:vertical; }
-#voice-sheet #natural::placeholder { color:var(--muted); font-size:16px; }
-#voice-sheet #natural:read-only { padding:4px 8px; text-align:center; background:none; border-color:transparent; resize:none; }
-#voice-sheet #natural:focus-visible { outline:1px solid var(--line); outline-offset:3px; box-shadow:none; }
-#voice-sheet #interpret { position:absolute; right:5px; bottom:5px; width:38px; height:38px; min-height:38px; background:rgb(230 240 245 / .09); }
+#voice-text.glass-panel { padding:22px 24px 20px; border-radius:36px; }
+#voice-text .composer-label { display:none; margin:0 0 10px; }
+#voice-sheet.is-typing .composer-label { display:block; }
+#voice-sheet #natural { display:block; width:100%; min-height:48px; height:48px; max-height:min(168px,28dvh); padding:10px 0 12px; font:inherit; font-size:16px; font-weight:400; line-height:1.5; letter-spacing:0; text-align:left; background:transparent; border:0; border-bottom:1px solid var(--line); border-radius:0; resize:none; overflow-y:hidden; transition:height 180ms var(--ease); }
+#voice-sheet #natural::placeholder { color:var(--muted); font:inherit; }
+#voice-sheet #natural:read-only { padding:10px 0 12px; text-align:center; border-color:transparent; }
+#voice-sheet #natural:focus { box-shadow:none; }
+#voice-text .dialog-footer { min-height:68px; padding:16px 0 0; }
+#voice-sheet #interpret { position:static; width:100%; min-height:52px; }
+#voice-sheet:not(.is-typing) #voice-text .dialog-footer { display:none; }
+#voice-sheet.is-typing #assistant-type { display:none; }
+@media (min-width:900px) and (hover:hover) and (pointer:fine) { #voice-text.glass-panel { border-radius:34px; padding:24px 28px; } }
+@media (prefers-reduced-motion:reduce) { #voice-sheet #natural { transition:none; } }
 #voice-sheet .voice-actions { justify-content:center; margin:18px 0 8px; }
 #voice-sheet #mic { width:76px; height:76px; min-height:76px; background:rgb(225 235 240 / .08); border:1px solid rgb(225 235 240 / .12); color:var(--text); box-shadow:inset 0 1px 0 rgb(255 255 255 / .05); }
 #voice-sheet #mic svg { width:27px; height:27px; }
@@ -492,6 +501,11 @@ html.assistant-open .wordmark { opacity:0; }
 html.keyboard-open #voice-sheet .assistant-content { margin-top:calc(var(--vv-height) * .43); }
 html.keyboard-open #voice-sheet .assistant-privacy { display:none; }
 html.keyboard-open #voice-sheet #mic { width:60px; height:60px; min-height:60px; }
+
+/* The assistant uses the same live material behind the transparent top layer. */
+#voice-sheet.assistant-sheet::backdrop { background:transparent; animation:none; }
+
+html.fluid-gathered .wordmark { opacity:0; }
 </style>
 </head>
 <body>
@@ -618,7 +632,7 @@ html.keyboard-open #voice-sheet #mic { width:60px; height:60px; min-height:60px;
     <section id="voice-consent" hidden><p data-i18n="La dettatura usa il servizio vocale del browser, che può elaborare l’audio online.">La dettatura usa il servizio vocale del browser, che può elaborare l’audio online.</p><button id="voice-enable" class="button full-width"><span data-i18n="Attiva microfono">Attiva microfono</span> <span data-icon="mic"></span></button><button id="voice-write" class="button quiet full-width" data-i18n="Preferisco scrivere">Preferisco scrivere</button></section>
     <div id="voice-compose">
       <p class="voice-status" id="voice-status" role="status"></p>
-      <div id="voice-text" hidden><label class="sr-only" for="natural" data-i18n="Scrivi una spesa, una modifica o una domanda">Scrivi una spesa, una modifica o una domanda</label><textarea id="natural" rows="2" maxlength="4000" placeholder="Una spesa o una domanda sul tuo budget…" data-i18n-placeholder="Una spesa o una domanda sul tuo budget…"></textarea><button id="interpret" class="button icon-button" hidden aria-label="Invia" data-i18n-aria-label="Invia"><span data-icon="arrow"></span></button></div>
+      <div id="voice-text" hidden><label class="composer-label" for="natural" data-i18n="Scrivi una spesa, una modifica o una domanda">Scrivi una spesa, una modifica o una domanda</label><textarea id="natural" rows="1" maxlength="4000" enterkeyhint="send"></textarea><div class="dialog-footer"><button id="interpret" class="button" hidden><span data-i18n="Invia">Invia</span><span data-icon="arrow"></span></button></div></div>
       <div class="voice-actions"><button class="button icon-button" id="mic" aria-label="Avvia dettatura" data-i18n-aria-label="Avvia dettatura"><span data-icon="mic"></span></button></div>
       <button type="button" id="assistant-type" class="button quiet" data-i18n="Oppure scrivi">Oppure scrivi</button>
       <p class="tiny assistant-privacy" data-i18n="Voce elaborata dal browser, anche online. Audio non salvato da MyMoney.">Voce elaborata dal browser, anche online. Audio non salvato da MyMoney.</p>
@@ -2196,7 +2210,7 @@ html.keyboard-open #voice-sheet #mic { width:60px; height:60px; min-height:60px;
   const motions=new WeakMap(),returnFocus=new WeakMap();
   const surface=$('#touch-surface'),sheet=$('#data-sheet'),experience=$('#experience');
   const scrim=document.createElement('div');scrim.className='data-scrim';scrim.setAttribute('aria-hidden','true');document.body.append(scrim);
-  let callbacks={},gesture=null,drag=null,holdTimer=0,chargeFrame=0,paintFrame=0,voiceActive=false,assistantActive=false,heldPointerId=null,pendingTap=false,suppressClick=false,preview=false,origin=null,viewAnimation=null;
+  let callbacks={},gesture=null,drag=null,holdTimer=0,chargeFrame=0,paintFrame=0,voiceActive=false,assistantActive=false,heldPointerId=null,pendingTap=false,suppressClick=false,preview=false,origin=null,viewAnimation=null,assistantTap=null;
   const clamp=(v,min,max)=>Math.max(min,Math.min(max,v));
   const ease='cubic-bezier(.22,1,.36,1)';
   function dialogs(){return [...document.querySelectorAll('dialog[open]')].filter(d=>!d.classList.contains('is-closing'));}
@@ -2223,6 +2237,7 @@ html.keyboard-open #voice-sheet #mic { width:60px; height:60px; min-height:60px;
     if(animated)animate(scrim,[{opacity:from},{opacity:value}],value?260:200,()=>{scrim.style.opacity=String(value);});
   }
   function nativeOpen(dialog,asPreview=false){
+    if(dialog.id==='voice-sheet')assistantTap=null;
     returnFocus.set(dialog,document.activeElement);
     const heading=dialog.querySelector('h2');if(heading){heading.tabIndex=-1;heading.setAttribute('autofocus','');}
     if(asPreview){dialog.dataset.dragPreview='true';dialog.show();}else dialog.showModal();
@@ -2263,15 +2278,14 @@ html.keyboard-open #voice-sheet #mic { width:60px; height:60px; min-height:60px;
     if(!dialog.open||dialog.classList.contains('is-closing'))return;
     const s=getComputedStyle(dialog),from={transform:s.transform==='none'?'translate3d(0,0,0)':s.transform,opacity:s.opacity};
     const content=dialog.querySelector('.assistant-content');if(content)stopMotion(content);
+    if(dialog.id==='voice-sheet')assistantTap=null;
     stopMotion(dialog);dialog.dispatchEvent(new CustomEvent('mm:closing',{bubbles:true}));dialog.classList.add('is-closing');
     if(dialog===sheet)backdrop(0,!immediate);
     const end=dialog===sheet&&!desktop.matches?`translate3d(0,${dialog.getBoundingClientRect().height+32}px,0)`:'translate3d(0,14px,0) scale(.975)';
     if(immediate){finishClose(dialog);return;}
     if(dialog.id==='voice-sheet'){
-      // Keep the particle canvas in the top layer until its reverse transition ends.
-      scene();
-      animate(dialog,[{opacity:1,transform:'none'},{opacity:1,transform:'none'}],900,()=>finishClose(dialog));
-      return;
+      // The background owns the reverse morph; the controls can leave promptly.
+      scene();animate(dialog,[{opacity:from.opacity,transform:'none'},{opacity:0,transform:'none'}],180,()=>finishClose(dialog));return;
     }
     animate(dialog,[from,{transform:end,opacity:dialog===sheet?1:0}],dialog===sheet?240:180,()=>finishClose(dialog));
   }
@@ -2348,7 +2362,7 @@ html.keyboard-open #voice-sheet #mic { width:60px; height:60px; min-height:60px;
   function cancelPointer(e){if(e&&heldPointerId!==null&&e.pointerId!==heldPointerId)return;if(e&&gesture&&e.pointerId!==gesture.id)return;if(e&&drag&&e.pointerId!==drag.id)return;if(drag)settleDrag(true);cancelGesture();}
   function panelDown(e){
     if(!e.isPrimary||e.button!==0||drag||desktop.matches||e.target.closest('button,input,textarea,select,a'))return;
-    const dialog=e.currentTarget.closest('dialog');if(!dialog?.open||dialog.classList.contains('is-closing'))return;
+    const dialog=e.currentTarget.closest('dialog');if(!dialog?.open||dialog.id==='voice-sheet'||dialog.classList.contains('is-closing'))return;
     e.preventDefault();stopMotion(dialog);stopMotion(scrim);
     const transform=getComputedStyle(dialog).transform,offset=transform==='none'?0:new DOMMatrixReadOnly(transform).m42;
     drag={id:e.pointerId,element:e.currentTarget,dialog,startY:e.clientY,startOffset:offset,offset,distance:dialog===sheet?drawerDistance():Math.min(dialog.offsetHeight*.7,260),lastY:e.clientY,lastTime:performance.now(),velocity:0,fromHome:false};
@@ -2391,10 +2405,28 @@ html.keyboard-open #voice-sheet #mic { width:60px; height:60px; min-height:60px;
     for(const kind of ['manual','voice','data']){const item=container.querySelector(`[data-hint="${kind}"]`);if(!item)continue;item.hidden=!!learned[kind];item.querySelector('span').textContent=t(kind==='manual'?(fine?'Clicca per scrivere':'Tocca per scrivere'):kind==='voice'?'Tieni premuto e parla':'Scorri per i tuoi dati');}
     container.hidden=Object.values(learned).filter(Boolean).length>=3;
   }
+  // Only a fresh tap that starts AND ends on empty assistant space dismisses it.
+  // The release/click of the home long-press can be retargeted into this dialog.
+  function assistantBlank(target,dialog){
+    return !!target?.closest&&dialog.contains(target)&&!target.closest('button,input,textarea,select,a,label,summary,details,p,h1,h2,h3,h4,[role=button],[contenteditable=true],#advisor-answer,#command-preview,#voice-consent,#voice-text,#voice-status');
+  }
+  function assistantDown(e){
+    const dialog=e.currentTarget;
+    if(e.isPrimary===false||e.button!==0||!dialog.open||dialog.classList.contains('is-closing')||heldPointerId!==null||gesture||drag||!assistantBlank(e.target,dialog))return;
+    assistantTap={id:e.pointerId,x:e.clientX,y:e.clientY,time:performance.now(),released:false};
+  }
+  function assistantMove(e){
+    if(assistantTap?.id===e.pointerId&&Math.hypot(e.clientX-assistantTap.x,e.clientY-assistantTap.y)>8)assistantTap=null;
+  }
+  function assistantUp(e){
+    if(assistantTap?.id!==e.pointerId)return;
+    assistantMove(e);
+    if(assistantTap)assistantTap.released=assistantBlank(e.target,e.currentTarget);
+  }
   function init(actions){
     callbacks=actions;root.dataset.inputModality='pointer';viewport();scene();renderHints();
     window.addEventListener('mm:languagechange',renderHints);
-    window.addEventListener('pointerdown',e=>{if(e.isPrimary===false)return;root.dataset.inputModality='pointer';suppressClick=false;pendingTap=false;},true);
+    window.addEventListener('pointerdown',e=>{if(e.isPrimary===false)return;root.dataset.inputModality='pointer';suppressClick=false;pendingTap=false;assistantTap=null;},true);
     document.addEventListener('keydown',e=>{if(e.key==='Tab')root.dataset.inputModality='keyboard';},true);
     const releaseHold=e=>{if(e&&heldPointerId!==null&&e.pointerId!==heldPointerId)return;heldPointerId=null;root.classList.remove('surface-held');if(gesture?.held){stopCharge();gesture=null;scene();}};
     // A modal or native microphone prompt may retarget the end of a touch away
@@ -2426,7 +2458,18 @@ html.keyboard-open #voice-sheet #mic { width:60px; height:60px; min-height:60px;
     $('#close-data').addEventListener('click',()=>close(sheet));
     for(const dialog of document.querySelectorAll('dialog')){
       dialog.addEventListener('cancel',e=>{e.preventDefault();close(dialog);});dialog.addEventListener('close',scene);
-      dialog.addEventListener('click',e=>{if(e.target!==dialog||drag)return;const b=dialog.getBoundingClientRect();if(e.clientX<b.left||e.clientX>b.right||e.clientY<b.top||e.clientY>b.bottom)close(dialog);});
+      if(dialog.id==='voice-sheet'){
+        dialog.addEventListener('pointerdown',assistantDown);dialog.addEventListener('pointermove',assistantMove);dialog.addEventListener('pointerup',assistantUp);
+        dialog.addEventListener('pointercancel',e=>{if(assistantTap?.id===e.pointerId)assistantTap=null;});
+      }
+      dialog.addEventListener('click',e=>{
+        if(dialog.id==='voice-sheet'){
+          const tap=assistantTap;assistantTap=null;
+          if(!tap?.released||drag||(Number.isFinite(e.pointerId)&&e.pointerId>0&&e.pointerId!==tap.id)||performance.now()-tap.time>700||!assistantBlank(e.target,dialog))return;
+          e.preventDefault();e.stopImmediatePropagation();close(dialog);return;
+        }
+        if(e.target!==dialog||drag)return;const b=dialog.getBoundingClientRect();if(e.clientX<b.left||e.clientX>b.right||e.clientY<b.top||e.clientY>b.bottom)close(dialog);
+      });
       const header=dialog.querySelector('.data-header,.dialog-head');if(!header)continue;
       header.addEventListener('pointerdown',panelDown);header.addEventListener('pointermove',e=>{if(drag?.id===e.pointerId){e.preventDefault();trackDrag(e);}});
       header.addEventListener('pointerup',e=>{if(drag?.id===e.pointerId){trackDrag(e);settleDrag();suppressClick=true;}});
@@ -3115,10 +3158,31 @@ window.MM_FIREBASE_CONFIG = Object.freeze({
     return true;
   }
   function resetAssistantSession(){lastAnswer=null;advisorQuestion=null;advisorAction=null;}
+  let composerMeasure=null,composerFrame=0;
+  function resizeAssistantText(){
+    cancelAnimationFrame(composerFrame);
+    composerFrame=requestAnimationFrame(()=>{
+      composerFrame=0;
+      const field=$('#natural');
+      if(!field.getClientRects().length)return;
+      // Measure wrapping offscreen; the focused field never collapses while typing.
+      if(!composerMeasure){composerMeasure=document.createElement('textarea');composerMeasure.tabIndex=-1;composerMeasure.setAttribute('aria-hidden','true');composerMeasure.readOnly=true;document.body.append(composerMeasure);}
+      const style=getComputedStyle(field);
+      composerMeasure.style.cssText='position:fixed;left:-10000px;top:0;visibility:hidden;pointer-events:none;min-height:0;max-height:none;height:0;overflow:hidden;resize:none;transition:none;';
+      for(const key of ['boxSizing','font','lineHeight','letterSpacing','padding','border','whiteSpace','wordBreak','overflowWrap'])composerMeasure.style[key]=style[key];
+      composerMeasure.style.width=field.getBoundingClientRect().width+'px';composerMeasure.value=field.value||' ';
+      const border=parseFloat(style.borderTopWidth)+parseFloat(style.borderBottomWidth),min=parseFloat(style.minHeight)||48;
+      const max=Math.max(min,Math.min(168,(window.visualViewport?.height||window.innerHeight)*.28));
+      const content=composerMeasure.scrollHeight+border;
+      field.style.height=Math.max(min,Math.min(max,content))+'px';field.style.overflowY=content>max?'auto':'hidden';
+    });
+  }
   function composeState(){
-    const value=$('#natural').value.trim();$('#interpret').hidden=!value||!!speech;
-    $('#voice-text').hidden=!value&&!$('#voice-sheet').classList.contains('is-typing');
+    const value=$('#natural').value.trim(),typing=$('#voice-sheet').classList.contains('is-typing');$('#interpret').hidden=!value||!!speech;
+    $('#voice-text').hidden=!value&&!typing;$('#voice-text').classList.toggle('glass-panel',typing);
     $('#natural').readOnly=!!speech;
+    if($('#voice-text').hidden){$('#natural').style.height='';$('#natural').style.overflowY='hidden';}
+    resizeAssistantText();
   }
   function typeToAssistant(){cancelVoice();closeProposal();voiceStatus('');$('#voice-sheet').classList.add('is-typing');composeState();$('#natural').focus();}
   function analyze(){
@@ -3267,7 +3331,7 @@ window.MM_FIREBASE_CONFIG = Object.freeze({
   $('#advisor-voice').addEventListener('click',beginRecognition);
   $('#advisor-write').addEventListener('click',typeToAssistant);
   $('#voice-enable').addEventListener('click',beginRecognition);
-  $('#voice-write').addEventListener('click',()=>{$('#voice-consent').hidden=true;$('#voice-compose').hidden=false;voiceStatus(tr('Scrivi una spesa o una modifica.'));$('#natural').focus();});
+  $('#voice-write').addEventListener('click',()=>{$('#voice-consent').hidden=true;$('#voice-compose').hidden=false;typeToAssistant();});
   $('#close-voice').addEventListener('click',()=>UI.close($('#voice-sheet')));
   $('#close-quick').addEventListener('click',()=>UI.close($('#quick-sheet')));
   $('#settings-voice').addEventListener('click',startVoice);
@@ -3347,6 +3411,8 @@ window.MM_FIREBASE_CONFIG = Object.freeze({
     $('#top-add').addEventListener('click',quickFocus);
     $('#natural').addEventListener('keydown',e=>{if(e.key==='Enter'&&!e.shiftKey&&!e.isComposing){e.preventDefault();analyze();}});
     $('#natural').addEventListener('input',()=>{closeProposal();composeState();});
+    window.addEventListener('resize',resizeAssistantText);
+    window.visualViewport?.addEventListener('resize',resizeAssistantText);
     $$('[data-example]').forEach(b=>b.addEventListener('click',()=>{$('#natural').value=b.dataset.example;closeProposal();$('#natural').focus();}));
     $('#command-close').addEventListener('click',beginRecognition);
     $('#command-edit').addEventListener('click',()=>{
@@ -3430,7 +3496,9 @@ window.MM_FIREBASE_CONFIG = Object.freeze({
   let energy = 0, luminosity = 1, lost = false, renderer = null, destroyed = false;
   let touchX = .5, touchY = .5, contactX = .5, contactY = .5;
   let attraction = 0, attractionTarget = 0, attractionVelocity = 0;
-  let assistantMix = 0, fallbackCanvas = null;
+  let assistantMix = 0, assistantTarget = 0, assistantVelocity = 0, fallbackCanvas = null;
+  let gathered = false;
+  let assistantActive = false, assistantListening = false, audioLevel = 0, audioTarget = 0, audioAt = 0;
   let holding = false, releasing = false, quietUntil = 0;
   // This is a backing-pixel policy, not a frame-rate limit. UI remains full resolution.
   const saveData = !!navigator.connection?.saveData;
@@ -3459,6 +3527,9 @@ window.MM_FIREBASE_CONFIG = Object.freeze({
     uniform float u_energy;
     uniform float u_light;
     uniform vec3 u_touch;
+    uniform float u_morph;
+    uniform float u_voice;
+    uniform vec3 u_focus;
 
     float hash(vec2 p) {
       p = fract(p * vec2(123.34, 456.21));
@@ -3481,7 +3552,7 @@ window.MM_FIREBASE_CONFIG = Object.freeze({
     float glow(float distance, float width) {
       return width / (abs(distance) + width);
     }
-    void main() {
+    void paintHome() {
       vec2 uv = gl_FragCoord.xy / u_resolution;
       vec2 p = (gl_FragCoord.xy - .5 * u_resolution) / u_resolution.y;
       vec2 screenP = p;
@@ -3543,6 +3614,130 @@ window.MM_FIREBASE_CONFIG = Object.freeze({
       color += (hash(gl_FragCoord.xy * .01) - .5) / 255.0;
       gl_FragColor = vec4(color, 1.0);
     }
+    // An inverse bend transports the original material through one continuous
+    // coordinate field. At zero curvature it is exactly the original plane.
+    vec3 ribbon(vec2 material, float side, float squeeze, float taper, float along) {
+      float t = u_time * .105;
+      vec2 q = vec2(cloud(material * 2.7 + vec2(.13*t,-.17*t)),
+                    cloud(material * 2.5 + vec2(5.4-.12*t,2.1+.14*t)));
+      float identity=smoothstep(.55,1.0,u_morph);
+      float shapeFreedom=(1.0-smoothstep(.55,.82,u_morph))*mix(1.0,.18,u_morph);
+      float fold = material.x + (-material.y*.29 + (q.x-.5)*.55
+                 + sin(material.y*4.6+t*.62)*.16)*shapeFreedom;
+      float drift = sin(material.y*5.0+q.y*4.5-t*.5)*.038*shapeFreedom;
+      float d = side > 0.0 ? fold+.155+drift : fold-.19+drift*.6;
+      // Transport the edges as well as the broad body; don't dissolve a new logo in.
+      float flow = side > 0.0 ? .66+.34*sin(material.y*6.0+t*.46+q.x*3.0)
+                             : .67+.33*cos(material.y*4.0-t*.38+q.y*3.0);
+      vec3 cyan=vec3(.29,.67,.73),silver=vec3(.69,.88,.91),blue=vec3(.19,.32,.62),mint=vec3(.29,.63,.56);
+      float activation=u_energy*(.82+.18*sin(u_time*2.8));
+      float minEdge=.65/u_resolution.y;
+      float edgeWidth=max(.0018*squeeze,minEdge);
+      float physical=d*squeeze;
+      vec3 color;
+      if(side>0.0){
+        float body=exp(-abs(d-.028)*12.0)*flow;
+        color=mix(mint,cyan,smoothstep(-.4,.4,material.y))*body*.19;
+        float edge=glow(physical,edgeWidth)*.55+glow((d-.016-q.y*.02)*squeeze,max(.003*squeeze,minEdge))*.14;
+        color+=silver*edge*flow*(.8+activation*.7);
+        color+=cyan*glow(physical,.024*squeeze)*.11;
+        float satin=pow(max(0.0,sin(d*155.0+q.y*9.0+t*.4)),7.0)*exp(-abs(d-.022)*24.0);
+        color+=cyan*satin*.045*flow;
+      }else{
+        float body=exp(-abs(d+.05)*10.0)*flow;
+        color=mix(cyan,blue,smoothstep(-.3,.4,material.y))*body*.25;
+        float edge=glow(physical,max(.0022*squeeze,minEdge))*.33+glow((d+.018)*squeeze,max(.0034*squeeze,minEdge))*.12;
+        color+=mix(blue,silver,.5)*edge*flow*(.85+activation*.7);
+        color+=blue*glow(physical,.04*squeeze)*.14;
+      }
+      float solid=smoothstep(.48,1.0,u_morph);
+      float inner=side*d;
+      float volume=smoothstep(-.025,.045,inner)*(1.0-smoothstep(.19,.27,inner));
+      float stream=.5+.5*sin(material.y*10.0+q.x*5.0-u_time*.72);
+      color+=mix(cyan,blue,side>0.0?.14:.55)*volume*(.10+.07*stream)*solid;
+      color+=mix(cyan,silver,.22)*glow((inner-.23)*squeeze,max(.0015*squeeze,minEdge))*.21*flow*solid;
+      float vein=glow((inner-.105-.018*sin(material.y*8.0+u_time*.42+q.x*4.0))*squeeze,max(.0009*squeeze,minEdge));
+      color+=cyan*vein*volume*.095*solid*flow;
+      return color*taper*mix(1.0,1.35,u_morph);
+    }
+    vec3 foldedRibbon(vec2 p, float side, float morph, float radius, vec2 centre) {
+      float k=morph/radius;
+      vec2 rest=vec2(side>0.0?-.155:.19,0.0);
+      // The final signature is a balanced interlaced pair, with a clear waist.
+      // Late-stage shaping leaves the established gathering motion intact.
+      float identity=smoothstep(.55,1.0,morph);
+      vec2 loopCentre=centre+vec2(-side*radius*.57*identity,0.0);
+      vec2 local=p-loopCentre;
+      local.x/=mix(1.0,.76,identity);
+      p=local+loopCentre;
+      vec2 anchor=mix(rest,loopCentre+vec2(-side*radius,0.0),morph);
+      vec2 z=side*(p-anchor);
+      float h=length(vec2(1.0-k*z.x,k*z.y));
+      // Rationalised distance: no catastrophic cancellation at k -> 0.
+      float normal=(2.0*z.x-k*dot(z,z))/(1.0+h);
+      float tangent=k<.0001?z.y:atan(k*z.y,1.0-k*z.x)/k;
+      // The two long ends physically retract into the small curved volume.
+      float lo=mix(-2.0,mix(-.74,-3.03,identity)*radius,morph);
+      float hi=mix(2.0,mix(2.12,3.03,identity)*radius,morph);
+      float branchLimit=3.14159265/max(k,.0001)-mix(.09,.008,identity);
+      lo=max(lo,-branchLimit);hi=min(hi,branchLimit);
+      float cap=smoothstep(lo,lo+mix(.08,.028,morph),tangent)
+               *(1.0-smoothstep(hi-mix(.08,.028,morph),hi,tangent));
+      // Seal only after the material coordinates become periodic at the seam.
+      cap=mix(cap,1.0,smoothstep(.85,1.0,morph));
+      if(cap<.00001)return vec3(0.0);
+      float u=clamp((tangent-lo)/max(hi-lo,.001),0.0,1.0);
+      float tail=pow(max(.0001,sin(u*3.14159265)),.48);
+      float profile=mix(.18+.82*tail,.78+.22*cos(tangent/radius),identity);
+      float taper=mix(1.0,profile,morph);
+      float sx=mix(1.0,mix(.35,.23,identity),morph)*taper;
+      float sy=mix(1.0,.36,morph);
+      // Audio changes the material itself, with a restrained radial expansion.
+      normal/=1.0+u_voice*morph*.16;
+      float travel=mix(tangent/sy,sin(k*tangent)*radius/.36,smoothstep(.55,.82,morph));
+      vec2 material=rest+side*vec2(normal/sx,travel);
+      return ribbon(material,side,sx,cap,tangent);
+    }
+    void main() {
+      if(u_morph<.000001){paintHome();return;}
+      vec2 p=(gl_FragCoord.xy-.5*u_resolution)/u_resolution.y;
+      vec2 screenP=p;
+      float m=u_morph;
+      vec2 contactPoint=(u_touch.xy-.5)*vec2(u_resolution.x/u_resolution.y,1.0);
+      vec2 contact=p-contactPoint;
+      float reach=.20+.13*u_touch.z;
+      vec2 field=contact*vec2(.92,1.08);
+      float gather=exp(-dot(field,field)/(reach*reach))*u_touch.z*(1.0-m);
+      float t=u_time*.105;
+      float sourceAxis=contactPoint.y*.29-sin(contactPoint.y*4.6+t*.62)*.16;
+      p+=(contact*1.65+vec2((sourceAxis-contactPoint.x)*.64,0.0))*gather;
+      p+=vec2(-contact.y,contact.x)*gather*.12;
+      vec2 centre=u_focus.xy;
+      float radius=u_focus.z*(1.0+u_voice*.045);
+      // One advected silk field, with gentle torsion; never a separate particle layer.
+      vec2 relative=p-centre*m;
+      float identity=smoothstep(.55,1.0,m);
+      float twist=m*(mix(.08*sin(u_time*.22),.34,identity)+u_voice*.018);
+      p=mat2(cos(twist),-sin(twist),sin(twist),cos(twist))*relative+centre*m;
+      vec3 ink=vec3(.012,.019,.029);
+      vec3 a=foldedRibbon(p,1.0,m,radius,centre);
+      vec3 b=foldedRibbon(p,-1.0,m,radius,centre);
+      // Alternating depth at the two crossings gives the mark a continuous weave.
+      float over=smoothstep(-radius*.15,radius*.15,p.y-centre.y);
+      float bodyA=smoothstep(.012,.08,max(a.r,max(a.g,a.b)));
+      float bodyB=smoothstep(.012,.08,max(b.r,max(b.g,b.b)));
+      vec3 color=a*(1.0-identity*over*bodyB*.84)
+                +b*(1.0-identity*(1.0-over)*bodyA*.84);
+      color+=vec3(.19,.32,.62)*exp(-length(p-mix(vec2(.2,.34),centre,m))*mix(4.8,15.0,m))*.12*(1.0-m);
+      color*=1.0+gather*.48;
+      float breath=1.0+sin(u_time*.37)*.055;
+      float quiet=1.0-exp(-dot(screenP*vec2(3.0,5.0),screenP*vec2(3.0,5.0)))*.17*(1.0-m);
+      float vignette=1.0-smoothstep(.29,.79,length(screenP*vec2(.9,.82)))*.56*(1.0-m);
+      color=ink+color*breath*quiet*vignette*mix(u_light,1.08,m);
+      color+=(hash(gl_FragCoord.xy*.01)-.5)/255.0;
+      gl_FragColor=vec4(color,1.0);
+    }
+
   `;
 
   function webGLRenderer() {
@@ -3582,6 +3777,7 @@ window.MM_FIREBASE_CONFIG = Object.freeze({
       const activity = gl.getUniformLocation(program, 'u_energy');
       const light = gl.getUniformLocation(program, 'u_light');
       const touch = gl.getUniformLocation(program, 'u_touch');
+      const morph = gl.getUniformLocation(program, 'u_morph'), voice = gl.getUniformLocation(program, 'u_voice'), focus = gl.getUniformLocation(program, 'u_focus');
       compiled.forEach(shader => gl.deleteShader(shader));
       compiled.length = 0;
       return {
@@ -3592,6 +3788,10 @@ window.MM_FIREBASE_CONFIG = Object.freeze({
           gl.uniform1f(activity, energy);
           gl.uniform1f(light, luminosity);
           gl.uniform3f(touch, touchX, 1 - touchY, attraction);
+          gl.uniform1f(morph, assistantMix);gl.uniform1f(voice, audioLevel);
+          const visible=Math.min(height,window.visualViewport?.height||height),short=visible<600;
+          const diameter=short?Math.min(165,width*.62):Math.min(420,width<700?width*.75:visible*.46);
+          gl.uniform3f(focus,0,.5-visible*(short?.25:.33)/height,diameter/(2.3*height));
           gl.drawArrays(gl.TRIANGLES, 0, 3);
         },
         dispose() {
@@ -3625,6 +3825,10 @@ window.MM_FIREBASE_CONFIG = Object.freeze({
           fallback.height = canvas.height;
         }
         const w = fallback.width, h = fallback.height, t = time * .12;
+        const m=assistantMix,visible=Math.min(height,window.visualViewport?.height||height),short=visible<600;
+        const cy=visible*(short?.25:.33)/height;
+        const radius=(short?Math.min(165,width*.62):Math.min(420,width<700?width*.75:visible*.46))/(2.3*height);
+        const mix=(a,b)=>a+(b-a)*m;
         ctx.fillStyle = '#030507';
         ctx.fillRect(0, 0, w, h);
         ctx.globalCompositeOperation = 'screen';
@@ -3643,7 +3847,8 @@ window.MM_FIREBASE_CONFIG = Object.freeze({
         ];
         glows.forEach(([x, y, rgb]) => {
           [x, y] = pull(x, y);
-          const r = h * .55, gradient = ctx.createRadialGradient(x * w, y * h, 0, x * w, y * h, r);
+          x=mix(x,.5);y=mix(y,cy);
+          const r = h * mix(.55,radius*1.6), gradient = ctx.createRadialGradient(x * w, y * h, 0, x * w, y * h, r);
           gradient.addColorStop(0, `rgba(${rgb},${.19 * luminosity * (1 + energy * .4)})`);
           gradient.addColorStop(.45, `rgba(${rgb},${.055 * luminosity})`);
           gradient.addColorStop(1, `rgba(${rgb},0)`);
@@ -3655,7 +3860,14 @@ window.MM_FIREBASE_CONFIG = Object.freeze({
           for (let step = 0; step <= 60; step++) {
             const y = step / 60;
             const x = .35 + Math.sin(y * 4.7 + t * .7) * .34 + (i - 2) * .018;
-            const [px, py] = pull(x, y);
+            let [px, py] = pull(x, y);
+            const phase=Math.max(0,Math.min(1,(m-.55)/.45)),identity=phase*phase*(3-2*phase);
+            const side=i<3?1:-1,angle=(1-y)*(2.86+(Math.PI*2-2.86)*identity)-(.74+(Math.PI-.74)*identity);
+            const r=radius+(i-(side>0?1:3.5))*.004;
+            const lx=-side*(Math.cos(angle)*r*(1-.24*identity)+radius*.57*identity),ly=-side*Math.sin(angle)*r;
+            const rotation=.34*identity,tx=.5+(lx*Math.cos(rotation)+ly*Math.sin(rotation))*height/width;
+            const ty=cy-lx*Math.sin(rotation)+ly*Math.cos(rotation);
+            px=mix(px,tx);py=mix(py,ty);
             if (step === 0) ctx.moveTo(px * w, py * h);
             else ctx.lineTo(px * w, py * h);
           }
@@ -3670,7 +3882,9 @@ window.MM_FIREBASE_CONFIG = Object.freeze({
   }
 
   function draw() {
-    if (renderer && !lost && assistantMix < .42) renderer.draw();
+    const nextGathered=assistantMix>.12;
+    if(nextGathered!==gathered){gathered=nextGathered;document.documentElement.classList?.toggle('fluid-gathered',gathered);}
+    if (renderer && !lost) renderer.draw();
   }
   function sizeBuffer() {
     // A soft background can trade pixels for cadence without softening text.
@@ -3717,11 +3931,19 @@ window.MM_FIREBASE_CONFIG = Object.freeze({
   }
   function tick(timestamp) {
     frame = 0;
-    if (document.hidden || reducedMotion.matches || lost || destroyed || assistantMix >= .42) return;
+    if (document.hidden || reducedMotion.matches || lost || destroyed) return;
     const interval = Math.max(0, timestamp - lastPaint);
     const delta = Math.min(interval / 1000, .06);
     lastPaint = timestamp;
     adaptResolution(interval, timestamp);
+    // Preserve velocity through early close/reopen; one critically damped spring.
+    const rate=assistantTarget>assistantMix?6.8:5.4,decay=Math.exp(-rate*delta);
+    const displacement=assistantMix-assistantTarget,velocity=assistantVelocity+rate*displacement;
+    assistantMix=assistantTarget+(displacement+velocity*delta)*decay;
+    assistantVelocity=(assistantVelocity-rate*velocity*delta)*decay;
+    if(Math.abs(assistantMix-assistantTarget)<.00002&&Math.abs(assistantVelocity)<.0002){assistantMix=assistantTarget;assistantVelocity=0;}
+    const fresh=assistantListening&&performance.now()-audioAt<220?audioTarget:0;
+    audioLevel+=(fresh-audioLevel)*(1-Math.exp(-delta*(fresh>audioLevel?12:4)));
     time += delta * (1 + energy * .9);
     const ease = 1 - Math.exp(-delta * 4.5);
     energy += (target[0] - energy) * ease;
@@ -3751,10 +3973,11 @@ window.MM_FIREBASE_CONFIG = Object.freeze({
   function resume() {
     cancelAnimationFrame(frame);
     frame = 0;
-    if (document.hidden || lost || destroyed || assistantMix >= .42) return;
+    if (document.hidden || lost || destroyed) return;
     lastPaint = performance.now();
     sampleTime = sampleCount = lateFrames = 0;
     if (reducedMotion.matches) {
+      assistantMix=assistantTarget;assistantVelocity=0;audioLevel=0;
       energy = target[0];
       luminosity = target[1];
       attraction = attractionTarget = attractionVelocity = 0;
@@ -3775,18 +3998,18 @@ window.MM_FIREBASE_CONFIG = Object.freeze({
     holding = true;
     releasing = false;
     quietUntil = performance.now() + 500;
-    touchX = contactX;
-    touchY = contactY;
-    attraction = Math.min(attraction, .12);
-    attractionTarget = reducedMotion.matches ? 0 : .18;
-    attractionVelocity = 0;
+    if(attraction<.001){touchX=contactX;touchY=contactY;}
+    attractionTarget = reducedMotion.matches ? 0 : Math.max(.18,attraction);
   }
   function charge(amount) {
     if (!holding || !Number.isFinite(amount) || reducedMotion.matches) return;
     attractionTarget = .18 + clamp(amount) * .82;
+    // A long hold begins gathering before recognition opens. A quick tap keeps
+    // the original local response; the spring hands its velocity into the form.
+    if(!assistantActive)assistantTarget=.18*Math.pow(Math.max(0,(clamp(amount)-.45)/.55),2);
   }
   function handoff() {
-    holding = false;
+    holding = false;if(!assistantActive)assistantTarget=0;
     if (reducedMotion.matches || releasing) return;
     // A short tap can land between animation frames. Give it a small impulse,
     // not a second rise/hold/reversal after the finger is already lifted.
@@ -3797,41 +4020,31 @@ window.MM_FIREBASE_CONFIG = Object.freeze({
   }
   function release(options = {}) {
     if (options?.handoff) { handoff(); return; }
-    holding = false;
+    holding = false;if(!assistantActive)assistantTarget=0;
     if (!releasing) attractionVelocity *= .5;
     attractionTarget = 0;
     releasing = true;
     quietUntil = performance.now() + 700;
   }
-  function fluidOpacity() {
-    const phase = Math.max(0, Math.min(1, assistantMix / .42));
-    return 1 - phase * phase * (3 - 2 * phase);
-  }
+  function fluidOpacity() { return 1; }
   function setAssistantMix(amount) {
-    if (destroyed || !Number.isFinite(amount)) return;
-    const wasHidden = assistantMix >= .42;
-    assistantMix = Math.max(0, Math.min(1, amount));
-    const opacity = String(fluidOpacity());
-    canvas.style.opacity = opacity;
-    if (fallbackCanvas) fallbackCanvas.style.opacity = opacity;
-    if (assistantMix >= .42) {
-      cancelAnimationFrame(frame);
-      frame = 0;
-      // A held gesture may finish while this renderer is asleep. Return to a
-      // resting field, rather than replaying an old contact when it reappears.
-      attraction = attractionTarget = attractionVelocity = 0;
-      holding = releasing = false;
-    } else if (wasHidden) resume();
+    if(destroyed||!Number.isFinite(amount))return;
+    assistantMix=assistantTarget=clamp(amount);assistantVelocity=0;
+    draw();
   }
   function assistant(active) {
-    // The point cloud owns a single reversible transition. Never run two
-    // independent fades or paint the fluid underneath the visible particles.
-    if (window.MMParticles) window.MMParticles.setActive(active);
-    else if (!active) setAssistantMix(0);
+    assistantActive=!!active;assistantTarget=assistantActive?1:0;
+    // The gesture hands over to the same renderer; releasing the finger does
+    // not dismiss the listening form. Only the assistant close opens it again.
+    if(!assistantActive){assistantListening=false;audioTarget=0;}
+    quietUntil=performance.now()+1800;
+    if(reducedMotion.matches){assistantMix=assistantTarget;assistantVelocity=0;draw();}
   }
+  function setListening(active){assistantListening=!!active;if(!assistantListening)audioTarget=0;}
+  function setAudioLevel(level){audioTarget=assistantActive&&assistantListening&&Number.isFinite(level)?clamp(level):0;audioAt=performance.now();}
   // All points are CSS pixels relative to #experience. Gestures own timing;
   // this renderer owns continuous interpolation and the brief popup handoff.
-  const api = Object.freeze({ begin, move, charge, release, handoff, assistant, setAssistantMix });
+  const api = Object.freeze({ begin, move, charge, release, handoff, assistant, setAssistantMix, setListening, setAudioLevel });
   window.MyMoneyOrbit = api;
   function sceneChanged() {
     const next = document.documentElement.dataset.scene || 'idle';
@@ -3847,10 +4060,11 @@ window.MM_FIREBASE_CONFIG = Object.freeze({
   const resizeObserver = typeof ResizeObserver === 'function' ? new ResizeObserver(resize) : null;
   if (resizeObserver) resizeObserver.observe(stage);
   else on(window, 'resize', resize, { passive: true });
+  if(window.visualViewport)on(window.visualViewport,'resize',()=>draw(),{passive:true});
   on(document, 'visibilitychange', () => {
     if (document.hidden) {
       release();
-      attraction = attractionVelocity = 0;
+      attraction = attractionVelocity = 0;audioLevel=audioTarget=0;
     }
     resume();
   });
@@ -3904,264 +4118,17 @@ window.MM_FIREBASE_CONFIG = Object.freeze({
   resume();
 })();
 </script>
-<script>/* Two curved drops, drawn as a volume of points. No image or recorded audio. */
+<script>/* Compatibility bridge: the assistant IS the ambient silk, not a second scene.
+   Kept under the existing API name so voice capture stays unchanged. */
 (() => {
   'use strict';
-  const motion = window.matchMedia('(prefers-reduced-motion: reduce)');
-  const reducedData = !!navigator.connection?.saveData;
-  let canvas = null, renderer = null, width = 1, height = 1, ratio = 1;
-  let active = false, destroyed = false, listening = false, frame = 0, last = 0, clock = 0;
-  let phase = 0, audio = 0, level = 0, audioAt = 0;
-  const smooth = x => { x = Math.max(0, Math.min(1, x)); return x * x * (3 - 2 * x); };
-  const count = reducedData ? 2400 : window.matchMedia('(pointer: coarse)').matches ? 5800 : 8000;
-  let randomState = 17861;
-  function random() {
-    randomState ^= randomState << 13; randomState ^= randomState >>> 17; randomState ^= randomState << 5;
-    return (randomState >>> 0) / 4294967296;
-  }
-  function buildCloud() {
-    const points = new Float32Array(count * 7);
-    // A tapering tube along this cubic makes a curved teardrop. The opposite
-    // copy preserves the brand's diagonal negative space, including in silence.
-    const a = [.44, -.49], b = [-.03, -.84], c = [-.91, -.04], d = [-.4, .23];
-    for (let i = 0; i < count; i++) {
-      const u = .008 + random() * .984, v = 1 - u;
-      const x = v*v*v*a[0] + 3*v*v*u*b[0] + 3*v*u*u*c[0] + u*u*u*d[0];
-      const y = v*v*v*a[1] + 3*v*v*u*b[1] + 3*v*u*u*c[1] + u*u*u*d[1];
-      const dx = 3*v*v*(b[0]-a[0]) + 6*v*u*(c[0]-b[0]) + 3*u*u*(d[0]-c[0]);
-      const dy = 3*v*v*(b[1]-a[1]) + 6*v*u*(c[1]-b[1]) + 3*u*u*(d[1]-c[1]);
-      const length = Math.hypot(dx, dy), angle = random() * Math.PI * 2;
-      const radius = .245 * Math.pow(Math.sin(Math.PI * u), .58) * (.30 + .70 * u);
-      const shell = random() < .62 ? .80 + random() * .20 : Math.sqrt(random()) * .8;
-      const side = i % 2 ? -1 : 1, offset = Math.cos(angle) * radius * shell;
-      points.set([side * (x - dy / length * offset), side * (y + dx / length * offset),
-        Math.sin(angle) * radius * shell * .85, random() * Math.PI * 2, random(), .75 + random() * 1.40, i % 2], i * 7);
-    }
-    return points;
-  }
-  const points = buildCloud();
-  function geometry() {
-    // CSS pixel coordinates; root content starts below ~56svh.
-    const visibleHeight = Math.min(height, window.visualViewport?.height || height);
-    const short = visibleHeight < 600;
-    const diameter = short ? Math.min(150, width * .62) : Math.min(440, width < 700 ? width * .74 : visibleHeight * .46);
-    return { x: width / 2, y: visibleHeight * (short ? .25 : .33), scale: diameter / 1.42 };
-  }
-  function webGL() {
-    const gl = canvas.getContext('webgl', { alpha: true, premultipliedAlpha: true, antialias: false, depth: false, stencil: false, powerPreference: 'low-power' });
-    if (!gl) return null;
-    let program, buffer;
-    const shaders = [];
-    try {
-      function compile(type, source) {
-        const shader = gl.createShader(type); shaders.push(shader);
-        gl.shaderSource(shader, source); gl.compileShader(shader);
-        if (!gl.getShaderParameter(shader, gl.COMPILE_STATUS)) throw new Error('Particle shader unavailable');
-        return shader;
-      }
-      program = gl.createProgram();
-      gl.attachShader(program, compile(gl.VERTEX_SHADER, `
-        attribute vec3 a_position;
-        attribute vec4 a_detail;
-        uniform vec2 u_view;
-        uniform vec3 u_geometry;
-        uniform float u_time;
-        uniform float u_audio;
-        uniform float u_ratio;
-        uniform float u_reduced;
-        varying float v_alpha;
-        varying vec3 v_color;
-        void main() {
-          vec3 p = a_position;
-          float seed = a_detail.x;
-          // The only expansion driver is measured microphone energy. Slow
-          // quiet drift is material motion, not a simulated listening waveform.
-          float drift = sin(u_time * .32 + seed) * .009 * (1.0 - u_reduced);
-          vec2 ray = normalize(p.xy + vec2(.001));
-          float scatter = u_audio * (.055 + a_detail.y * a_detail.y * .22) * (1.0 - u_reduced);
-          p.xy += ray * scatter + vec2(cos(seed + u_time * .21), sin(seed - u_time * .18)) * drift;
-          p.z += sin(seed + u_time * .25) * .018 * (1.0 - u_reduced);
-          float turn = sin(u_time * .16) * .09 * (1.0 - u_reduced);
-          p.x = p.x * cos(turn) + p.z * sin(turn);
-          float depth = 1.0 + p.z * .20;
-          vec2 screen = u_geometry.xy + p.xy * u_geometry.z * depth;
-          gl_Position = vec4(screen / u_view * vec2(2.0, -2.0) + vec2(-1.0, 1.0), 0.0, 1.0);
-          gl_PointSize = a_detail.z * u_ratio * (1.0 + p.z * .25);
-          float front = smoothstep(-.15, .15, p.z);
-          vec3 navy = vec3(.20, .40, .60), teal = vec3(.23, .67, .67), cyan = vec3(.48, .84, .85);
-          v_color = mix(navy, teal, .32 + front * .36 + p.y * .18);
-          v_color = mix(v_color, cyan, smoothstep(.48, .96, a_detail.y) * (.45 + front * .55));
-          // Near points catch more cyan; the far surface remains navy, making
-          // the volume readable without filling the negative space or whitening it.
-          v_alpha = min(.94, (.42 + a_detail.y * .58) * (.72 + front * .48) * (1.0 + u_audio * .13));
-        }
-      `));
-      gl.attachShader(program, compile(gl.FRAGMENT_SHADER, `
-        precision mediump float;
-        varying float v_alpha;
-        varying vec3 v_color;
-        void main() {
-          float r = length(gl_PointCoord - .5);
-          float edge = 1.0 - smoothstep(.28, .5, r);
-          gl_FragColor = vec4(v_color, v_alpha * edge);
-        }
-      `));
-      gl.linkProgram(program);
-      if (!gl.getProgramParameter(program, gl.LINK_STATUS)) throw new Error('Particle program unavailable');
-      gl.useProgram(program);
-      buffer = gl.createBuffer(); gl.bindBuffer(gl.ARRAY_BUFFER, buffer); gl.bufferData(gl.ARRAY_BUFFER, points, gl.STATIC_DRAW);
-      const position = gl.getAttribLocation(program, 'a_position'), detail = gl.getAttribLocation(program, 'a_detail');
-      gl.enableVertexAttribArray(position); gl.vertexAttribPointer(position, 3, gl.FLOAT, false, 28, 0);
-      gl.enableVertexAttribArray(detail); gl.vertexAttribPointer(detail, 4, gl.FLOAT, false, 28, 12);
-      const uniforms = Object.fromEntries(['view', 'geometry', 'time', 'audio', 'ratio', 'reduced'].map(key => [key, gl.getUniformLocation(program, 'u_' + key)]));
-      gl.enable(gl.BLEND); gl.blendFuncSeparate(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA, gl.ONE, gl.ONE_MINUS_SRC_ALPHA);
-      shaders.forEach(shader => gl.deleteShader(shader)); shaders.length = 0;
-      return {
-        draw() {
-          const g = geometry();
-          gl.viewport(0, 0, canvas.width, canvas.height); gl.clearColor(0, 0, 0, 0); gl.clear(gl.COLOR_BUFFER_BIT);
-          gl.uniform2f(uniforms.view, width, height); gl.uniform3f(uniforms.geometry, g.x, g.y, g.scale);
-          gl.uniform1f(uniforms.time, clock); gl.uniform1f(uniforms.audio, audio); gl.uniform1f(uniforms.ratio, ratio); gl.uniform1f(uniforms.reduced, motion.matches ? 1 : 0);
-          gl.drawArrays(gl.POINTS, 0, count);
-        },
-        dispose() { gl.deleteBuffer(buffer); gl.deleteProgram(program); }
-      };
-    } catch (_) {
-      shaders.forEach(shader => gl.deleteShader(shader));
-      if (buffer) gl.deleteBuffer(buffer); if (program) gl.deleteProgram(program);
-      return null;
-    }
-  }
-  function flatRenderer() {
-    const ctx = canvas.getContext('2d', { alpha: true });
-    if (!ctx) return null;
-    const palette = ['#376982', '#438b94', '#6db6ba'];
-    return {
-      draw() {
-        const g = geometry(); ctx.setTransform(ratio, 0, 0, ratio, 0, 0); ctx.clearRect(0, 0, width, height);
-        for (let i = 0; i < count; i += 3) {
-          const n = i * 7, x = points[n], y = points[n + 1], seed = points[n + 3], tint = points[n + 4];
-          const spread = motion.matches ? 1 : 1 + audio * (.12 + tint * .27);
-          const drift = motion.matches ? 0 : Math.sin(clock * .32 + seed) * .009;
-          ctx.fillStyle = palette[Math.min(2, Math.floor(tint * 3))]; ctx.globalAlpha = .3 + tint * .6;
-          ctx.beginPath(); ctx.arc(g.x + (x * spread + drift) * g.scale, g.y + (y * spread + drift * .4) * g.scale, points[n + 5] * .65, 0, Math.PI * 2); ctx.fill();
-        }
-        ctx.globalAlpha = 1;
-      },
-      dispose() {}
-    };
-  }
-  function newCanvas() {
-    const host = document.querySelector('#voice-sheet');
-    if (!host) return false;
-    canvas = document.createElement('canvas'); canvas.className = 'assistant-particles';
-    canvas.setAttribute('aria-hidden', 'true');
-    canvas.style.cssText = 'position:fixed;inset:0;width:100%;height:100%;pointer-events:none;z-index:0;opacity:0;';
-    host.prepend(canvas);
-    return true;
-  }
-  function createRenderer() {
-    if (renderer) return true;
-    if (!newCanvas()) return false;
-    renderer = webGL();
-    if (!renderer) {
-      // A canvas cannot change context types after WebGL has been acquired.
-      canvas.remove(); if (!newCanvas()) return false;
-      renderer = flatRenderer();
-    }
-    if (!renderer) { canvas.remove(); canvas = null; return false; }
-    canvas.addEventListener('webglcontextlost', contextLost);
-    resize();
-    return true;
-  }
-  function contextLost(event) {
-    event.preventDefault(); renderer?.dispose(); renderer = null;
-    canvas?.removeEventListener('webglcontextlost', contextLost); canvas?.remove(); canvas = null;
-    if (!newCanvas()) { setActive(false); return; }
-    renderer = flatRenderer();
-    if (!renderer) { setActive(false); return; }
-    resize(); applyTransition();
-  }
-  function resize() {
-    if (!canvas) return;
-    const rect = canvas.getBoundingClientRect();
-    width = Math.max(1, rect.width || window.innerWidth); height = Math.max(1, rect.height || window.innerHeight);
-    ratio = Math.min(window.devicePixelRatio || 1, 2, Math.sqrt(2100000 / (width * height)));
-    canvas.width = Math.round(width * ratio); canvas.height = Math.round(height * ratio);
-    if (phase > .46) renderer?.draw();
-  }
-  function applyTransition() {
-    window.MyMoneyOrbit?.setAssistantMix(phase);
-    // A short gap gives the fluid time to disappear before the first point.
-    if (canvas) canvas.style.opacity = String(smooth((phase - .46) / .54));
-  }
-  function tick(now) {
-    frame = 0;
-    if (destroyed || document.hidden) return;
-    const dt = Math.min(.05, Math.max(0, (now - last) / 1000)); last = now;
-    phase = Math.max(0, Math.min(1, phase + (active ? 1 : -1) * dt / .9));
-    // A stalled or ended meter must never leave the cloud stuck expanded.
-    const target = listening && now - audioAt < 220 ? level : 0;
-    audio += (target - audio) * (1 - Math.exp(-dt * (target > audio ? 18 : 7)));
-    if (audio < .0001) audio = 0;
-    clock += dt;
-    applyTransition();
-    if (phase > .46) renderer?.draw();
-    if (active || phase > 0) frame = requestAnimationFrame(tick);
-    else {
-      audio = level = 0;
-      if (canvas) canvas.style.display = 'none';
-    }
-  }
-  function wake() {
-    cancelAnimationFrame(frame); frame = 0;
-    if (document.hidden || destroyed) return;
-    if (motion.matches) {
-      phase = active ? 1 : 0; audio = 0; applyTransition();
-      if (active) renderer?.draw(); else if (canvas) canvas.style.display = 'none';
-      return;
-    }
-    last = performance.now();
-    if (active || phase > 0) frame = requestAnimationFrame(tick);
-  }
-  function setActive(value) {
-    if (destroyed) return false;
-    const next = !!value;
-    if (next && !createRenderer()) return false;
-    if (next === active) return true;
-    active = next;
-    if (canvas) canvas.style.display = '';
-    if (!active) { listening = false; level = 0; }
-    wake();
-    return true;
-  }
-  function setAudioLevel(value) {
-    level = Number.isFinite(value) && listening && active ? Math.max(0, Math.min(1, value)) : 0;
-    audioAt = performance.now();
-  }
-  function setListening(value) { listening = !!value; if (!listening) level = 0; }
-  function visibility() { if (document.hidden) { cancelAnimationFrame(frame); frame = 0; audio = level = 0; } else wake(); }
-  function destroy() {
-    if (destroyed) return;
-    destroyed = true; active = listening = false; cancelAnimationFrame(frame); frame = 0;
-    window.MyMoneyOrbit?.setAssistantMix(0);
-    renderer?.dispose(); renderer = null; canvas?.remove(); canvas = null;
-    document.removeEventListener('visibilitychange', visibility);
-    window.visualViewport?.removeEventListener('resize', resize);window.removeEventListener('resize', resize); window.removeEventListener('pagehide', pagehide); window.removeEventListener('pageshow', pageshow);
-    if (motion.removeEventListener) motion.removeEventListener('change', wake); else motion.removeListener(wake);
-    if (window.MMParticles === api) delete window.MMParticles;
-  }
-  function pagehide(event) {
-    if (!event.persisted) destroy();
-    else { cancelAnimationFrame(frame); frame = 0; audio = level = 0; }
-  }
-  function pageshow() { if (!destroyed) wake(); }
-  const api = Object.freeze({ setActive, setAudioLevel, setListening, destroy });
-  window.MMParticles = api;
-  document.addEventListener('visibilitychange', visibility);
-  window.visualViewport?.addEventListener('resize', resize, { passive: true });window.addEventListener('resize', resize, { passive: true }); window.addEventListener('pagehide', pagehide);
-  window.addEventListener('pageshow', pageshow);
-  if (motion.addEventListener) motion.addEventListener('change', wake); else motion.addListener(wake);
+  const api=Object.freeze({
+    setActive:active=>window.MyMoneyOrbit?.assistant(active),
+    setListening:active=>window.MyMoneyOrbit?.setListening(active),
+    setAudioLevel:level=>window.MyMoneyOrbit?.setAudioLevel(level),
+    destroy(){window.MyMoneyOrbit?.assistant(false);if(window.MMParticles===api)delete window.MMParticles;}
+  });
+  window.MMParticles=api;
 })();
 </script>
 <script>/* Local microphone amplitude only. No recording, upload or synthesized levels. */
