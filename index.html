@@ -425,7 +425,7 @@ button.icon-button,.dialog-head>button { border-radius:var(--radius-round); }
 .nav button,.segmented button { border-radius:var(--radius-control); }
 button.row,.upcoming-mini { border-radius:var(--radius-control); padding-left:10px; padding-right:10px; }
 button.quiet { padding-left:12px; padding-right:12px; }
-summary { border-radius:var(--radius-control); transition:background-color 160ms ease; }
+summary { border-radius:var(--radius-control); padding-inline:12px; transition:background-color 180ms ease,box-shadow 180ms ease,color 180ms ease; }
 #plan-budget p,#plan-notes p { max-width:none; width:100%; }
 .plan-item { border-bottom:1px solid var(--line); padding:4px 0 8px; }
 .plan-item .row { border:0; width:100%; }
@@ -444,9 +444,9 @@ summary { border-radius:var(--radius-control); transition:background-color 160ms
 .filter-category { grid-column:1/-1; }
 #filter-results { margin:6px 10px; }
 @media (min-width:700px) { .filter-grid { grid-template-columns:repeat(4,minmax(0,1fr)); } .filter-category { grid-column:span 2; grid-row:1; } }
-@media (hover:hover) and (pointer:fine) { summary:hover { background:rgb(230 240 245 / .035); } }
+@media (hover:hover) and (pointer:fine) { summary:hover { background:rgb(230 240 245 / .012); box-shadow:inset 0 0 0 1px rgb(230 240 245 / .055); color:var(--text); } }
 
-/* A single scene changes from flowing light to two sculpted particle streams. */
+/* The assistant gathers the ambient field into a voice-reactive particle sphere. */
 html.assistant-open .wordmark { opacity:0; }
 #voice-sheet.assistant-sheet { position:fixed; inset:0; width:100%; max-width:none; height:100dvh; max-height:none; margin:0; padding:0; border:0; border-radius:0; background:transparent; box-shadow:none; backdrop-filter:none; -webkit-backdrop-filter:none; overflow-y:auto; overscroll-behavior:contain; isolation:isolate; }
 #voice-sheet.assistant-sheet::before,#voice-sheet.assistant-sheet::after { display:none; }
@@ -506,6 +506,10 @@ html.keyboard-open #voice-sheet #mic { width:60px; height:60px; min-height:60px;
 #voice-sheet.assistant-sheet::backdrop { background:transparent; animation:none; }
 
 html.fluid-gathered .wordmark { opacity:0; }
+
+/* This invisible sphere surface keeps touch drags local, leaving the content scrollable. */
+#assistant-orb-hit { position:absolute; z-index:0; border-radius:50%; touch-action:none; cursor:grab; -webkit-tap-highlight-color:transparent; }
+#assistant-orb-hit:active { cursor:grabbing; }
 </style>
 </head>
 <body>
@@ -627,6 +631,7 @@ html.fluid-gathered .wordmark { opacity:0; }
 </dialog>
 
 <dialog id="voice-sheet" class="dialog voice-sheet assistant-sheet" aria-labelledby="voice-title">
+  <div id="assistant-orb-hit" aria-hidden="true"></div>
   <div class="dialog-head"><h2 id="voice-title" class="sr-only" data-i18n="Assistente MyMoney">Assistente MyMoney</h2><button id="close-voice" class="button icon-button" aria-label="Chiudi assistente" data-i18n-aria-label="Chiudi assistente"><span data-icon="close"></span></button></div>
   <div class="dialog-body assistant-content">
     <section id="voice-consent" hidden><p data-i18n="La dettatura usa il servizio vocale del browser, che può elaborare l’audio online.">La dettatura usa il servizio vocale del browser, che può elaborare l’audio online.</p><button id="voice-enable" class="button full-width"><span data-i18n="Attiva microfono">Attiva microfono</span> <span data-icon="mic"></span></button><button id="voice-write" class="button quiet full-width" data-i18n="Preferisco scrivere">Preferisco scrivere</button></section>
@@ -2210,7 +2215,7 @@ html.fluid-gathered .wordmark { opacity:0; }
   const motions=new WeakMap(),returnFocus=new WeakMap();
   const surface=$('#touch-surface'),sheet=$('#data-sheet'),experience=$('#experience');
   const scrim=document.createElement('div');scrim.className='data-scrim';scrim.setAttribute('aria-hidden','true');document.body.append(scrim);
-  let callbacks={},gesture=null,drag=null,holdTimer=0,chargeFrame=0,paintFrame=0,voiceActive=false,assistantActive=false,heldPointerId=null,pendingTap=false,suppressClick=false,preview=false,origin=null,viewAnimation=null,assistantTap=null;
+  let callbacks={},gesture=null,drag=null,holdTimer=0,chargeFrame=0,paintFrame=0,voiceActive=false,assistantActive=false,heldPointerId=null,pendingTap=false,suppressClick=false,preview=false,origin=null,viewAnimation=null,assistantTap=null,orbGesture=null,orbHover=false,orbLastPoint=null;
   const clamp=(v,min,max)=>Math.max(min,Math.min(max,v));
   const ease='cubic-bezier(.22,1,.36,1)';
   function dialogs(){return [...document.querySelectorAll('dialog[open]')].filter(d=>!d.classList.contains('is-closing'));}
@@ -2237,7 +2242,7 @@ html.fluid-gathered .wordmark { opacity:0; }
     if(animated)animate(scrim,[{opacity:from},{opacity:value}],value?260:200,()=>{scrim.style.opacity=String(value);});
   }
   function nativeOpen(dialog,asPreview=false){
-    if(dialog.id==='voice-sheet')assistantTap=null;
+    if(dialog.id==='voice-sheet'){assistantTap=null;clearOrbPointer();}
     returnFocus.set(dialog,document.activeElement);
     const heading=dialog.querySelector('h2');if(heading){heading.tabIndex=-1;heading.setAttribute('autofocus','');}
     if(asPreview){dialog.dataset.dragPreview='true';dialog.show();}else dialog.showModal();
@@ -2278,7 +2283,7 @@ html.fluid-gathered .wordmark { opacity:0; }
     if(!dialog.open||dialog.classList.contains('is-closing'))return;
     const s=getComputedStyle(dialog),from={transform:s.transform==='none'?'translate3d(0,0,0)':s.transform,opacity:s.opacity};
     const content=dialog.querySelector('.assistant-content');if(content)stopMotion(content);
-    if(dialog.id==='voice-sheet')assistantTap=null;
+    if(dialog.id==='voice-sheet'){assistantTap=null;clearOrbPointer();}
     stopMotion(dialog);dialog.dispatchEvent(new CustomEvent('mm:closing',{bubbles:true}));dialog.classList.add('is-closing');
     if(dialog===sheet)backdrop(0,!immediate);
     const end=dialog===sheet&&!desktop.matches?`translate3d(0,${dialog.getBoundingClientRect().height+32}px,0)`:'translate3d(0,14px,0) scale(.975)';
@@ -2410,18 +2415,53 @@ html.fluid-gathered .wordmark { opacity:0; }
   function assistantBlank(target,dialog){
     return !!target?.closest&&dialog.contains(target)&&!target.closest('button,input,textarea,select,a,label,summary,details,p,h1,h2,h3,h4,[role=button],[contenteditable=true],#advisor-answer,#command-preview,#voice-consent,#voice-text,#voice-status');
   }
+  function assistantOrbHit(e,dialog){
+    return assistantBlank(e.target,dialog)&&window.MyMoneyOrbit?.orbHitTest?.(point(e))===true;
+  }
+  function orbFeedback(position,active,pressed=false){
+    if(position)orbLastPoint=position;
+    if(active||orbHover)fluid('orbPointer',orbLastPoint||{x:0,y:0},{active,pressed});
+    orbHover=active;
+  }
+  function clearOrbPointer(){
+    const previous=orbGesture;orbGesture=null;
+    if(previous){assistantTap=null;suppressClick=true;}
+    orbFeedback(null,false);
+    if(previous){try{if(previous.element.hasPointerCapture(previous.id))previous.element.releasePointerCapture(previous.id);}catch(_){}}
+  }
+  function finishOrbPointer(e,cancelled=false){
+    if(orbGesture?.id!==e.pointerId)return false;
+    const previous=orbGesture;orbGesture=null;assistantTap=null;suppressClick=true;
+    const hover=!cancelled&&previous.type!=='touch'&&previous.element.open&&!previous.element.classList.contains('is-closing')&&assistantOrbHit(e,previous.element);
+    orbFeedback(point(e),hover,false);
+    try{if(previous.element.hasPointerCapture(previous.id))previous.element.releasePointerCapture(previous.id);}catch(_){}
+    return true;
+  }
   function assistantDown(e){
     const dialog=e.currentTarget;
-    if(e.isPrimary===false||e.button!==0||!dialog.open||dialog.classList.contains('is-closing')||heldPointerId!==null||gesture||drag||!assistantBlank(e.target,dialog))return;
+    if(e.isPrimary===false||e.button!==0||!dialog.open||dialog.classList.contains('is-closing')||heldPointerId!==null||gesture||drag||orbGesture||!assistantBlank(e.target,dialog))return;
+    if(assistantOrbHit(e,dialog)){
+      e.preventDefault();assistantTap=null;
+      orbGesture={id:e.pointerId,element:dialog,type:e.pointerType||'mouse'};
+      try{dialog.setPointerCapture(e.pointerId);}catch(_){}
+      orbFeedback(point(e),true,true);return;
+    }
+    orbFeedback(null,false);
     assistantTap={id:e.pointerId,x:e.clientX,y:e.clientY,time:performance.now(),released:false};
   }
   function assistantMove(e){
+    if(orbGesture){if(orbGesture.id===e.pointerId){e.preventDefault();orbFeedback(point(e),true,true);}return;}
+    if(e.isPrimary===false)return;
     if(assistantTap?.id===e.pointerId&&Math.hypot(e.clientX-assistantTap.x,e.clientY-assistantTap.y)>8)assistantTap=null;
+    const dialog=e.currentTarget;
+    const hover=e.pointerType!=='touch'&&dialog.open&&!dialog.classList.contains('is-closing')&&heldPointerId===null&&!gesture&&assistantOrbHit(e,dialog);
+    orbFeedback(point(e),hover,false);
   }
   function assistantUp(e){
+    if(finishOrbPointer(e))return;
     if(assistantTap?.id!==e.pointerId)return;
     assistantMove(e);
-    if(assistantTap)assistantTap.released=assistantBlank(e.target,e.currentTarget);
+    if(assistantTap)assistantTap.released=assistantBlank(e.target,e.currentTarget)&&!assistantOrbHit(e,e.currentTarget);
   }
   function init(actions){
     callbacks=actions;root.dataset.inputModality='pointer';viewport();scene();renderHints();
@@ -2432,10 +2472,12 @@ html.fluid-gathered .wordmark { opacity:0; }
     // A modal or native microphone prompt may retarget the end of a touch away
     // from its original surface. Always finish the owning pointer at the window.
     window.addEventListener('pointerup',e=>{
+      finishOrbPointer(e);
       if(gesture?.id===e.pointerId){if(gesture.element.contains(e.target))up(e);else cancelPointer(e);}
       releaseHold(e);
     },true);
     window.addEventListener('pointercancel',e=>{
+      finishOrbPointer(e,true);
       if(gesture?.id===e.pointerId||drag?.id===e.pointerId||heldPointerId===e.pointerId)cancelPointer(e);
       releaseHold(e);
     },true);
@@ -2461,11 +2503,13 @@ html.fluid-gathered .wordmark { opacity:0; }
       if(dialog.id==='voice-sheet'){
         dialog.addEventListener('pointerdown',assistantDown);dialog.addEventListener('pointermove',assistantMove);dialog.addEventListener('pointerup',assistantUp);
         dialog.addEventListener('pointercancel',e=>{if(assistantTap?.id===e.pointerId)assistantTap=null;});
+        dialog.addEventListener('pointerleave',()=>orbFeedback(null,false));
+        dialog.addEventListener('lostpointercapture',e=>finishOrbPointer(e,true));
       }
       dialog.addEventListener('click',e=>{
         if(dialog.id==='voice-sheet'){
           const tap=assistantTap;assistantTap=null;
-          if(!tap?.released||drag||(Number.isFinite(e.pointerId)&&e.pointerId>0&&e.pointerId!==tap.id)||performance.now()-tap.time>700||!assistantBlank(e.target,dialog))return;
+          if(!tap?.released||drag||(Number.isFinite(e.pointerId)&&e.pointerId>0&&e.pointerId!==tap.id)||performance.now()-tap.time>700||!assistantBlank(e.target,dialog)||assistantOrbHit(e,dialog))return;
           e.preventDefault();e.stopImmediatePropagation();close(dialog);return;
         }
         if(e.target!==dialog||drag)return;const b=dialog.getBoundingClientRect();if(e.clientX<b.left||e.clientX>b.right||e.clientY<b.top||e.clientY>b.bottom)close(dialog);
@@ -2477,8 +2521,8 @@ html.fluid-gathered .wordmark { opacity:0; }
     }
     window.visualViewport?.addEventListener('resize',viewport);window.visualViewport?.addEventListener('scroll',viewport);window.addEventListener('resize',viewport);
     document.addEventListener('focusin',viewport);document.addEventListener('focusout',()=>requestAnimationFrame(viewport));
-    window.addEventListener('blur',()=>{cancelPointer();releaseHold();});
-    document.addEventListener('visibilitychange',()=>{if(document.hidden){cancelPointer();releaseHold();callbacks.suspend?.();}else viewport();});
+    window.addEventListener('blur',()=>{clearOrbPointer();cancelPointer();releaseHold();});
+    document.addEventListener('visibilitychange',()=>{if(document.hidden){clearOrbPointer();cancelPointer();releaseHold();callbacks.suspend?.();}else viewport();});
   }
   window.MMUI={init,open,close,scene,dialogs,transitionView,swapContent,setVoice(active){voiceActive=active;scene();}};
 })();
@@ -3318,7 +3362,7 @@ window.MM_FIREBASE_CONFIG = Object.freeze({
       r.onerror=e=>{if(speech!==r)return;failed=true;const messages={'not-allowed':tr('Microfono non autorizzato. Puoi abilitarlo in Safari oppure scrivere qui.'),'audio-capture':tr('Microfono non disponibile. Puoi scrivere qui.'),'no-speech':tr('Non ho sentito una frase. Tocca il microfono per riprovare.'),'network':tr('Voce non disponibile. Controlla la connessione oppure scrivi.'),'aborted':tr('Dettatura interrotta. Puoi riprovare.')};cancelVoice();voiceStatus(messages[e.error]||tr('Puoi riprovare con il microfono oppure scrivere.'),true);};
       r.onend=()=>{if(speech!==r)return;speech=null;window.MMVoiceMeter?.stop();clearSpeechTimers();voiceUI(false);composeState();if(!failed&&finalText.trim()){$('#natural').value=finalText.trim();analyze();}else if(!failed)voiceStatus(tr('Puoi riprovare o continuare dal testo.'),true);};
       r.start();composeState();
-      window.MMVoiceMeter?.start(level=>{if(speech===r)window.MMParticles?.setAudioLevel(level);},{recognitionActive:true,allowConcurrent:true}).catch(()=>{});
+      window.MMVoiceMeter?.start((level,details)=>{if(speech===r)window.MMParticles?.setAudioLevel(level,details);},{recognitionActive:true,allowConcurrent:true}).catch(()=>{});
     }catch(_){cancelVoice();voiceStatus(tr('Tocca il microfono per riprovare, oppure scrivi.'),true);}
   }
   function startVoice(){
@@ -3498,6 +3542,8 @@ window.MM_FIREBASE_CONFIG = Object.freeze({
   let attraction = 0, attractionTarget = 0, attractionVelocity = 0;
   let assistantMix = 0, assistantTarget = 0, assistantVelocity = 0, fallbackCanvas = null;
   let gathered = false;
+  let bass=0,mid=0,treble=0,bassTarget=0,midTarget=0,trebleTarget=0;
+  let probeX=0,probeY=0,probeTargetX=0,probeTargetY=0,probe=0,probeTarget=0,probePress=0,probePressTarget=0;
   let assistantActive = false, assistantListening = false, audioLevel = 0, audioTarget = 0, audioAt = 0;
   let holding = false, releasing = false, quietUntil = 0;
   // This is a backing-pixel policy, not a frame-rate limit. UI remains full resolution.
@@ -3516,21 +3562,7 @@ window.MM_FIREBASE_CONFIG = Object.freeze({
     attribute vec2 a_position;
     void main() { gl_Position = vec4(a_position, 0.0, 1.0); }
   `;
-  const fragmentSource = `
-    #ifdef GL_FRAGMENT_PRECISION_HIGH
-      precision highp float;
-    #else
-      precision mediump float;
-    #endif
-    uniform vec2 u_resolution;
-    uniform float u_time;
-    uniform float u_energy;
-    uniform float u_light;
-    uniform vec3 u_touch;
-    uniform float u_morph;
-    uniform float u_voice;
-    uniform vec3 u_focus;
-
+  const fieldFunctions = `
     float hash(vec2 p) {
       p = fract(p * vec2(123.34, 456.21));
       p += dot(p, p + 45.32);
@@ -3549,6 +3581,23 @@ window.MM_FIREBASE_CONFIG = Object.freeze({
       p = mat2(1.6, 1.2, -1.2, 1.6) * p;
       return value + noise(p + 3.1) * .14;
     }
+  `;
+  const fragmentSource = `
+    #ifdef GL_FRAGMENT_PRECISION_HIGH
+      precision highp float;
+    #else
+      precision mediump float;
+    #endif
+    uniform vec2 u_resolution;
+    uniform float u_time;
+    uniform float u_energy;
+    uniform float u_light;
+    uniform vec3 u_touch;
+    uniform float u_morph;
+    uniform float u_voice;
+    uniform vec3 u_focus;
+
+    ${fieldFunctions}
     float glow(float distance, float width) {
       return width / (abs(distance) + width);
     }
@@ -3620,8 +3669,7 @@ window.MM_FIREBASE_CONFIG = Object.freeze({
       float t = u_time * .105;
       vec2 q = vec2(cloud(material * 2.7 + vec2(.13*t,-.17*t)),
                     cloud(material * 2.5 + vec2(5.4-.12*t,2.1+.14*t)));
-      float identity=smoothstep(.55,1.0,u_morph);
-      float shapeFreedom=(1.0-smoothstep(.55,.82,u_morph))*mix(1.0,.18,u_morph);
+      float shapeFreedom=1.0-smoothstep(.25,.88,u_morph);
       float fold = material.x + (-material.y*.29 + (q.x-.5)*.55
                  + sin(material.y*4.6+t*.62)*.16)*shapeFreedom;
       float drift = sin(material.y*5.0+q.y*4.5-t*.5)*.038*shapeFreedom;
@@ -3663,43 +3711,27 @@ window.MM_FIREBASE_CONFIG = Object.freeze({
     vec3 foldedRibbon(vec2 p, float side, float morph, float radius, vec2 centre) {
       float k=morph/radius;
       vec2 rest=vec2(side>0.0?-.155:.19,0.0);
-      // The final signature is a balanced interlaced pair, with a clear waist.
-      // Late-stage shaping leaves the established gathering motion intact.
-      float identity=smoothstep(.55,1.0,morph);
-      vec2 loopCentre=centre+vec2(-side*radius*.57*identity,0.0);
-      vec2 local=p-loopCentre;
-      local.x/=mix(1.0,.76,identity);
-      p=local+loopCentre;
-      vec2 anchor=mix(rest,loopCentre+vec2(-side*radius,0.0),morph);
+      vec2 anchor=mix(rest,centre+vec2(-side*radius,0.0),morph);
       vec2 z=side*(p-anchor);
       float h=length(vec2(1.0-k*z.x,k*z.y));
-      // Rationalised distance: no catastrophic cancellation at k -> 0.
       float normal=(2.0*z.x-k*dot(z,z))/(1.0+h);
       float tangent=k<.0001?z.y:atan(k*z.y,1.0-k*z.x)/k;
-      // The two long ends physically retract into the small curved volume.
-      float lo=mix(-2.0,mix(-.74,-3.03,identity)*radius,morph);
-      float hi=mix(2.0,mix(2.12,3.03,identity)*radius,morph);
-      float branchLimit=3.14159265/max(k,.0001)-mix(.09,.008,identity);
+      float lo=mix(-2.0,-1.65*radius,morph),hi=-lo;
+      float branchLimit=3.14159265/max(k,.0001)-.06;
       lo=max(lo,-branchLimit);hi=min(hi,branchLimit);
-      float cap=smoothstep(lo,lo+mix(.08,.028,morph),tangent)
-               *(1.0-smoothstep(hi-mix(.08,.028,morph),hi,tangent));
-      // Seal only after the material coordinates become periodic at the seam.
-      cap=mix(cap,1.0,smoothstep(.85,1.0,morph));
+      float cap=smoothstep(lo,lo+mix(.08,.018,morph),tangent)
+               *(1.0-smoothstep(hi-mix(.08,.018,morph),hi,tangent));
       if(cap<.00001)return vec3(0.0);
-      float u=clamp((tangent-lo)/max(hi-lo,.001),0.0,1.0);
-      float tail=pow(max(.0001,sin(u*3.14159265)),.48);
-      float profile=mix(.18+.82*tail,.78+.22*cos(tangent/radius),identity);
-      float taper=mix(1.0,profile,morph);
-      float sx=mix(1.0,mix(.35,.23,identity),morph)*taper;
-      float sy=mix(1.0,.36,morph);
-      // Audio changes the material itself, with a restrained radial expansion.
-      normal/=1.0+u_voice*morph*.16;
-      float travel=mix(tangent/sy,sin(k*tangent)*radius/.36,smoothstep(.55,.82,morph));
-      vec2 material=rest+side*vec2(normal/sx,travel);
+      float sx=mix(1.0,.24,morph),sy=mix(1.0,.36,morph);
+      vec2 material=rest+side*vec2(normal/sx,tangent/sy);
       return ribbon(material,side,sx,cap,tangent);
     }
     void main() {
       if(u_morph<.000001){paintHome();return;}
+      if(u_morph>=.96){
+        vec3 ink=vec3(.012,.019,.029)+(hash(gl_FragCoord.xy*.01)-.5)/255.0;
+        gl_FragColor=vec4(ink,1.0);return;
+      }
       vec2 p=(gl_FragCoord.xy-.5*u_resolution)/u_resolution.y;
       vec2 screenP=p;
       float m=u_morph;
@@ -3714,20 +3746,10 @@ window.MM_FIREBASE_CONFIG = Object.freeze({
       p+=vec2(-contact.y,contact.x)*gather*.12;
       vec2 centre=u_focus.xy;
       float radius=u_focus.z*(1.0+u_voice*.045);
-      // One advected silk field, with gentle torsion; never a separate particle layer.
-      vec2 relative=p-centre*m;
-      float identity=smoothstep(.55,1.0,m);
-      float twist=m*(mix(.08*sin(u_time*.22),.34,identity)+u_voice*.018);
-      p=mat2(cos(twist),-sin(twist),sin(twist),cos(twist))*relative+centre*m;
+      // Both streams bend into the very same spherical contour as the grains.
       vec3 ink=vec3(.012,.019,.029);
-      vec3 a=foldedRibbon(p,1.0,m,radius,centre);
-      vec3 b=foldedRibbon(p,-1.0,m,radius,centre);
-      // Alternating depth at the two crossings gives the mark a continuous weave.
-      float over=smoothstep(-radius*.15,radius*.15,p.y-centre.y);
-      float bodyA=smoothstep(.012,.08,max(a.r,max(a.g,a.b)));
-      float bodyB=smoothstep(.012,.08,max(b.r,max(b.g,b.b)));
-      vec3 color=a*(1.0-identity*over*bodyB*.84)
-                +b*(1.0-identity*(1.0-over)*bodyA*.84);
+      vec3 color=foldedRibbon(p,1.0,m,radius,centre)+foldedRibbon(p,-1.0,m,radius,centre);
+      color*=1.0-smoothstep(.38,.96,m);
       color+=vec3(.19,.32,.62)*exp(-length(p-mix(vec2(.2,.34),centre,m))*mix(4.8,15.0,m))*.12*(1.0-m);
       color*=1.0+gather*.48;
       float breath=1.0+sin(u_time*.37)*.055;
@@ -3740,6 +3762,111 @@ window.MM_FIREBASE_CONFIG = Object.freeze({
 
   `;
 
+
+  const particleVertexSource = `
+    precision highp float;
+    attribute vec4 a_particle;
+    uniform vec2 u_resolution;
+    uniform vec3 u_focus;
+    uniform float u_time,u_morph,u_voice,u_pixel;
+    uniform vec3 u_bands;
+    uniform vec4 u_probe;
+    varying vec3 v_color;
+    varying float v_alpha;
+    ${fieldFunctions}
+    void main() {
+      float m=u_morph,radius=u_focus.z,t=u_time*.105;
+      float seed=a_particle.z,phase=a_particle.w;
+      float longitude=a_particle.x+u_time*.055;
+      float z=a_particle.y;
+      float latitude=sqrt(max(0.0,1.0-z*z));
+      vec3 n=vec3(cos(longitude)*latitude,sin(longitude)*latitude,z);
+      // True 3D circulation: points move around a shell, rather than flicker in place.
+      float tilt=.32+sin(u_time*.09)*.08;
+      n.yz=mat2(cos(tilt),-sin(tilt),sin(tilt),cos(tilt))*n.yz;
+      float theta=atan(n.y,n.x);
+      float folds=.035*sin(theta*5.0+n.z*7.0-u_time*.32)
+                 +.020*sin(theta*9.0-n.z*5.0+u_time*.21);
+      float ridges=pow(.5+.5*sin(theta*3.0+n.z*5.0-u_time*1.6),3.0);
+      float lifted=smoothstep(.68,.98,seed);
+      float audio=(u_voice*.045+u_bands.x*.14)*ridges
+                 +u_bands.y*.025*sin(theta*12.0+n.z*8.0-u_time*4.0)
+                 +lifted*u_voice*.065*(.5+.5*sin(phase*40.0+u_time*9.0));
+      float jitter=u_bands.z*.016*sin(u_time*22.0+phase*75.0);
+      float shell=1.0+folds+(seed-.5)*.052+audio+jitter;
+      vec2 projected=n.xy*shell/(1.0-n.z*.10);
+      vec2 diff=projected-u_probe.xy;
+      float local=(exp(-dot(diff,diff)*9.0)+.26*exp(-dot(u_probe.xy,u_probe.xy)*4.0))*u_probe.z;
+      projected+=normalize(projected+vec2(.0001))*local*(.055+.10*u_probe.w);
+      projected+=vec2(-diff.y,diff.x)*local*.055;
+      float radial=length(projected);
+      float side=projected.x<0.0?1.0:-1.0;
+      vec2 rest=vec2(side>0.0?-.155:.19,0.0);
+      float angle=atan(side*projected.y,-side*projected.x);
+      float sx=mix(1.0,.24,m),sy=mix(1.0,.36,m);
+      float tangent=mix(side*n.y*.69,angle*radius/.36,smoothstep(.35,.92,m))*sy;
+      float y=side*tangent/sy;
+      float freedom=1.0-smoothstep(.25,.88,m);
+      float x=rest.x;
+      // Solve the same bent fluid contour before giving the grains spherical depth.
+      if(freedom>.0001)for(int i=0;i<3;i++) {
+        vec2 q=vec2(cloud(vec2(x,y)*2.7+vec2(.13*t,-.17*t)),
+                    cloud(vec2(x,y)*2.5+vec2(5.4-.12*t,2.1+.14*t)));
+        float drift=sin(y*5.0+q.y*4.5-t*.5)*.038;
+        x=rest.x+(y*.29-(q.x-.5)*.55-sin(y*4.6+t*.62)*.16-drift*(side>0.0?1.0:.6))*freedom;
+      }
+      float materialDepth=smoothstep(.70,1.0,m);
+      float normal=(side*(x-rest.x)+(seed-.5)*.045*(1.0-materialDepth))*sx+radius*(1.0-radial)*materialDepth;
+      float k=max(m,.0001)/radius;
+      vec2 bent=vec2((1.0-(1.0-k*normal)*cos(k*tangent))/k,
+                    (1.0-k*normal)*sin(k*tangent)/k);
+      vec2 anchor=mix(rest,u_focus.xy+vec2(-side*radius,0.0),m);
+      vec2 position=anchor+side*bent;
+      gl_Position=vec4(position*vec2(2.0*u_resolution.y/u_resolution.x,2.0),0.0,1.0);
+      float limb=pow(max(0.0,1.0-abs(n.z)),2.7);
+      float corona=smoothstep(.44,.88,radial);
+      float depth=mix(.55,1.0,smoothstep(-.7,.5,n.z));
+      float light=(.015+limb*1.10+corona*.085)*depth;
+      v_alpha=light*smoothstep(.32,.88,m)*(1.0+local*.9+u_voice*lifted*.6);
+      vec3 teal=vec3(.23,.58,.57),cyan=vec3(.36,.70,.76),blue=vec3(.22,.37,.64);
+      v_color=mix(teal,blue,.32+.25*sin(theta+.7));
+      v_color=mix(v_color,cyan,.35+.35*seed);
+      float speck=mix(1.05,1.85,seed)+lifted*u_bands.z*.35;
+      gl_PointSize=max(1.0,speck*u_pixel);
+    }
+  `;
+  const particleFragmentSource = `
+    precision mediump float;
+    varying vec3 v_color;
+    varying float v_alpha;
+    void main() {
+      float d=length(gl_PointCoord-.5)*2.0;
+      if(d>1.0)discard;
+      float core=1.0-smoothstep(.15,1.0,d);
+      gl_FragColor=vec4(v_color,v_alpha*core);
+    }
+  `;
+  const particleCount=saveData?7000:16000;
+  const particleSeeds=new Float32Array(particleCount*4);
+  for(let i=0;i<particleCount;i++){
+    const j=i*4;
+    particleSeeds[j]=(i*2.399963229728653)%(Math.PI*2);
+    particleSeeds[j+1]=1-2*(i+.5)/particleCount;
+    particleSeeds[j+2]=(i*.7548776662466927)%1;
+    particleSeeds[j+3]=(i*.5698402909980532)%1;
+  }
+  function orbGeometry(){
+    const visible=Math.min(height,window.visualViewport?.height||height),short=visible<600;
+    const diameter=short?Math.min(165,width*.62):Math.min(420,width<700?width*.75:visible*.46);
+    return {x:width*.5,y:visible*(short?.25:.33),radius:diameter/2.3};
+  }
+  function syncOrbHitArea(){
+    const hit=document.querySelector('#assistant-orb-hit');if(!hit)return;
+    const g=orbGeometry(),r=g.radius*1.23;
+    hit.style.left=(g.x-r)+'px';hit.style.top=(g.y-r)+'px';
+    hit.style.width=hit.style.height=(r*2)+'px';
+  }
+
   function webGLRenderer() {
     const gl = canvas.getContext('webgl', {
       alpha: false, antialias: false, depth: false, stencil: false,
@@ -3747,7 +3874,7 @@ window.MM_FIREBASE_CONFIG = Object.freeze({
     });
     if (!gl) return null;
     const compiled = [];
-    let program = null, buffer = null;
+    let program = null, buffer = null, pointsProgram=null, pointsBuffer=null;
     try {
       const compile = (type, source) => {
         const shader = gl.createShader(type);
@@ -3778,31 +3905,57 @@ window.MM_FIREBASE_CONFIG = Object.freeze({
       const light = gl.getUniformLocation(program, 'u_light');
       const touch = gl.getUniformLocation(program, 'u_touch');
       const morph = gl.getUniformLocation(program, 'u_morph'), voice = gl.getUniformLocation(program, 'u_voice'), focus = gl.getUniformLocation(program, 'u_focus');
+      pointsProgram=gl.createProgram();
+      if(!pointsProgram)throw Error('Particle shader unavailable');
+      gl.attachShader(pointsProgram,compile(gl.VERTEX_SHADER,particleVertexSource));
+      gl.attachShader(pointsProgram,compile(gl.FRAGMENT_SHADER,particleFragmentSource));
+      gl.linkProgram(pointsProgram);
+      if(!gl.getProgramParameter(pointsProgram,gl.LINK_STATUS))throw Error('Particle shader unsupported');
+      pointsBuffer=gl.createBuffer();if(!pointsBuffer)throw Error('Particle buffer unavailable');
+      gl.bindBuffer(gl.ARRAY_BUFFER,pointsBuffer);
+      gl.bufferData(gl.ARRAY_BUFFER,particleSeeds,gl.STATIC_DRAW);
+      const particlePosition=gl.getAttribLocation(pointsProgram,'a_particle');
+      const pu={};for(const name of ['resolution','time','morph','voice','focus','bands','probe','pixel'])pu[name]=gl.getUniformLocation(pointsProgram,'u_'+name);
       compiled.forEach(shader => gl.deleteShader(shader));
       compiled.length = 0;
       return {
         draw() {
+          const g=orbGeometry(),fx=(g.x/width-.5)*width/height,fy=.5-g.y/height,fr=g.radius/height;
           gl.viewport(0, 0, canvas.width, canvas.height);
+          gl.useProgram(program);gl.bindBuffer(gl.ARRAY_BUFFER,buffer);
+          if(position!==particlePosition)gl.disableVertexAttribArray(particlePosition);
+          gl.enableVertexAttribArray(position);gl.vertexAttribPointer(position,2,gl.FLOAT,false,0,0);
+          gl.disable(gl.BLEND);
           gl.uniform2f(resolution, canvas.width, canvas.height);
-          gl.uniform1f(clock, time);
-          gl.uniform1f(activity, energy);
-          gl.uniform1f(light, luminosity);
+          gl.uniform1f(clock, time);gl.uniform1f(activity, energy);gl.uniform1f(light, luminosity);
           gl.uniform3f(touch, touchX, 1 - touchY, attraction);
           gl.uniform1f(morph, assistantMix);gl.uniform1f(voice, audioLevel);
-          const visible=Math.min(height,window.visualViewport?.height||height),short=visible<600;
-          const diameter=short?Math.min(165,width*.62):Math.min(420,width<700?width*.75:visible*.46);
-          gl.uniform3f(focus,0,.5-visible*(short?.25:.33)/height,diameter/(2.3*height));
+          gl.uniform3f(focus,fx,fy,fr);
           gl.drawArrays(gl.TRIANGLES, 0, 3);
+          if(assistantMix>.2){
+            gl.useProgram(pointsProgram);gl.bindBuffer(gl.ARRAY_BUFFER,pointsBuffer);
+            if(position!==particlePosition)gl.disableVertexAttribArray(position);
+            gl.enableVertexAttribArray(particlePosition);gl.vertexAttribPointer(particlePosition,4,gl.FLOAT,false,0,0);
+            gl.uniform2f(pu.resolution,canvas.width,canvas.height);gl.uniform1f(pu.time,time);
+            gl.uniform1f(pu.morph,assistantMix);gl.uniform1f(pu.voice,audioLevel);
+            gl.uniform3f(pu.focus,fx,fy,fr);gl.uniform3f(pu.bands,bass,mid,treble);
+            gl.uniform4f(pu.probe,probeX,probeY,probe,probePress);
+            gl.uniform1f(pu.pixel,Math.max(.9,canvas.height/height));
+            gl.enable(gl.BLEND);gl.blendFunc(gl.SRC_ALPHA,gl.ONE);
+            gl.drawArrays(gl.POINTS,0,particleCount);gl.disable(gl.BLEND);
+          }
         },
         dispose() {
           gl.deleteBuffer(buffer);
           gl.deleteProgram(program);
+          gl.deleteBuffer(pointsBuffer);gl.deleteProgram(pointsProgram);
         }
       };
     } catch (_) {
       compiled.forEach(shader => gl.deleteShader(shader));
       if (buffer) gl.deleteBuffer(buffer);
       if (program) gl.deleteProgram(program);
+      if(pointsBuffer)gl.deleteBuffer(pointsBuffer);if(pointsProgram)gl.deleteProgram(pointsProgram);
       return null;
     }
   }
@@ -3829,8 +3982,11 @@ window.MM_FIREBASE_CONFIG = Object.freeze({
         const cy=visible*(short?.25:.33)/height;
         const radius=(short?Math.min(165,width*.62):Math.min(420,width<700?width*.75:visible*.46))/(2.3*height);
         const mix=(a,b)=>a+(b-a)*m;
+        const smooth=(a,b,x)=>{const u=Math.max(0,Math.min(1,(x-a)/(b-a)));return u*u*(3-2*u);};
+        const silk=1-smooth(.38,.96,m);
+        ctx.globalAlpha=silk;
         ctx.fillStyle = '#030507';
-        ctx.fillRect(0, 0, w, h);
+        ctx.globalAlpha=1;ctx.fillRect(0, 0, w, h);ctx.globalAlpha=silk;
         ctx.globalCompositeOperation = 'screen';
         const pull = (x, y) => {
           const dx = (touchX - x) * w / h, dy = touchY - y;
@@ -3861,12 +4017,9 @@ window.MM_FIREBASE_CONFIG = Object.freeze({
             const y = step / 60;
             const x = .35 + Math.sin(y * 4.7 + t * .7) * .34 + (i - 2) * .018;
             let [px, py] = pull(x, y);
-            const phase=Math.max(0,Math.min(1,(m-.55)/.45)),identity=phase*phase*(3-2*phase);
-            const side=i<3?1:-1,angle=(1-y)*(2.86+(Math.PI*2-2.86)*identity)-(.74+(Math.PI-.74)*identity);
+            const side=i<3?1:-1,angle=(1-y)*Math.PI-Math.PI/2;
             const r=radius+(i-(side>0?1:3.5))*.004;
-            const lx=-side*(Math.cos(angle)*r*(1-.24*identity)+radius*.57*identity),ly=-side*Math.sin(angle)*r;
-            const rotation=.34*identity,tx=.5+(lx*Math.cos(rotation)+ly*Math.sin(rotation))*height/width;
-            const ty=cy-lx*Math.sin(rotation)+ly*Math.cos(rotation);
+            const tx=.5-side*Math.cos(angle)*r*height/width,ty=cy-side*Math.sin(angle)*r;
             px=mix(px,tx);py=mix(py,ty);
             if (step === 0) ctx.moveTo(px * w, py * h);
             else ctx.lineTo(px * w, py * h);
@@ -3875,6 +4028,28 @@ window.MM_FIREBASE_CONFIG = Object.freeze({
           ctx.lineWidth = i === 2 ? 1.2 : 3;
           ctx.stroke();
         }
+        // Context-loss fallback: the same seeds and quiet centre, at a lower density.
+        if(m>.2){
+          const fade=smooth(.2,.84,m),cx=w*.5,centreY=cy*h,r=radius*h;
+          ctx.fillStyle='#66b5bd';
+          for(let i=0;i<particleCount;i+=8){
+            const j=i*4,seed=particleSeeds[j+2],theta=particleSeeds[j]+time*.055;
+            const z=particleSeeds[j+1],lat=Math.sqrt(1-z*z);
+            const nx=Math.cos(theta)*lat,ny=Math.sin(theta)*lat;
+            const fold=.035*Math.sin(theta*5+z*7-time*.32)+.020*Math.sin(theta*9-z*5+time*.21);
+            const lift=(audioLevel*.045+bass*.14)*Math.pow(.5+.5*Math.sin(theta*3+z*5-time*1.6),3);
+            const shell=1+fold+(seed-.5)*.052+lift;
+            let ox=nx*shell/(1-z*.1),oy=ny*shell/(1-z*.1);
+            const dx=ox-probeX,dy=oy-probeY,local=(Math.exp(-(dx*dx+dy*dy)*9)+.26*Math.exp(-(probeX*probeX+probeY*probeY)*4))*probe;
+            ox*=1+local*(.055+.10*probePress);oy*=1+local*(.055+.10*probePress);
+            const homeY=(ny*.7+.5)*h,homeX=(.35+Math.sin(homeY/h*4.7+t*.7)*.34+(seed-.5)*.04)*w;
+            const px=mix(homeX,cx+ox*r),py=mix(homeY,centreY-oy*r);
+            const limb=Math.pow(1-Math.abs(z),2.7);
+            ctx.globalAlpha=(.02+limb*.64)*fade;
+            const size=1+seed*.4;ctx.fillRect(px,py,size,size);
+          }
+        }
+        ctx.globalAlpha=1;
         ctx.globalCompositeOperation = 'source-over';
       },
       dispose() { fallback.remove(); if (fallbackCanvas === fallback) fallbackCanvas = null; }
@@ -3900,6 +4075,7 @@ window.MM_FIREBASE_CONFIG = Object.freeze({
     width = Math.max(1, rect.width);
     height = Math.max(1, rect.height);
     sizeBuffer();
+    syncOrbHitArea();
     draw();
   }
   function adaptResolution(interval, timestamp) {
@@ -3944,6 +4120,14 @@ window.MM_FIREBASE_CONFIG = Object.freeze({
     if(Math.abs(assistantMix-assistantTarget)<.00002&&Math.abs(assistantVelocity)<.0002){assistantMix=assistantTarget;assistantVelocity=0;}
     const fresh=assistantListening&&performance.now()-audioAt<220?audioTarget:0;
     audioLevel+=(fresh-audioLevel)*(1-Math.exp(-delta*(fresh>audioLevel?12:4)));
+    const spectralFresh=assistantListening&&performance.now()-audioAt<220;
+    const spectralEase=1-Math.exp(-delta*10);
+    bass+=((spectralFresh?bassTarget:0)-bass)*spectralEase;
+    mid+=((spectralFresh?midTarget:0)-mid)*spectralEase;
+    treble+=((spectralFresh?trebleTarget:0)-treble)*spectralEase;
+    const probeEase=1-Math.exp(-delta*9);
+    probe+=(probeTarget-probe)*probeEase;probePress+=(probePressTarget-probePress)*probeEase;
+    probeX+=(probeTargetX-probeX)*probeEase;probeY+=(probeTargetY-probeY)*probeEase;
     time += delta * (1 + energy * .9);
     const ease = 1 - Math.exp(-delta * 4.5);
     energy += (target[0] - energy) * ease;
@@ -3977,7 +4161,7 @@ window.MM_FIREBASE_CONFIG = Object.freeze({
     lastPaint = performance.now();
     sampleTime = sampleCount = lateFrames = 0;
     if (reducedMotion.matches) {
-      assistantMix=assistantTarget;assistantVelocity=0;audioLevel=0;
+      assistantMix=assistantTarget;assistantVelocity=0;audioLevel=bass=mid=treble=probe=probePress=0;
       energy = target[0];
       luminosity = target[1];
       attraction = attractionTarget = attractionVelocity = 0;
@@ -4036,15 +4220,33 @@ window.MM_FIREBASE_CONFIG = Object.freeze({
     assistantActive=!!active;assistantTarget=assistantActive?1:0;
     // The gesture hands over to the same renderer; releasing the finger does
     // not dismiss the listening form. Only the assistant close opens it again.
-    if(!assistantActive){assistantListening=false;audioTarget=0;}
+    if(!assistantActive){assistantListening=false;audioTarget=bassTarget=midTarget=trebleTarget=probeTarget=probePressTarget=0;}
     quietUntil=performance.now()+1800;
     if(reducedMotion.matches){assistantMix=assistantTarget;assistantVelocity=0;draw();}
   }
-  function setListening(active){assistantListening=!!active;if(!assistantListening)audioTarget=0;}
-  function setAudioLevel(level){audioTarget=assistantActive&&assistantListening&&Number.isFinite(level)?clamp(level):0;audioAt=performance.now();}
+  function setListening(active){assistantListening=!!active;if(!assistantListening)audioTarget=bassTarget=midTarget=trebleTarget=0;}
+  function setAudioLevel(level,details={}){
+    const active=assistantActive&&assistantListening;
+    audioTarget=active&&Number.isFinite(level)?clamp(level):0;
+    bassTarget=active&&Number.isFinite(details?.bass)?clamp(details.bass):0;
+    midTarget=active&&Number.isFinite(details?.mid)?clamp(details.mid):0;
+    trebleTarget=active&&Number.isFinite(details?.high)?clamp(details.high):0;
+    audioAt=performance.now();
+  }
+  function orbHitTest(point){
+    if(!assistantActive||!point||!Number.isFinite(point.x)||!Number.isFinite(point.y))return false;
+    const g=orbGeometry();return Math.hypot(point.x-g.x,point.y-g.y)<=g.radius*1.23;
+  }
+  function orbPointer(point,options={}){
+    if(!options.active||!assistantActive||reducedMotion.matches){probeTarget=probePressTarget=0;return;}
+    if(!point||!Number.isFinite(point.x)||!Number.isFinite(point.y))return;
+    const g=orbGeometry();probeTargetX=Math.max(-1.5,Math.min(1.5,(point.x-g.x)/g.radius));
+    probeTargetY=Math.max(-1.5,Math.min(1.5,(g.y-point.y)/g.radius));
+    probeTarget=1;probePressTarget=options.pressed?1:0;
+  }
   // All points are CSS pixels relative to #experience. Gestures own timing;
   // this renderer owns continuous interpolation and the brief popup handoff.
-  const api = Object.freeze({ begin, move, charge, release, handoff, assistant, setAssistantMix, setListening, setAudioLevel });
+  const api = Object.freeze({ begin, move, charge, release, handoff, assistant, setAssistantMix, setListening, setAudioLevel, orbHitTest, orbPointer });
   window.MyMoneyOrbit = api;
   function sceneChanged() {
     const next = document.documentElement.dataset.scene || 'idle';
@@ -4060,11 +4262,11 @@ window.MM_FIREBASE_CONFIG = Object.freeze({
   const resizeObserver = typeof ResizeObserver === 'function' ? new ResizeObserver(resize) : null;
   if (resizeObserver) resizeObserver.observe(stage);
   else on(window, 'resize', resize, { passive: true });
-  if(window.visualViewport)on(window.visualViewport,'resize',()=>draw(),{passive:true});
+  if(window.visualViewport)on(window.visualViewport,'resize',()=>{syncOrbHitArea();draw();},{passive:true});
   on(document, 'visibilitychange', () => {
     if (document.hidden) {
       release();
-      attraction = attractionVelocity = 0;audioLevel=audioTarget=0;
+      attraction = attractionVelocity = 0;audioLevel=audioTarget=bass=mid=treble=bassTarget=midTarget=trebleTarget=probe=probeTarget=probePress=probePressTarget=0;
     }
     resume();
   });
@@ -4125,13 +4327,13 @@ window.MM_FIREBASE_CONFIG = Object.freeze({
   const api=Object.freeze({
     setActive:active=>window.MyMoneyOrbit?.assistant(active),
     setListening:active=>window.MyMoneyOrbit?.setListening(active),
-    setAudioLevel:level=>window.MyMoneyOrbit?.setAudioLevel(level),
+    setAudioLevel:(level,details)=>window.MyMoneyOrbit?.setAudioLevel(level,details),
     destroy(){window.MyMoneyOrbit?.assistant(false);if(window.MMParticles===api)delete window.MMParticles;}
   });
   window.MMParticles=api;
 })();
 </script>
-<script>/* Local microphone amplitude only. No recording, upload or synthesized levels. */
+<script>/* Local microphone amplitude and spectrum only. No recording, upload or synthesized levels. */
 (() => {
   'use strict';
   let current = null, destroyed = false;
@@ -4153,11 +4355,11 @@ window.MM_FIREBASE_CONFIG = Object.freeze({
     }
     session.cancel({ status, reason });
     if (current === session) current = null;
-    emit(session, 0, { status, reason, rms: 0, peak: 0 });
+    emit(session, 0, { status, reason, rms: 0, peak: 0, bass: 0, mid: 0, high: 0 });
   }
   function stop(reason = 'stopped') { dispose(current, 'cancelled', reason); }
   function unavailable(callback, reason) {
-    try { callback(0, { status: 'unavailable', reason, rms: 0, peak: 0 }); } catch (_) {}
+    try { callback(0, { status: 'unavailable', reason, rms: 0, peak: 0, bass: 0, mid: 0, high: 0 }); } catch (_) {}
     return { status: 'unavailable', reason };
   }
   function listen(session, target, name, handler) {
@@ -4180,7 +4382,7 @@ window.MM_FIREBASE_CONFIG = Object.freeze({
     const session = { callback, disposed: false, frame: 0, timeout: 0, context: null, stream: null, source: null, analyser: null, remove: [], cancel: null };
     const cancellation = new Promise(resolve => { session.cancel = resolve; });
     current = session;
-    emit(session, 0, { status: 'starting', rms: 0, peak: 0 });
+    emit(session, 0, { status: 'starting', rms: 0, peak: 0, bass: 0, mid: 0, high: 0 });
     try {
       // Both calls happen synchronously in start(), before its first await, so
       // the original click/press can unlock Web Audio and request capture.
@@ -4213,9 +4415,24 @@ window.MM_FIREBASE_CONFIG = Object.freeze({
       session.analyser = session.context.createAnalyser();
       session.analyser.fftSize = 512;
       session.analyser.smoothingTimeConstant = 0;
+      session.analyser.minDecibels = -90;
+      session.analyser.maxDecibels = -20;
       session.source = session.context.createMediaStreamSource(session.stream);
       session.source.connect(session.analyser); // Deliberately never connect to speakers.
       const samples = new Float32Array(session.analyser.fftSize);
+      const spectrum = new Uint8Array(session.analyser.frequencyBinCount);
+      const binHz = session.context.sampleRate / session.analyser.fftSize;
+      const bandRange = (low, high) => [Math.max(1, Math.ceil(low / binHz)), Math.min(spectrum.length, Math.ceil(high / binHz))];
+      const bassRange = bandRange(80, 300), midRange = bandRange(300, 2000), highRange = bandRange(2000, 8000);
+      function band(range, gate) {
+        if (!gate || range[1] <= range[0]) return 0;
+        let square = 0;
+        for (let i = range[0]; i < range[1]; i++) { const magnitude = spectrum[i] / 255; square += magnitude * magnitude; }
+        return Math.min(1, Math.sqrt(square / (range[1] - range[0])) * gate);
+      }
+      // This callback view is reused; consumers read it synchronously, without
+      // retaining audio buffers or allocating a spectrum/details object per frame.
+      const detail = { status: 'active', rms: 0, peak: 0, bass: 0, mid: 0, high: 0 };
       tracks.forEach(track => {
         listen(session, track, 'mute', () => dispose(session, 'unavailable', 'capture-muted'));
         listen(session, track, 'ended', () => dispose(session, 'unavailable', 'capture-ended'));
@@ -4235,11 +4452,15 @@ window.MM_FIREBASE_CONFIG = Object.freeze({
           for (let i = 0; i < samples.length; i++) { const amplitude = finite(samples[i]) - mean; square += amplitude * amplitude; peak = Math.max(peak, Math.abs(amplitude)); }
           const rms = Math.sqrt(square / samples.length);
           const level = Math.min(1, Math.max(0, rms - .006) * 5.5 + Math.max(0, peak - .02) * .45);
-          emit(session, level, { status: 'active', rms, peak });
+          const gate = Math.min(1, Math.max(0, rms - .006) * 10);
+          if (gate) session.analyser.getByteFrequencyData(spectrum);
+          detail.rms = rms; detail.peak = peak;
+          detail.bass = band(bassRange, gate); detail.mid = band(midRange, gate); detail.high = band(highRange, gate);
+          emit(session, level, detail);
           if (!session.disposed && current === session) session.frame = requestAnimationFrame(sample);
         } catch (_) { dispose(session, 'unavailable', 'analysis-failed'); }
       }
-      emit(session, 0, { status: 'active', rms: 0, peak: 0 });
+      emit(session, 0, { status: 'active', rms: 0, peak: 0, bass: 0, mid: 0, high: 0 });
       if (!session.disposed && current === session) session.frame = requestAnimationFrame(sample);
       return { status: 'active' };
     } catch (error) {
