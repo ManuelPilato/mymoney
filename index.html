@@ -7,10 +7,13 @@
 <meta name="description" content="Le tue spese, in un istante. Su iPhone, Mac e web.">
 <meta property="og:title" content="MyMoney">
 <meta property="og:description" content="Le tue spese, in un istante. Su iPhone, Mac e web.">
-<meta property="og:image" content="https://manuelpilato.github.io/mymoney/preview.png">
-<meta property="og:image:width" content="1200">
-<meta property="og:image:height" content="630">
+<meta property="og:image" content="https://manuelpilato.github.io/mymoney/preview-wordmark-v2.png">
+<meta property="og:image:width" content="1024">
+<meta property="og:image:height" content="1024">
+<meta property="og:image:type" content="image/png">
+<meta property="og:image:alt" content="MyMoney. — fluid cyan and blue on a dark background">
 <meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://manuelpilato.github.io/mymoney/preview-wordmark-v2.png">
 <meta name="color-scheme" content="dark">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -18,12 +21,12 @@
 <meta name="referrer" content="no-referrer">
 <meta http-equiv="Content-Security-Policy" content="default-src 'self' data: blob:; script-src 'self' 'unsafe-inline' https://www.gstatic.com https://apis.google.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; connect-src 'self' https://identitytoolkit.googleapis.com https://securetoken.googleapis.com https://firestore.googleapis.com https://accounts.google.com https://*.firebaseapp.com; frame-src https://*.firebaseapp.com https://accounts.google.com; object-src 'none'; base-uri 'self'; form-action 'none'">
 <link rel="manifest" href="manifest.webmanifest">
-<link rel="apple-touch-icon" href="icon-180.png">
-<link rel="icon" href="icon-192.png" type="image/png">
+<link rel="apple-touch-icon" href="icon-180-v2.png">
+<link rel="icon" href="icon-192-v2.png" type="image/png">
 <title>MyMoney</title>
 <style>/* iPhone first. One quiet surface; everything else appears on intent. */
 :root{color-scheme:dark;--bg:oklch(13% .025 265);--surface:oklch(18% .024 265);--raised:oklch(22% .025 265);--line:oklch(32% .023 265 / .7);--text:oklch(95% .008 245);--muted:oklch(70% .023 250);--accent:oklch(86% .07 220);--ink:oklch(21% .035 250);--red:oklch(78% .12 22);--amber:oklch(82% .09 75);--ease:cubic-bezier(.22,1,.36,1);--drawer:cubic-bezier(.32,.72,0,1);font-family:-apple-system,BlinkMacSystemFont,'Helvetica Neue',sans-serif;font-synthesis:none;background:var(--bg);color:var(--text);--vv-height:100dvh;--keyboard-bottom:0px}
-*{box-sizing:border-box}html,body{margin:0;width:100%;height:100%;overflow:hidden;overscroll-behavior:none}body{-webkit-text-size-adjust:100%}button,input,textarea,select{font:inherit}button{cursor:pointer;touch-action:manipulation;-webkit-tap-highlight-color:transparent;display:inline-flex;justify-content:center;align-items:center;gap:9px;min-height:48px;padding:13px 19px;border:1px solid transparent;border-radius:16px;background:var(--accent);color:var(--ink);font-size:15px;font-weight:550;transition:transform 140ms var(--ease),background 160ms ease,color 160ms ease}button:active{transform:scale(.97)}button:disabled{opacity:.45;cursor:default}button:focus-visible,input:focus-visible,textarea:focus-visible,select:focus-visible,summary:focus-visible{outline:2px solid var(--accent);outline-offset:4px}button.quiet{background:none;color:var(--muted);font-size:13px;padding:10px 5px}button.ghost{background:var(--raised);color:var(--text);border-color:var(--line)}button.danger{background:oklch(25% .035 20);color:var(--red)}button.icon-button{width:44px;min-height:44px;height:44px;padding:12px;background:transparent;color:var(--muted);border-radius:50%;flex-shrink:0}svg{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:1.65;stroke-linecap:round;stroke-linejoin:round;flex-shrink:0}[data-icon]{display:inline-flex;align-items:center;justify-content:center}[hidden]{display:none!important}h1,h2,h3,p{margin:0}h2{font-size:22px;font-weight:500;letter-spacing:-.7px}h3{font-size:15px;font-weight:500;letter-spacing:-.2px}p{font-size:14px;line-height:1.6;max-width:70ch;margin:12px 0}strong{font-weight:550}.tiny,.muted{font-size:12px;color:var(--muted);line-height:1.7}.label{font-size:13px;color:var(--muted)}.sr-only{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;padding:0;border:0}.full-width{width:100%}.grow{flex:1;min-width:0}
+*{box-sizing:border-box}html,body{margin:0;width:100%;height:100vh;overflow:hidden;overscroll-behavior:none}body{-webkit-text-size-adjust:100%}button,input,textarea,select{font:inherit}button{cursor:pointer;touch-action:manipulation;-webkit-tap-highlight-color:transparent;display:inline-flex;justify-content:center;align-items:center;gap:9px;min-height:48px;padding:13px 19px;border:1px solid transparent;border-radius:16px;background:var(--accent);color:var(--ink);font-size:15px;font-weight:550;transition:transform 140ms var(--ease),background 160ms ease,color 160ms ease}button:active{transform:scale(.97)}button:disabled{opacity:.45;cursor:default}button:focus-visible,input:focus-visible,textarea:focus-visible,select:focus-visible,summary:focus-visible{outline:2px solid var(--accent);outline-offset:4px}button.quiet{background:none;color:var(--muted);font-size:13px;padding:10px 5px}button.ghost{background:var(--raised);color:var(--text);border-color:var(--line)}button.danger{background:oklch(25% .035 20);color:var(--red)}button.icon-button{width:44px;min-height:44px;height:44px;padding:12px;background:transparent;color:var(--muted);border-radius:50%;flex-shrink:0}svg{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:1.65;stroke-linecap:round;stroke-linejoin:round;flex-shrink:0}[data-icon]{display:inline-flex;align-items:center;justify-content:center}[hidden]{display:none!important}h1,h2,h3,p{margin:0}h2{font-size:22px;font-weight:500;letter-spacing:-.7px}h3{font-size:15px;font-weight:500;letter-spacing:-.2px}p{font-size:14px;line-height:1.6;max-width:70ch;margin:12px 0}strong{font-weight:550}.tiny,.muted{font-size:12px;color:var(--muted);line-height:1.7}.label{font-size:13px;color:var(--muted)}.sr-only{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;padding:0;border:0}.full-width{width:100%}.grow{flex:1;min-width:0}
 #experience{position:fixed;inset:0;isolation:isolate;overflow:hidden;background:var(--bg)}#orb-canvas{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:-2}.scene-shade{position:absolute;inset:0;background:radial-gradient(ellipse at 50% 47%,oklch(9% .015 265 / .05),transparent 45%,oklch(8% .02 265 / .22));pointer-events:none;z-index:-1}#touch-surface{position:absolute;inset:0;border:0;border-radius:0;background:none;width:100%;height:100%;padding:0;touch-action:none;-webkit-touch-callout:none;user-select:none;-webkit-user-select:none}#touch-surface:active{transform:none}#touch-surface:focus-visible{outline-offset:-7px}.wordmark{position:absolute;top:47%;left:50%;transform:translate(-50%,-50%);font-size:41px;font-weight:400;letter-spacing:-2.2px;line-height:1.2;color:oklch(97% .009 240);pointer-events:none;text-shadow:0 2px 35px oklch(9% .02 265 / .3);transition:opacity 250ms var(--ease),filter 300ms var(--ease);white-space:nowrap}.wordmark-point{color:var(--accent);font-weight:300}.data-handle{position:absolute;left:50%;bottom:calc(env(safe-area-inset-bottom,0px) + 16px);transform:translateX(-50%);width:76px;height:48px;border-radius:30px;background:none;padding:18px}.data-handle:active{transform:translateX(-50%) scale(.95)}.data-handle span{width:28px;height:3px;background:oklch(88% .02 245 / .5);border-radius:4px;transition:width 180ms ease}.focus-action{position:fixed;top:calc(env(safe-area-inset-top,0px) + 15px);left:16px;opacity:0;pointer-events:none}.focus-action:focus-visible{opacity:1;pointer-events:auto;z-index:50}.hold-ring{position:absolute;left:50%;top:47%;width:220px;height:220px;border:1px solid oklch(85% .06 220 / .4);border-radius:50%;transform:translate(-50%,-50%) scale(.9);opacity:0;pointer-events:none;transition:transform 400ms var(--ease),opacity 180ms ease}html[data-scene=pressing] .hold-ring{opacity:.5;transform:translate(-50%,-50%) scale(1.06)}html[data-scene=data] .wordmark,html[data-scene=modal] .wordmark,html[data-scene=listening] .wordmark{opacity:.14;filter:blur(5px)}html:not([data-scene=idle]) .data-handle{opacity:0;pointer-events:none}
 /* A single floating material keeps each task connected to the fluid scene. */
 dialog {
@@ -337,8 +340,10 @@ dialog input[type=checkbox] { padding: 0; }
 }
 
 /* Continuous motion: the gesture owns transform; panels never race CSS keyframes. */
-html,body { background:#030507; min-height:100%; }
-#experience { inset:0 0 auto; height:100vh; height:100lvh; min-height:100%; background:#030507; }
+/* Percentage root heights can leave a status-bar-sized gap in iOS standalone.
+   Size both root boxes to the viewport; only dialogs follow the keyboard. */
+html,body { background:#030507; height:100vh; min-height:100vh; }
+#experience { inset:0 0 auto; height:100vh; height:100lvh; min-height:100vh; background:#030507; }
 .wordmark { top:47dvh; transition:opacity 220ms var(--ease); }
 html[data-scene=data] .wordmark,html[data-scene=modal] .wordmark,html[data-scene=listening] .wordmark { filter:none; }
 #open-data { position:fixed; touch-action:none; }
@@ -2707,8 +2712,8 @@ window.MM_FIREBASE_CONFIG = Object.freeze({
   let frame = 0, lastPaint = 0, time = 14, width = 1, height = 1;
   let energy = 0, luminosity = 1, lost = false, renderer = null, destroyed = false;
   let touchX = .5, touchY = .5, contactX = .5, contactY = .5;
-  let attraction = 0, attractionTarget = 0, holding = false, handoffUntil = 0;
-  let releaseSpeed = 8;
+  let attraction = 0, attractionTarget = 0, attractionVelocity = 0;
+  let holding = false, releasing = false, quietUntil = 0;
   // This is a backing-pixel policy, not a frame-rate limit. UI remains full resolution.
   const saveData = !!navigator.connection?.saveData;
   let quality = saveData ? .78 : 1, bufferScale = quality, cadence = 1000 / 60;
@@ -2961,7 +2966,13 @@ window.MM_FIREBASE_CONFIG = Object.freeze({
     sizeBuffer();
     draw();
   }
-  function adaptResolution(interval) {
+  function adaptResolution(interval, timestamp) {
+    // Reallocating a WebGL drawing buffer clears it and may stall the GPU.
+    // Learn/adjust quality only between gestures, never during the popup handoff.
+    if (holding || releasing || timestamp < quietUntil || scene !== 'idle') {
+      sampleTime = sampleCount = lateFrames = 0;
+      return;
+    }
     // Estimate the display cadence from timely frames. Long frames are load,
     // not evidence that a high-refresh display has suddenly become a 30 Hz one.
     if (interval >= 5 && interval < cadence * 1.15) {
@@ -2988,21 +2999,30 @@ window.MM_FIREBASE_CONFIG = Object.freeze({
     const interval = Math.max(0, timestamp - lastPaint);
     const delta = Math.min(interval / 1000, .06);
     lastPaint = timestamp;
-    adaptResolution(interval);
+    adaptResolution(interval, timestamp);
     time += delta * (1 + energy * .9);
     const ease = 1 - Math.exp(-delta * 4.5);
     energy += (target[0] - energy) * ease;
     luminosity += (target[1] - luminosity) * ease;
-    if (handoffUntil && timestamp >= handoffUntil) {
-      handoffUntil = 0;
-      attractionTarget = 0;
-    }
     const contactEase = 1 - Math.exp(-delta * 20);
     touchX += (contactX - touchX) * contactEase;
     touchY += (contactY - touchY) * contactEase;
-    const attractionEase = 1 - Math.exp(-delta * (attractionTarget > attraction ? 15 : releaseSpeed));
-    attraction += (attractionTarget - attraction) * attractionEase;
-    if (!holding && !handoffUntil && attraction < .001) attraction = 0;
+    if (releasing) {
+      // Exact critically damped solution: preserve the outgoing velocity, then
+      // return continuously. No delayed target reversal or frame-rate dependence.
+      const speed = 14, decay = Math.exp(-speed * delta);
+      const motion = attractionVelocity + speed * attraction;
+      attraction = (attraction + motion * delta) * decay;
+      attractionVelocity = (attractionVelocity - speed * motion * delta) * decay;
+      if (attraction < .001 && Math.abs(attractionVelocity) < .01) {
+        attraction = attractionVelocity = 0;
+        releasing = false;
+      }
+    } else {
+      const attractionEase = 1 - Math.exp(-delta * 15);
+      attraction += (attractionTarget - attraction) * attractionEase;
+      attractionVelocity = (attractionTarget - attraction) * 15;
+    }
     draw();
     frame = requestAnimationFrame(tick);
   }
@@ -3015,8 +3035,8 @@ window.MM_FIREBASE_CONFIG = Object.freeze({
     if (reducedMotion.matches) {
       energy = target[0];
       luminosity = target[1];
-      attraction = attractionTarget = 0;
-      handoffUntil = 0;
+      attraction = attractionTarget = attractionVelocity = 0;
+      releasing = false;
     }
     draw();
     if (!reducedMotion.matches) frame = requestAnimationFrame(tick);
@@ -3031,12 +3051,13 @@ window.MM_FIREBASE_CONFIG = Object.freeze({
   function begin(point) {
     move(point);
     holding = true;
-    handoffUntil = 0;
+    releasing = false;
+    quietUntil = performance.now() + 500;
     touchX = contactX;
     touchY = contactY;
     attraction = Math.min(attraction, .12);
     attractionTarget = reducedMotion.matches ? 0 : .18;
-    releaseSpeed = 8;
+    attractionVelocity = 0;
   }
   function charge(amount) {
     if (!holding || !Number.isFinite(amount) || reducedMotion.matches) return;
@@ -3044,17 +3065,20 @@ window.MM_FIREBASE_CONFIG = Object.freeze({
   }
   function handoff() {
     holding = false;
-    if (reducedMotion.matches) return;
-    attractionTarget = Math.max(attractionTarget, .72);
-    handoffUntil = performance.now() + 110;
-    releaseSpeed = 6.5;
+    if (reducedMotion.matches || releasing) return;
+    // A short tap can land between animation frames. Give it a small impulse,
+    // not a second rise/hold/reversal after the finger is already lifted.
+    attractionVelocity = Math.max(attractionVelocity, Math.max(0, .32 - attraction) * 14);
+    attractionTarget = 0;
+    releasing = true;
+    quietUntil = performance.now() + 700;
   }
   function release(options = {}) {
     if (options?.handoff) { handoff(); return; }
     holding = false;
-    handoffUntil = 0;
     attractionTarget = 0;
-    releaseSpeed = 8;
+    releasing = true;
+    quietUntil = performance.now() + 700;
   }
   // All points are CSS pixels relative to #experience. Gestures own timing;
   // this renderer owns continuous interpolation and the brief popup handoff.
@@ -3077,7 +3101,7 @@ window.MM_FIREBASE_CONFIG = Object.freeze({
   on(document, 'visibilitychange', () => {
     if (document.hidden) {
       release();
-      attraction = 0;
+      attraction = attractionVelocity = 0;
     }
     resume();
   });
