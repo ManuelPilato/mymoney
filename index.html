@@ -416,53 +416,89 @@ dialog input:focus,dialog select:focus,dialog textarea:focus { background-color:
   dialog { --line:oklch(85% .004 250 / .35); --muted:oklch(85% .004 250); }
 }
 
-/* The assistant lives in the scene. Only its controls use a glass surface. */
+/* Shared control geometry: variants change size/material, not their construction. */
+:root { --radius-control:16px; --radius-panel:28px; --radius-round:999px; }
+.button,.preview-actions .button,.sync-actions .button,.sync-choice-actions .button,.desktop-controls .button { border-radius:var(--radius-control); }
+button.icon-button,.dialog-head>button { border-radius:var(--radius-round); }
+.nav,.segmented { border-radius:calc(var(--radius-control) + 4px); }
+.nav button,.segmented button { border-radius:var(--radius-control); }
+button.row,.upcoming-mini { border-radius:var(--radius-control); padding-left:10px; padding-right:10px; }
+button.quiet { padding-left:12px; padding-right:12px; }
+summary { border-radius:var(--radius-control); transition:background-color 160ms ease; }
+#plan-budget p,#plan-notes p { max-width:none; width:100%; }
+.plan-item { border-bottom:1px solid var(--line); padding:4px 0 8px; }
+.plan-item .row { border:0; width:100%; }
+.plan-copy { flex:1; min-width:0; text-align:left; }
+.plan-copy .row-sub { white-space:normal; line-height:1.55; margin-top:5px; }
+.plan-item .plan-pay { min-height:38px; padding:7px 10px; font-size:11px; margin-left:0; }
+.plan-pay svg { width:14px; height:14px; }
+#planned-section { margin-top:24px; }
+.search-options { border-top:0; margin-top:4px; }
+.search-options summary { justify-content:flex-start; gap:8px; }
+.filter-count:empty { display:none; }
+.filter-count { font-variant-numeric:tabular-nums; font-size:11px; min-width:20px; text-align:center; border-radius:var(--radius-round); background:rgb(230 240 245 / .1); padding:1px 6px; }
+.filter-grid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:10px 14px; padding-top:8px; }
+.filter-grid .field-group { margin:0; min-width:0; }
+.filter-grid input,.filter-grid select { width:100%; min-width:0; }
+.filter-category { grid-column:1/-1; }
+#filter-results { margin:6px 10px; }
+@media (min-width:700px) { .filter-grid { grid-template-columns:repeat(4,minmax(0,1fr)); } .filter-category { grid-column:span 2; grid-row:1; } }
+@media (hover:hover) and (pointer:fine) { summary:hover { background:rgb(230 240 245 / .035); } }
+
+/* A single scene changes from flowing light to two sculpted particle streams. */
 html.assistant-open .wordmark { opacity:0; }
-#voice-sheet.assistant-sheet { position:fixed; inset:0; width:100%; max-width:none; height:100dvh; max-height:none; margin:0; padding:0; border:0; border-radius:0; background:transparent; box-shadow:none; backdrop-filter:none; -webkit-backdrop-filter:none; overflow-y:auto; overscroll-behavior:contain; }
+#voice-sheet.assistant-sheet { position:fixed; inset:0; width:100%; max-width:none; height:100dvh; max-height:none; margin:0; padding:0; border:0; border-radius:0; background:transparent; box-shadow:none; backdrop-filter:none; -webkit-backdrop-filter:none; overflow-y:auto; overscroll-behavior:contain; isolation:isolate; }
 #voice-sheet.assistant-sheet::before,#voice-sheet.assistant-sheet::after { display:none; }
-#voice-sheet.assistant-sheet::backdrop { background:rgb(3 5 7 / .2); backdrop-filter:none; -webkit-backdrop-filter:none; }
-#voice-sheet .dialog-head { position:relative; padding:calc(env(safe-area-inset-top,0px) + 22px) 24px 0; background:none; border:0; max-width:780px; margin:auto; }
-#voice-sheet .dialog-head h2 { font-size:15px; letter-spacing:-.3px; color:var(--muted); font-weight:400; }
-#voice-sheet .dialog-head button { background:rgb(230 240 245 / .06); }
-.assistant-orb { position:absolute; top:33svh; left:50%; width:clamp(180px,23svh,240px); aspect-ratio:1; transform:translate(-50%,-50%); pointer-events:none; z-index:1; mix-blend-mode:screen; opacity:0; transition:opacity 650ms ease; }
-.assistant-orb img { width:100%; height:100%; object-fit:contain; display:block; }
-html.assistant-open[data-scene=listening] .assistant-orb img { animation:assistant-breathe 2.8s ease-in-out infinite; }
-#voice-sheet .assistant-content { position:relative; width:min(100%,476px); margin:calc(47svh - 62px) auto 0; padding:0 25px calc(env(safe-area-inset-bottom,0px) + 32px); }
-#voice-sheet .voice-status { text-align:center; min-height:20px; margin:0 0 15px; }
-#voice-sheet #natural { min-height:82px; height:88px; max-height:180px; font-size:24px; line-height:1.4; text-align:center; font-weight:400; }
-#voice-sheet #natural::placeholder { color:oklch(78% .01 240); }
-#voice-sheet #voice-compose:focus-within #natural { box-shadow:none; }
-#voice-sheet #natural:focus-visible { outline:1px solid var(--line); outline-offset:7px; border-radius:10px; }
-#voice-sheet .voice-actions { justify-content:center; margin-top:23px; }
-#voice-sheet .voice-actions>button { background:rgb(225 235 240 / .08); border:1px solid rgb(225 235 240 / .09); color:var(--text); backdrop-filter:blur(10px); -webkit-backdrop-filter:blur(10px); }
-#voice-sheet .voice-actions .mic-listening { color:var(--accent); border-color:rgb(157 220 241 / .3); animation:none; }
-#voice-sheet .assistant-privacy { max-width:300px; margin:20px auto 0; text-align:center; font-size:10px; opacity:.75; }
-.assistant-example { display:block; max-width:100%; margin:12px auto 0; padding:9px 13px; min-height:44px; border-radius:30px; font-size:11px; font-weight:400; color:var(--muted); background:rgb(230 240 245 / .04); border:1px solid var(--line); }
-#advisor-answer h3 { font-size:31px; font-weight:450; line-height:1.16; letter-spacing:-1px; margin:10px 0 14px; }
-#advisor-explanation { font-size:16px; line-height:1.6; color:var(--text); margin:0 0 16px; }
+#voice-sheet.assistant-sheet::backdrop { background:rgb(3 5 7 / .12); backdrop-filter:none; -webkit-backdrop-filter:none; }
+#voice-sheet .dialog-head { position:fixed; inset:calc(env(safe-area-inset-top,0px) + 20px) 22px auto auto; width:48px; padding:0; z-index:3; background:none; border:0; }
+#voice-sheet .dialog-head button { width:46px; height:46px; background:rgb(230 240 245 / .06); }
+#voice-sheet .assistant-content { position:relative; z-index:1; width:min(100%,510px); margin:54svh auto 0; padding:0 25px calc(env(safe-area-inset-bottom,0px) + 28px); }
+#voice-sheet .voice-status { text-align:center; min-height:24px; margin:0 0 16px; font-size:15px; line-height:1.5; max-width:none; color:var(--text); }
+#voice-sheet .voice-status.attention { color:var(--muted); font-size:13px; }
+#voice-text { position:relative; margin:0 0 14px; }
+#voice-sheet #natural { display:block; width:100%; min-height:66px; height:76px; max-height:180px; padding:12px 48px 12px 14px; font-size:19px; line-height:1.4; text-align:left; font-weight:400; background:rgb(230 240 245 / .04); border:1px solid rgb(230 240 245 / .09); border-radius:var(--radius-control); resize:vertical; }
+#voice-sheet #natural::placeholder { color:var(--muted); font-size:16px; }
+#voice-sheet #natural:read-only { padding:4px 8px; text-align:center; background:none; border-color:transparent; resize:none; }
+#voice-sheet #natural:focus-visible { outline:1px solid var(--line); outline-offset:3px; box-shadow:none; }
+#voice-sheet #interpret { position:absolute; right:5px; bottom:5px; width:38px; height:38px; min-height:38px; background:rgb(230 240 245 / .09); }
+#voice-sheet .voice-actions { justify-content:center; margin:18px 0 8px; }
+#voice-sheet #mic { width:76px; height:76px; min-height:76px; background:rgb(225 235 240 / .08); border:1px solid rgb(225 235 240 / .12); color:var(--text); box-shadow:inset 0 1px 0 rgb(255 255 255 / .05); }
+#voice-sheet #mic svg { width:27px; height:27px; }
+#voice-sheet #mic.mic-listening { color:#a2d9df; background:rgb(120 190 200 / .11); border-color:rgb(157 220 241 / .25); animation:none; }
+#assistant-type { display:flex; margin:0 auto; min-height:44px; }
+#voice-sheet .assistant-privacy { max-width:310px; margin:13px auto 0; text-align:center; font-size:10px; opacity:.8; }
+#voice-sheet #command-preview,#advisor-answer { padding:0 0 10px; border:0; background:none; backdrop-filter:none; -webkit-backdrop-filter:none; }
+#advisor-answer h3,#command-title { font-size:30px; font-weight:450; line-height:1.18; letter-spacing:-1px; margin:10px 0 14px; }
+#advisor-explanation { max-width:none; font-size:16px; line-height:1.6; color:var(--text); margin:0 0 16px; }
 .assistant-eyebrow { color:var(--muted); font-size:12px; margin:0; }
 #advisor-details { border-top:1px solid var(--line); }
 #advisor-details summary { font-size:12px; }
 #advisor-lines { padding-left:17px; color:var(--muted); font-size:12px; line-height:1.6; }
 #advisor-lines li { margin-bottom:10px; }
+#advisor-quality { font-size:11px; color:var(--muted); }
 #advisor-answer .preview-actions>button { font-size:12px; min-height:48px; }
-#voice-sheet #command-preview,#advisor-answer { padding:20px 22px; border:1px solid rgb(230 240 245 / .07); border-radius:26px; background:rgb(12 17 19 / .4); backdrop-filter:blur(10px); -webkit-backdrop-filter:blur(10px); }
-@keyframes assistant-breathe { 50% { transform:scale(1.035) rotate(2deg); opacity:.8; } }
-@media(max-height:600px) { .assistant-orb { top:25svh; width:130px; } #voice-sheet .assistant-content { margin-top:calc(38svh - 62px); } }
-@media(prefers-reduced-motion:reduce) { html.assistant-open[data-scene=listening] .assistant-orb img { animation:none; } }
-@media(prefers-reduced-transparency:reduce) { #voice-sheet #command-preview,#advisor-answer { background:#12191b; backdrop-filter:none; -webkit-backdrop-filter:none; } }
-
-html.assistant-open .assistant-orb { opacity:.9; }
-
 #advisor-title:focus,#command-title:focus { outline:none; }
+#voice-sheet.is-typing .assistant-privacy { display:none; }
+@media (min-width:900px) and (min-height:700px) { #voice-sheet .assistant-content { margin-top:55svh; } }
+@media (max-height:600px) { #voice-sheet .assistant-content { margin-top:43svh; padding-bottom:18px; } #voice-sheet .voice-actions { margin-top:10px; } #voice-sheet #mic { width:60px; height:60px; min-height:60px; } #voice-sheet .assistant-privacy { display:none; } }
+@media (prefers-reduced-motion:reduce) { summary { transition:none; } }
+
+#voice-sheet #mic { min-width:0; flex:0 0 auto; }
+#voice-sheet .assistant-content,#voice-sheet .dialog-head { transition:opacity 180ms ease; }
+#voice-sheet.is-closing .assistant-content,#voice-sheet.is-closing .dialog-head { opacity:0; pointer-events:none; }
+@media(prefers-reduced-motion:reduce) { #voice-sheet .assistant-content,#voice-sheet .dialog-head { transition:none; } }
+
+#voice-sheet.assistant-sheet { height:var(--vv-height,100dvh); }
+html.keyboard-open #voice-sheet .assistant-content { margin-top:calc(var(--vv-height) * .43); }
+html.keyboard-open #voice-sheet .assistant-privacy { display:none; }
+html.keyboard-open #voice-sheet #mic { width:60px; height:60px; min-height:60px; }
 </style>
 </head>
 <body>
 <main id="experience" aria-label="MyMoney">
   <canvas id="orb-canvas" aria-hidden="true"></canvas>
   <div class="scene-shade" aria-hidden="true"></div>
-<div class="assistant-orb" aria-hidden="true"><img src="./assistant-symbol.png" width="512" height="512" alt=""></div>
-  <button id="touch-surface" aria-label="Aggiungi una spesa" data-i18n-aria-label="Aggiungi una spesa" aria-describedby="gesture-instructions"></button>
+  <button id="touch-surface" aria-label="Aggiungi una spesa" data-i18n-aria-label="Aggiungi una spesa" aria-describedby="gesture-instructions" class="button"></button>
   <h1 class="wordmark" aria-hidden="true">MyMoney<span class="wordmark-point">.</span></h1>
   <div id="gesture-hints" class="gesture-hints">
     <div class="hint-pair">
@@ -470,45 +506,53 @@ html.assistant-open .assistant-orb { opacity:.9; }
       <div class="gesture-hint" data-hint="voice"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="9" y="3" width="6" height="12" rx="3"/><path d="M5 11v1a7 7 0 0 0 14 0v-1M12 19v3"/></svg><span>Tieni premuto e parla</span></div>
     </div>
     <div class="gesture-hint hint-swipe" data-hint="data"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m6 14 6-6 6 6M12 8v12"/></svg><span>Scorri per i tuoi dati</span></div>
-    <button id="dismiss-hints" class="quiet" type="button" data-i18n="Ho capito">Ho capito</button>
+    <button id="dismiss-hints" class="button quiet" type="button" data-i18n="Ho capito">Ho capito</button>
   </div>
   <p id="gesture-instructions" class="sr-only" data-i18n="Tocca per inserire una spesa. Tieni premuto per parlare. Scorri verso l’alto per vedere i dati.">Tocca per inserire una spesa. Tieni premuto per parlare. Scorri verso l’alto per vedere i dati.</p>
-  <button id="open-data" class="data-handle" aria-label="Mostra i tuoi dati" data-i18n-aria-label="Mostra i tuoi dati"><span></span></button>
-  <button id="accessible-voice" class="focus-action" data-i18n="Detta una spesa">Detta una spesa</button>
+  <button id="open-data" class="button data-handle" aria-label="Mostra i tuoi dati" data-i18n-aria-label="Mostra i tuoi dati"><span></span></button>
+  <button id="accessible-voice" class="button focus-action" data-i18n="Detta una spesa">Detta una spesa</button>
 </main>
 <nav class="desktop-controls" aria-label="Azioni rapide" data-i18n-aria-label="Azioni rapide">
-  <button id="desktop-add" title="Nuova spesa (⌘K)" data-i18n-title="Nuova spesa (⌘K)"><span data-icon="plus"></span><span data-i18n="Nuova spesa">Nuova spesa</span><kbd>⌘K</kbd></button>
-  <button id="desktop-voice" title="Dettatura (V)" data-i18n-title="Dettatura (V)"><span data-icon="mic"></span><span data-i18n="Voce">Voce</span></button>
-  <button id="desktop-data" title="I tuoi dati (D)" data-i18n-title="I tuoi dati (D)"><span data-icon="list"></span><span data-i18n="I tuoi dati">I tuoi dati</span></button>
+  <button id="desktop-add" title="Nuova spesa (⌘K)" data-i18n-title="Nuova spesa (⌘K)" class="button"><span data-icon="plus"></span><span data-i18n="Nuova spesa">Nuova spesa</span><kbd>⌘K</kbd></button>
+  <button id="desktop-voice" title="Dettatura (V)" data-i18n-title="Dettatura (V)" class="button"><span data-icon="mic"></span><span data-i18n="Voce">Voce</span></button>
+  <button id="desktop-data" title="I tuoi dati (D)" data-i18n-title="I tuoi dati (D)" class="button"><span data-icon="list"></span><span data-i18n="I tuoi dati">I tuoi dati</span></button>
 </nav>
 
 <dialog id="data-sheet" class="data-sheet" aria-labelledby="data-title">
   <header class="data-header" id="data-drag-handle">
     <span class="sheet-grip" aria-hidden="true"></span>
-    <div class="data-heading"><button id="data-settings" class="icon-button" data-go="settings" aria-label="Preferenze" data-i18n-aria-label="Preferenze"><span data-icon="settings"></span></button><h2 id="data-title" data-i18n="I tuoi dati">I tuoi dati</h2><button id="close-data" class="icon-button" aria-label="Nascondi i dati" data-i18n-aria-label="Nascondi i dati"><span data-icon="close"></span></button></div>
+    <div class="data-heading"><button id="data-settings" class="button icon-button" data-go="settings" aria-label="Preferenze" data-i18n-aria-label="Preferenze"><span data-icon="settings"></span></button><h2 id="data-title" data-i18n="I tuoi dati">I tuoi dati</h2><button id="close-data" class="button icon-button" aria-label="Nascondi i dati" data-i18n-aria-label="Nascondi i dati"><span data-icon="close"></span></button></div>
   </header>
-  <nav class="nav" aria-label="I tuoi dati" data-i18n-aria-label="I tuoi dati"><button data-go="home" class="active" data-i18n="Sintesi">Sintesi</button><button data-go="history" data-i18n="Movimenti">Movimenti</button><button data-go="plan" data-i18n="Piano">Piano</button></nav>
+  <nav class="nav" aria-label="I tuoi dati" data-i18n-aria-label="I tuoi dati"><button data-go="home" class="button active" data-i18n="Sintesi">Sintesi</button><button data-go="history" data-i18n="Movimenti" class="button">Movimenti</button><button data-go="plan" data-i18n="Piano" class="button">Piano</button></nav>
   <div id="data-scroll" class="data-scroll">
     <div id="storage-warning" class="notice error" hidden role="alert"></div>
     <section id="view-home">
-      <div id="welcome" class="welcome" hidden><p data-i18n="Hai già un archivio?">Hai già un archivio?</p><button class="ghost" data-import><span data-i18n="Importa dati">Importa dati</span> <span data-icon="download"></span></button><button id="setup-new" class="quiet" data-i18n="Parti da zero">Parti da zero</button></div>
+      <div id="welcome" class="welcome" hidden><p data-i18n="Hai già un archivio?">Hai già un archivio?</p><button class="button ghost" data-import><span data-i18n="Importa dati">Importa dati</span> <span data-icon="download"></span></button><button id="setup-new" class="button quiet" data-i18n="Parti da zero">Parti da zero</button></div>
       <div class="balance-panel"><span class="label" data-i18n="Saldo">Saldo</span><div id="balance" class="balance">—</div></div>
       <div class="budget-panel"><div class="split"><span data-i18n="Nel budget">Nel budget</span><strong id="available">—</strong></div><div class="track"><div id="budget-progress"></div></div><span id="cycle-label" class="tiny"></span><div id="budget-warning" class="notice" hidden></div></div>
-      <div class="section-heading"><h3 data-i18n="Ultimi movimenti">Ultimi movimenti</h3><button id="top-add" class="icon-button" aria-label="Nuova spesa" data-i18n-aria-label="Nuova spesa"><span data-icon="plus"></span></button></div>
+      <div class="section-heading"><h3 data-i18n="Ultimi movimenti">Ultimi movimenti</h3><button id="top-add" class="button icon-button" aria-label="Nuova spesa" data-i18n-aria-label="Nuova spesa"><span data-icon="plus"></span></button></div>
       <div id="recent"></div>
-      <button class="quiet full-width" data-go="history"><span data-i18n="Vedi tutti">Vedi tutti</span> <span data-icon="arrow"></span></button>
+      <button class="button quiet full-width" data-go="history"><span data-i18n="Vedi tutti">Vedi tutti</span> <span data-icon="arrow"></span></button>
       <details class="disclosure"><summary data-i18n="Il piano in breve">Il piano in breve</summary><div class="line-item"><span data-i18n="Spese fisse / mese">Spese fisse / mese</span><strong id="fixed"></strong></div><div class="line-item"><span data-i18n="Obiettivo risparmio">Obiettivo risparmio</span><strong id="goal"></strong></div><div class="line-item"><span data-i18n="Budget">Budget</span><strong id="budget-cap"></strong></div><p id="budget-caption" class="tiny"></p><p id="balance-caption" class="tiny"></p><div id="home-alerts"></div></details>
       <details class="disclosure"><summary data-i18n="Prossime scadenze">Prossime scadenze</summary><div id="home-upcoming"></div></details>
     </section>
     <section id="view-history" hidden>
-      <div class="toolbar"><input id="search" type="search" placeholder="Cerca" data-i18n-placeholder="Cerca" aria-label="Cerca movimenti" data-i18n-aria-label="Cerca movimenti"><button id="history-add" class="icon-button" aria-label="Nuovo movimento" data-i18n-aria-label="Nuovo movimento"><span data-icon="plus"></span></button></div>
-      <div class="segmented" id="history-filters"><button data-filter="all" class="active" data-i18n="Tutti">Tutti</button><button data-filter="paid" data-i18n="Pagati">Pagati</button><button data-filter="planned" data-i18n="Previsti">Previsti</button></div>
-      <div id="all-transactions"></div>
-      <details class="disclosure"><summary data-i18n="Resoconto">Resoconto</summary><div class="segmented" id="report-modes"><button data-report="week" data-i18n="Settimana">Settimana</button><button data-report="month" class="active" data-i18n="Mese">Mese</button><button data-report="cycle" data-i18n="Ciclo">Ciclo</button></div><div class="toolbar"><button class="icon-button" id="report-prev" aria-label="Periodo precedente" data-i18n-aria-label="Periodo precedente"><span data-icon="left"></span></button><strong class="tiny grow" id="report-title"></strong><button class="icon-button" id="report-next" aria-label="Periodo successivo" data-i18n-aria-label="Periodo successivo"><span data-icon="arrow"></span></button></div><div id="report"></div></details>
+      <div class="toolbar"><input id="search" type="search" placeholder="Cerca" data-i18n-placeholder="Cerca" aria-label="Cerca movimenti" data-i18n-aria-label="Cerca movimenti"><button id="history-add" class="button icon-button" aria-label="Nuovo movimento" data-i18n-aria-label="Nuovo movimento"><span data-icon="plus"></span></button></div>
+      <div class="segmented" id="history-filters"><button data-filter="all" class="button active" data-i18n="Tutti">Tutti</button><button data-filter="paid" data-i18n="Pagati" class="button">Pagati</button><button data-filter="planned" data-i18n="Previsti" class="button">Previsti</button></div>
+      <details id="search-options" class="disclosure search-options"><summary><span data-i18n="Filtri">Filtri</span><span id="filter-count" class="filter-count"></span></summary>
+        <div class="filter-grid">
+          <div class="field-group"><label for="filter-from" data-i18n="Dal">Dal</label><input type="date" id="filter-from"></div>
+          <div class="field-group"><label for="filter-to" data-i18n="Al">Al</label><input type="date" id="filter-to"></div>
+          <div class="field-group filter-category"><label for="filter-category" data-i18n="Categoria">Categoria</label><select id="filter-category"></select></div>
+          <div class="field-group"><label for="filter-min" data-i18n="Minimo €">Minimo €</label><input id="filter-min" inputmode="decimal" placeholder="0"></div>
+          <div class="field-group"><label for="filter-max" data-i18n="Massimo €">Massimo €</label><input id="filter-max" inputmode="decimal" placeholder="Nessun limite" data-i18n-placeholder="Nessun limite"></div>
+        </div><div id="filter-error" class="notice error" role="alert" hidden></div><button id="clear-filters" class="button quiet" type="button" data-i18n="Azzera filtri">Azzera filtri</button>
+      </details><p id="filter-results" class="tiny" aria-live="polite" hidden></p><div id="all-transactions"></div>
+      <details class="disclosure"><summary data-i18n="Resoconto">Resoconto</summary><div class="segmented" id="report-modes"><button data-report="week" data-i18n="Settimana" class="button">Settimana</button><button data-report="month" class="button active" data-i18n="Mese">Mese</button><button data-report="cycle" data-i18n="Ciclo" class="button">Ciclo</button></div><div class="toolbar"><button class="button icon-button" id="report-prev" aria-label="Periodo precedente" data-i18n-aria-label="Periodo precedente"><span data-icon="left"></span></button><strong class="tiny grow" id="report-title"></strong><button class="button icon-button" id="report-next" aria-label="Periodo successivo" data-i18n-aria-label="Periodo successivo"><span data-icon="arrow"></span></button></div><div id="report"></div></details>
     </section>
     <section id="view-plan" hidden>
-      <div class="section-heading"><h3 data-i18n="Spese fisse">Spese fisse</h3><button class="icon-button" id="new-recurring" aria-label="Aggiungi spesa fissa" data-i18n-aria-label="Aggiungi spesa fissa"><span data-icon="plus"></span></button></div><div id="recurring-list"></div>
-      <details class="disclosure"><summary data-i18n="Scadenze">Scadenze</summary><div id="upcoming"></div><button class="ghost full-width" id="export-calendar" data-i18n="Esporta nel Calendario">Esporta nel Calendario</button></details>
+      <div class="section-heading"><h3 data-i18n="Spese fisse">Spese fisse</h3><button class="button icon-button" id="new-recurring" aria-label="Aggiungi spesa fissa" data-i18n-aria-label="Aggiungi spesa fissa"><span data-icon="plus"></span></button></div><div id="recurring-list"></div>
+      <section id="planned-section" hidden><div class="section-heading"><h3 data-i18n="Altri movimenti previsti">Altri movimenti previsti</h3></div><div id="planned-list"></div></section><button class="button quiet full-width" id="export-calendar" data-i18n="Esporta nel Calendario">Esporta nel Calendario</button>
       <details class="disclosure"><summary data-i18n="Calcolo del budget">Calcolo del budget</summary><div id="plan-budget"></div></details>
       <details class="disclosure"><summary data-i18n="Note del piano">Note del piano</summary><div id="plan-notes"></div></details>
     </section>
@@ -523,75 +567,123 @@ html.assistant-open .assistant-orb { opacity:.9; }
         </div>
         <p id="sync-detail" class="tiny" data-i18n="Puoi usare MyMoney anche senza accesso. Con la sincronizzazione, i dati vengono salvati su Firebase e sono accessibili solo al tuo account.">Puoi usare MyMoney anche senza accesso. Con la sincronizzazione, i dati vengono salvati su Firebase e sono accessibili solo al tuo account.</p>
         <div class="sync-actions">
-          <button type="button" id="sync-connect"><span data-i18n="Accedi con Google">Accedi con Google</span> <span data-icon="arrow" aria-hidden="true"></span></button>
-          <button type="button" id="sync-retry" class="ghost" hidden data-i18n="Riprova">Riprova</button>
-          <button type="button" id="sync-disconnect" class="quiet" hidden data-i18n="Esci">Esci</button>
+          <button type="button" id="sync-connect" class="button"><span data-i18n="Accedi con Google">Accedi con Google</span> <span data-icon="arrow" aria-hidden="true"></span></button>
+          <button type="button" id="sync-retry" class="button ghost" hidden data-i18n="Riprova">Riprova</button>
+          <button type="button" id="sync-disconnect" class="button quiet" hidden data-i18n="Esci">Esci</button>
         </div>
         <section id="sync-import" class="sync-choice" aria-labelledby="sync-import-title" hidden>
           <h3 id="sync-import-title" data-i18n="Collega i tuoi dati">Collega i tuoi dati</h3>
           <p data-i18n="Unisci i dati di questo dispositivo all’account, oppure apri quelli già online. Per i dati già presenti prevale la versione online; la copia locale resta salvata separatamente.">Unisci i dati di questo dispositivo all’account, oppure apri quelli già online. Per i dati già presenti prevale la versione online; la copia locale resta salvata separatamente.</p>
           <div class="sync-choice-actions">
-            <button type="button" id="sync-import-merge" data-i18n="Unisci e sincronizza">Unisci e sincronizza</button>
-            <button type="button" id="sync-import-cloud" class="ghost" data-i18n="Usa dati dell’account">Usa dati dell’account</button>
+            <button type="button" id="sync-import-merge" data-i18n="Unisci e sincronizza" class="button">Unisci e sincronizza</button>
+            <button type="button" id="sync-import-cloud" class="button ghost" data-i18n="Usa dati dell’account">Usa dati dell’account</button>
           </div>
         </section>
         <section id="sync-conflicts" class="sync-choice" aria-labelledby="sync-conflict-title" hidden>
           <h3 id="sync-conflict-title" data-i18n="Scegli la versione da tenere">Scegli la versione da tenere</h3>
           <p id="sync-conflict-detail" aria-live="polite" data-i18n="Lo stesso dato è stato modificato su due dispositivi.">Lo stesso dato è stato modificato su due dispositivi.</p>
           <div class="sync-choice-actions">
-            <button type="button" id="sync-use-cloud" data-i18n="Usa la versione online">Usa la versione online</button>
-            <button type="button" id="sync-use-local" class="ghost" data-i18n="Usa la mia modifica">Usa la mia modifica</button>
+            <button type="button" id="sync-use-cloud" data-i18n="Usa la versione online" class="button">Usa la versione online</button>
+            <button type="button" id="sync-use-local" class="button ghost" data-i18n="Usa la mia modifica">Usa la mia modifica</button>
           </div>
         </section>
       </details>
       <details class="disclosure" open><summary data-i18n="Budget e stipendio">Budget e stipendio</summary><form id="settings-form">
         <div class="fields"><div class="field-group"><label for="s-salary" data-i18n="Stipendio previsto €">Stipendio previsto €</label><input id="s-salary" inputmode="decimal" required></div><div class="field-group"><label for="s-day" data-i18n="Giorno di accredito">Giorno di accredito</label><input id="s-day" type="number" min="1" max="28" required></div></div>
         <div class="fields"><div class="field-group"><label for="s-budget" data-i18n="Budget €">Budget €</label><input id="s-budget" inputmode="decimal" required></div><div class="field-group"><label for="s-goal" data-i18n="Obiettivo risparmio €">Obiettivo risparmio €</label><input id="s-goal" inputmode="decimal" required></div></div>
-        <details><summary data-i18n="Situazione iniziale">Situazione iniziale</summary><div class="field-group"><label for="s-opening" data-i18n="Saldo iniziale €">Saldo iniziale €</label><input id="s-opening" inputmode="decimal" required></div><div class="field-group"><label for="s-date" data-i18n="Data iniziale">Data iniziale</label><input id="s-date" type="date" required></div><div class="field-group"><label for="s-savings" data-i18n="Risparmi separati €">Risparmi separati €</label><input id="s-savings" inputmode="decimal" placeholder="Facoltativo" data-i18n-placeholder="Facoltativo"></div><p class="tiny" data-i18n="Il saldo iniziale è il punto di partenza. Registra gli stipendi successivi come entrate.">Il saldo iniziale è il punto di partenza. Registra gli stipendi successivi come entrate.</p></details><button type="submit" class="full-width" data-i18n="Salva">Salva</button>
+        <details><summary data-i18n="Situazione iniziale">Situazione iniziale</summary><div class="field-group"><label for="s-opening" data-i18n="Saldo iniziale €">Saldo iniziale €</label><input id="s-opening" inputmode="decimal" required></div><div class="field-group"><label for="s-date" data-i18n="Data iniziale">Data iniziale</label><input id="s-date" type="date" required></div><label class="check-label"><input id="s-opening-confirm" type="checkbox"><span data-i18n="Confermo saldo e data iniziali">Confermo saldo e data iniziali</span></label><div class="field-group"><label for="s-savings" data-i18n="Risparmi separati €">Risparmi separati €</label><input id="s-savings" inputmode="decimal" placeholder="Facoltativo" data-i18n-placeholder="Facoltativo"></div><p class="tiny" data-i18n="Il saldo iniziale è il punto di partenza. Registra gli stipendi successivi come entrate.">Il saldo iniziale è il punto di partenza. Registra gli stipendi successivi come entrate.</p></details><button type="submit" class="button full-width" data-i18n="Salva">Salva</button>
       </form></details>
-      <details class="disclosure"><summary data-i18n="Backup e importazione">Backup e importazione</summary><div class="actions"><button id="export-json" data-i18n="Salva backup">Salva backup</button><button class="ghost" data-import data-i18n="Importa">Importa</button><button class="ghost" id="export-csv">CSV</button></div><p class="tiny" id="backup-status"></p><p class="tiny" data-i18n="Un backup conserva una copia privata del tuo archivio. Se hai attivato la sincronizzazione, non serve per passare da un dispositivo all’altro.">Un backup conserva una copia privata del tuo archivio. Se hai attivato la sincronizzazione, non serve per passare da un dispositivo all’altro.</p></details>
+      <details class="disclosure"><summary data-i18n="Backup e importazione">Backup e importazione</summary><div class="actions"><button id="export-json" data-i18n="Salva backup" class="button">Salva backup</button><button class="button ghost" data-import data-i18n="Importa">Importa</button><button class="button ghost" id="export-csv">CSV</button></div><p class="tiny" id="backup-status"></p><p class="tiny" data-i18n="Un backup conserva una copia privata del tuo archivio. Se hai attivato la sincronizzazione, non serve per passare da un dispositivo all’altro.">Un backup conserva una copia privata del tuo archivio. Se hai attivato la sincronizzazione, non serve per passare da un dispositivo all’altro.</p></details>
       <details class="disclosure"><summary data-i18n="Categorie imparate">Categorie imparate</summary><div id="learned-rules"></div></details>
-      <details class="disclosure"><summary data-i18n="App e dispositivi">App e dispositivi</summary><p class="tiny"><span data-i18n="Tocco: nuova spesa.">Tocco: nuova spesa.</span><br><span data-i18n="Pressione prolungata: voce.">Pressione prolungata: voce.</span><br><span data-i18n="Scorri in alto: i tuoi dati.">Scorri in alto: i tuoi dati.</span></p><button id="settings-voice" class="ghost full-width"><span data-i18n="Detta una modifica">Detta una modifica</span> <span data-icon="mic"></span></button><div id="environment" class="notice" hidden></div><p class="tiny" id="install-status"></p><p class="tiny"><span data-i18n="Su iPhone: Safari → Condividi → Aggiungi alla schermata Home.">Su iPhone: Safari → Condividi → Aggiungi alla schermata Home.</span><br><span data-i18n="Su Mac: Safari → File → Aggiungi al Dock, oppure installa dal menu di Chrome.">Su Mac: Safari → File → Aggiungi al Dock, oppure installa dal menu di Chrome.</span></p><p class="tiny" data-i18n="App e sito si sincronizzano con lo stesso account Google. Le modifiche fatte offline vengono inviate quando torna la connessione; un’app chiusa si aggiorna alla riapertura.">App e sito si sincronizzano con lo stesso account Google. Le modifiche fatte offline vengono inviate quando torna la connessione; un’app chiusa si aggiorna alla riapertura.</p><button class="quiet full-width" id="replay-hints" type="button" data-i18n="Rivedi i gesti rapidi">Rivedi i gesti rapidi</button><button class="ghost full-width" id="request-storage" data-i18n="Conserva i dati sul dispositivo">Conserva i dati sul dispositivo</button><p class="tiny" id="persistent-status"></p><p class="tiny" data-i18n="La voce usa il servizio del browser e può richiedere internet. MyMoney non conserva audio. I comandi vengono interpretati localmente e proposti prima del salvataggio.">La voce usa il servizio del browser e può richiedere internet. MyMoney non conserva audio. I comandi vengono interpretati localmente e proposti prima del salvataggio.</p></details>
+      <details class="disclosure"><summary data-i18n="App e dispositivi">App e dispositivi</summary><p class="tiny"><span data-i18n="Tocco: nuova spesa.">Tocco: nuova spesa.</span><br><span data-i18n="Pressione prolungata: voce.">Pressione prolungata: voce.</span><br><span data-i18n="Scorri in alto: i tuoi dati.">Scorri in alto: i tuoi dati.</span></p><button id="settings-voice" class="button ghost full-width"><span data-i18n="Detta una modifica">Detta una modifica</span> <span data-icon="mic"></span></button><div id="environment" class="notice" hidden></div><p class="tiny" id="install-status"></p><p class="tiny"><span data-i18n="Su iPhone: Safari → Condividi → Aggiungi alla schermata Home.">Su iPhone: Safari → Condividi → Aggiungi alla schermata Home.</span><br><span data-i18n="Su Mac: Safari → File → Aggiungi al Dock, oppure installa dal menu di Chrome.">Su Mac: Safari → File → Aggiungi al Dock, oppure installa dal menu di Chrome.</span></p><p class="tiny" data-i18n="App e sito si sincronizzano con lo stesso account Google. Le modifiche fatte offline vengono inviate quando torna la connessione; un’app chiusa si aggiorna alla riapertura.">App e sito si sincronizzano con lo stesso account Google. Le modifiche fatte offline vengono inviate quando torna la connessione; un’app chiusa si aggiorna alla riapertura.</p><button class="button quiet full-width" id="replay-hints" type="button" data-i18n="Rivedi i gesti rapidi">Rivedi i gesti rapidi</button><button class="button ghost full-width" id="request-storage" data-i18n="Conserva i dati sul dispositivo">Conserva i dati sul dispositivo</button><p class="tiny" id="persistent-status"></p><p class="tiny" data-i18n="La voce usa il servizio del browser e può richiedere internet. MyMoney non conserva audio. I comandi vengono interpretati localmente e proposti prima del salvataggio.">La voce usa il servizio del browser e può richiedere internet. MyMoney non conserva audio. I comandi vengono interpretati localmente e proposti prima del salvataggio.</p></details>
     </section>
   </div>
 </dialog>
 
 <dialog id="quick-sheet" class="dialog quick-sheet" aria-labelledby="quick-title">
-  <div class="dialog-head"><h2 id="quick-title" data-i18n="Nuova spesa">Nuova spesa</h2><button id="close-quick" class="icon-button" aria-label="Chiudi inserimento" data-i18n-aria-label="Chiudi inserimento"><span data-icon="close"></span></button></div>
+  <div class="dialog-head"><h2 id="quick-title" data-i18n="Nuova spesa">Nuova spesa</h2><button id="close-quick" class="button icon-button" aria-label="Chiudi inserimento" data-i18n-aria-label="Chiudi inserimento"><span data-icon="close"></span></button></div>
   <form id="quick-form" autocomplete="off"><div class="dialog-body">
     <div class="field-group"><label for="q-name" data-i18n="Nome">Nome</label><input id="q-name" placeholder="Per cosa?" data-i18n-placeholder="Per cosa?" maxlength="150" enterkeyhint="next" required></div>
     <div class="amount-entry"><label for="q-amount" data-i18n="Importo">Importo</label><div class="amount-input"><span>€</span><input id="q-amount" inputmode="decimal" placeholder="0,00" data-i18n-placeholder="0,00" enterkeyhint="done" required aria-label="Importo in euro" data-i18n-aria-label="Importo in euro"></div></div>
-    <div class="quick-date-row"><div><label for="q-date" data-i18n="Data">Data</label><input id="q-date" type="date" required></div><button class="icon-button" type="button" id="quick-options" aria-label="Personalizza categoria e tipo" data-i18n-aria-label="Personalizza categoria e tipo" aria-expanded="false"><span data-icon="settings"></span></button></div>
+    <div class="quick-date-row"><div><label for="q-date" data-i18n="Data">Data</label><input id="q-date" type="date" required></div><button class="button icon-button" type="button" id="quick-options" aria-label="Personalizza categoria e tipo" data-i18n-aria-label="Personalizza categoria e tipo" aria-expanded="false"><span data-icon="settings"></span></button></div>
     <p id="quick-hint" class="tiny"></p>
     <div id="quick-details" class="quick-details" hidden><div class="fields"><div><label for="q-category" data-i18n="Categoria">Categoria</label><select id="q-category"></select></div><div><label for="q-type" data-i18n="Tipo">Tipo</label><select id="q-type"><option value="auto" data-i18n="Automatico">Automatico</option><option value="expense" data-i18n="Uscita">Uscita</option><option value="income" data-i18n="Entrata">Entrata</option></select></div></div><label class="check-label"><input id="q-learn" type="checkbox" checked><span data-i18n="Ricorda la categoria">Ricorda la categoria</span></label></div>
     <div id="quick-error" class="notice error" role="alert" hidden></div>
-  </div><div class="dialog-footer"><button type="submit" id="quick-save"><span data-i18n="Salva">Salva</span> <span data-icon="check"></span></button></div></form>
+  </div><div class="dialog-footer"><button type="submit" id="quick-save" class="button"><span data-i18n="Salva">Salva</span> <span data-icon="check"></span></button></div></form>
 </dialog>
 
 <dialog id="voice-sheet" class="dialog voice-sheet assistant-sheet" aria-labelledby="voice-title">
-  <div class="dialog-head"><h2 id="voice-title" data-i18n="Sono qui.">Sono qui.</h2><button id="close-voice" class="icon-button" aria-label="Chiudi assistente" data-i18n-aria-label="Chiudi assistente"><span data-icon="close"></span></button></div>
+  <div class="dialog-head"><h2 id="voice-title" class="sr-only" data-i18n="Assistente MyMoney">Assistente MyMoney</h2><button id="close-voice" class="button icon-button" aria-label="Chiudi assistente" data-i18n-aria-label="Chiudi assistente"><span data-icon="close"></span></button></div>
   <div class="dialog-body assistant-content">
-    <section id="voice-consent" hidden><p data-i18n="La dettatura usa il servizio vocale del browser, che può elaborare l’audio online.">La dettatura usa il servizio vocale del browser, che può elaborare l’audio online.</p><button id="voice-enable" class="full-width"><span data-i18n="Attiva microfono">Attiva microfono</span> <span data-icon="mic"></span></button><button id="voice-write" class="quiet full-width" data-i18n="Preferisco scrivere">Preferisco scrivere</button></section>
-    <div id="voice-compose"><p class="voice-status" id="voice-status" role="status"></p><label class="sr-only" for="natural" data-i18n="Scrivi una spesa, una modifica o una domanda">Scrivi una spesa, una modifica o una domanda</label><textarea id="natural" rows="2" maxlength="4000" placeholder="Una spesa. Una domanda. Ti ascolto." data-i18n-placeholder="Una spesa. Una domanda. Ti ascolto."></textarea><button id="assistant-example" class="assistant-example" data-i18n="Posso permettermi scarpe da 180 €?">Posso permettermi scarpe da 180 €?</button><div class="voice-actions"><button class="icon-button" id="mic" aria-label="Avvia dettatura" data-i18n-aria-label="Avvia dettatura"><span data-icon="mic"></span></button><button id="interpret"><span data-i18n="Continua">Continua</span> <span data-icon="arrow"></span></button></div><p class="tiny assistant-privacy" data-i18n="La voce usa il servizio del browser, anche online. MyMoney non conserva audio.">La voce usa il servizio del browser, anche online. MyMoney non conserva audio.</p></div>
-    <section id="command-preview" hidden aria-label="Proposta da confermare" data-i18n-aria-label="Proposta da confermare" aria-live="polite"><h3 id="command-title"></h3><p id="command-description" class="tiny"></p><div id="command-lines"></div><div class="preview-actions"><button class="ghost" id="command-edit" data-i18n="Modifica">Modifica</button><button id="command-save" data-i18n="Conferma">Conferma</button></div><button class="quiet full-width" id="command-close" data-i18n="Riprova">Riprova</button><div id="command-error" class="notice error" role="alert" hidden></div></section>
+    <section id="voice-consent" hidden><p data-i18n="La dettatura usa il servizio vocale del browser, che può elaborare l’audio online.">La dettatura usa il servizio vocale del browser, che può elaborare l’audio online.</p><button id="voice-enable" class="button full-width"><span data-i18n="Attiva microfono">Attiva microfono</span> <span data-icon="mic"></span></button><button id="voice-write" class="button quiet full-width" data-i18n="Preferisco scrivere">Preferisco scrivere</button></section>
+    <div id="voice-compose">
+      <p class="voice-status" id="voice-status" role="status"></p>
+      <div id="voice-text" hidden><label class="sr-only" for="natural" data-i18n="Scrivi una spesa, una modifica o una domanda">Scrivi una spesa, una modifica o una domanda</label><textarea id="natural" rows="2" maxlength="4000" placeholder="Una spesa o una domanda sul tuo budget…" data-i18n-placeholder="Una spesa o una domanda sul tuo budget…"></textarea><button id="interpret" class="button icon-button" hidden aria-label="Invia" data-i18n-aria-label="Invia"><span data-icon="arrow"></span></button></div>
+      <div class="voice-actions"><button class="button icon-button" id="mic" aria-label="Avvia dettatura" data-i18n-aria-label="Avvia dettatura"><span data-icon="mic"></span></button></div>
+      <button type="button" id="assistant-type" class="button quiet" data-i18n="Oppure scrivi">Oppure scrivi</button>
+      <p class="tiny assistant-privacy" data-i18n="Voce elaborata dal browser, anche online. Audio non salvato da MyMoney.">Voce elaborata dal browser, anche online. Audio non salvato da MyMoney.</p>
+    </div>
+    <section id="command-preview" hidden aria-label="Proposta da confermare" data-i18n-aria-label="Proposta da confermare" aria-live="polite"><h3 id="command-title"></h3><p id="command-description" class="tiny"></p><div id="command-lines"></div><div class="preview-actions"><button class="button ghost" id="command-edit" data-i18n="Modifica">Modifica</button><button id="command-save" data-i18n="Conferma" class="button">Conferma</button></div><button class="button quiet full-width" id="command-close" data-i18n="Riprova">Riprova</button><div id="command-error" class="notice error" role="alert" hidden></div></section>
     <section id="advisor-answer" hidden aria-live="polite">
       <p id="advisor-item" class="assistant-eyebrow"></p>
       <h3 id="advisor-title"></h3><p id="advisor-explanation"></p>
       <details id="advisor-details"><summary data-i18n="Come l’ho calcolato">Come l’ho calcolato</summary><ul id="advisor-lines"></ul></details>
+      <p id="advisor-quality" class="tiny"></p><button id="advisor-action" class="button ghost full-width" hidden></button>
       <p class="tiny" data-i18n="Simulazione sui dati registrati. Nessuna spesa aggiunta.">Simulazione sui dati registrati. Nessuna spesa aggiunta.</p>
-      <div class="preview-actions"><button id="advisor-write" class="ghost" data-i18n="Modifica domanda">Modifica domanda</button><button id="advisor-voice"><span data-icon="mic"></span><span data-i18n="Chiedi ancora">Chiedi ancora</span></button></div>
+      <div class="preview-actions"><button id="advisor-write" class="button ghost" data-i18n="Modifica domanda">Modifica domanda</button><button id="advisor-voice" class="button"><span data-icon="mic"></span><span data-i18n="Chiedi ancora">Chiedi ancora</span></button></div>
     </section>
   </div>
 </dialog>
 <input id="import-file" type="file" accept="application/json,.json" hidden>
-<dialog class="dialog" id="editor" aria-labelledby="editor-title"><div class="dialog-head"><h2 id="editor-title" data-i18n="Controlla prima di salvare">Controlla prima di salvare</h2><button id="close-editor" aria-label="Chiudi" data-i18n-aria-label="Chiudi"><span data-icon="close"></span></button></div><form id="editor-form"><div class="dialog-body"><div id="drafts"></div><div class="notice error" id="editor-error" hidden role="alert"></div></div><div class="dialog-footer"><button type="button" class="danger" id="delete-transaction" hidden data-i18n="Elimina">Elimina</button><button type="submit" id="save-drafts" data-i18n="Conferma e salva">Conferma e salva</button></div></form></dialog>
-<dialog class="dialog" id="rec-editor" aria-labelledby="rec-title"><div class="dialog-head"><h2 id="rec-title" data-i18n="Spesa ricorrente">Spesa ricorrente</h2><button id="close-rec" aria-label="Chiudi" data-i18n-aria-label="Chiudi"><span data-icon="close"></span></button></div><form id="rec-form"><div class="dialog-body"><div class="field-group"><label for="r-name" data-i18n="Nome">Nome</label><input id="r-name" maxlength="150" required></div><div class="fields"><div class="field-group"><label for="r-amount" data-i18n="Importo rata (€)">Importo rata (€)</label><input id="r-amount" inputmode="decimal" required></div><div class="field-group"><label for="r-months" data-i18n="Ogni quanti mesi">Ogni quanti mesi</label><select id="r-months"><option value="1" data-i18n="1 · mensile">1 · mensile</option><option value="2" data-i18n="2 · bimestrale">2 · bimestrale</option><option value="3" data-i18n="3 · trimestrale">3 · trimestrale</option><option value="6" data-i18n="6 · semestrale">6 · semestrale</option><option value="12" data-i18n="12 · annuale">12 · annuale</option></select></div></div><div class="field-group"><label for="r-date" data-i18n="Prima scadenza nel piano">Prima scadenza nel piano</label><input id="r-date" type="date"></div><div class="field-group"><label for="r-category" data-i18n="Categoria">Categoria</label><select id="r-category"></select></div><label class="check-label"><input id="r-active" type="checkbox"><span data-i18n="Attiva nel budget (richiede una data)">Attiva nel budget (richiede una data)</span></label><label class="check-label"><input id="r-auto" type="checkbox"><span data-i18n="Addebito automatico sul conto">Addebito automatico sul conto</span></label><label class="check-label"><input id="r-estimated" type="checkbox"><span data-i18n="Importo o scadenza da verificare">Importo o scadenza da verificare</span></label><p class="tiny" data-i18n="“Automatico” è una nota: MyMoney non legge la banca e non segna la rata come pagata.">“Automatico” è una nota: MyMoney non legge la banca e non segna la rata come pagata.</p><div class="notice error" id="rec-error" hidden role="alert"></div></div><div class="dialog-footer"><button type="button" class="danger" id="delete-recurring" hidden data-i18n="Elimina">Elimina</button><button type="submit" data-i18n="Salva ricorrenza">Salva ricorrenza</button></div></form></dialog>
+<dialog class="dialog" id="editor" aria-labelledby="editor-title"><div class="dialog-head"><h2 id="editor-title" data-i18n="Controlla prima di salvare">Controlla prima di salvare</h2><button id="close-editor" aria-label="Chiudi" data-i18n-aria-label="Chiudi" class="button"><span data-icon="close"></span></button></div><form id="editor-form"><div class="dialog-body"><div id="drafts"></div><div class="notice error" id="editor-error" hidden role="alert"></div></div><div class="dialog-footer"><button type="button" class="button danger" id="delete-transaction" hidden data-i18n="Elimina">Elimina</button><button type="submit" id="save-drafts" data-i18n="Conferma e salva" class="button">Conferma e salva</button></div></form></dialog>
+<dialog class="dialog" id="rec-editor" aria-labelledby="rec-title"><div class="dialog-head"><h2 id="rec-title" data-i18n="Spesa ricorrente">Spesa ricorrente</h2><button id="close-rec" aria-label="Chiudi" data-i18n-aria-label="Chiudi" class="button"><span data-icon="close"></span></button></div><form id="rec-form"><div class="dialog-body"><div class="field-group"><label for="r-name" data-i18n="Nome">Nome</label><input id="r-name" maxlength="150" required></div><div class="fields"><div class="field-group"><label for="r-amount" data-i18n="Importo rata (€)">Importo rata (€)</label><input id="r-amount" inputmode="decimal" required></div><div class="field-group"><label for="r-months" data-i18n="Ogni quanti mesi">Ogni quanti mesi</label><select id="r-months"><option value="1" data-i18n="1 · mensile">1 · mensile</option><option value="2" data-i18n="2 · bimestrale">2 · bimestrale</option><option value="3" data-i18n="3 · trimestrale">3 · trimestrale</option><option value="6" data-i18n="6 · semestrale">6 · semestrale</option><option value="12" data-i18n="12 · annuale">12 · annuale</option></select></div></div><div class="field-group"><label for="r-date" data-i18n="Prima scadenza nel piano">Prima scadenza nel piano</label><input id="r-date" type="date"></div><div class="field-group"><label for="r-category" data-i18n="Categoria">Categoria</label><select id="r-category"></select></div><label class="check-label"><input id="r-active" type="checkbox"><span data-i18n="Attiva nel budget (richiede una data)">Attiva nel budget (richiede una data)</span></label><label class="check-label"><input id="r-auto" type="checkbox"><span data-i18n="Addebito automatico sul conto">Addebito automatico sul conto</span></label><label class="check-label"><input id="r-estimated" type="checkbox"><span data-i18n="Importo o scadenza da verificare">Importo o scadenza da verificare</span></label><p class="tiny" data-i18n="“Automatico” è una nota: MyMoney non legge la banca e non segna la rata come pagata.">“Automatico” è una nota: MyMoney non legge la banca e non segna la rata come pagata.</p><div class="notice error" id="rec-error" hidden role="alert"></div></div><div class="dialog-footer"><button type="button" class="button danger" id="delete-recurring" hidden data-i18n="Elimina">Elimina</button><button type="submit" data-i18n="Salva ricorrenza" class="button">Salva ricorrenza</button></div></form></dialog>
 <div class="toast" id="toast" hidden role="status"></div>
 <noscript><p data-i18n="MyMoney richiede JavaScript.">MyMoney richiede JavaScript.</p></noscript>
 <script>/* Explicit Italian/English UI dictionary. Stored records keep their original IDs and text. */
 (function(root){
   'use strict';
   const EN={
+  "1 movimento":"1 transaction",
+  "Filtri":"Filters",
+  "Dal":"From",
+  "Al":"To",
+  "Minimo €":"Minimum €",
+  "Massimo €":"Maximum €",
+  "Nessun limite":"No limit",
+  "Azzera filtri":"Clear filters",
+  "Tutte le categorie":"All categories",
+  "{count} movimenti":"{count} transactions",
+  "Inserisci importi positivi con al massimo due decimali.":"Enter non-negative amounts with up to two decimal places.",
+  "La data iniziale deve precedere quella finale.":"The start date must be on or before the end date.",
+  "Il minimo deve essere minore o uguale al massimo.":"The minimum must be less than or equal to the maximum.",
+  "Altri movimenti previsti":"Other planned transactions",
+  "Le spese fisse sono ripartite per mese. Il saldo cambia quando confermi il pagamento.":"Fixed expenses are spread across months. Your balance changes when you confirm payment.",
+  "Sospesa":"Paused",
+  "Da verificare":"Needs review",
+  "Prossimo addebito automatico {date}":"Next automatic debit {date}",
+  "Prossimo pagamento {date}":"Next payment {date}",
+  "Data da definire":"Date to be set",
+  "Scadenza {date}":"Due {date}",
+  "Non inclusa nel budget":"Not included in the budget",
+  "Modifica {name}":"Edit {name}",
+  "Apri movimento":"Open transaction",
+  "Registra pagamento":"Record payment",
+  "Prepara pagamento":"Prepare payment",
+  "Conferma il saldo iniziale nelle Preferenze.":"Confirm your opening balance in Preferences.",
+  "Confermo saldo e data iniziali":"I confirm the opening balance and date",
+  "Assistente MyMoney":"MyMoney assistant",
+  "Una spesa o una domanda sul tuo budget…":"An expense or a question about your budget…",
+  "Invia":"Send",
+  "Oppure scrivi":"Or type",
+  "Voce elaborata dal browser, anche online. Audio non salvato da MyMoney.":"Voice processed by your browser, including online. MyMoney does not save audio.",
+  "Il tuo margine":"Your spending room",
+  "Posso registrare spese e aggiornare MyMoney. Per cambiare una preferenza, usa un comando esplicito come “Imposta budget a 800 euro”.":"I can record expenses and update MyMoney. To change a preference, use an explicit command such as “Set budget to 800 euros”.",
+  "Un accredito ricevuto non può avere una data futura.":"A received payment cannot have a future date.",
+  "Non registro un accredito che non è arrivato. Mantieni lo stipendio previsto nel Piano o modifica la sua data.":"I won’t record a payment that has not arrived. Keep the salary planned or change its date.",
+  "Nessun movimento da salvare.":"No transactions to save.",
+  "Movimento duplicato o non valido.":"Duplicate or invalid transaction.",
+  "Per più pezzi, indica il prezzo totale del movimento.":"For multiple items, specify the total transaction price.",
+
   "Sono qui.":"I’m here.",
   "Chiudi assistente":"Close assistant",
   "Scrivi una spesa, una modifica o una domanda":"Type an expense, a change or a question",
@@ -1384,7 +1476,7 @@ html.assistant-open .assistant-orb { opacity:.9; }
       .replace(/\b(?:io\s+)?ho\s+(?:fatto|speso|pagato|comprato|acquistato|preso|ricevuto|incassato|versato|messo)(?:\s+(?:il|lo|la|un|una))?\b/gi, ' ')
       .replace(/\b(?:devo pagare|da pagare|pagher[oò]|spender[oò]|comprer[oò]|mi coster[aà]|mi [eè] costato|ho bisogno di registrare|vorrei registrare)\b/gi, ' ')
       .replace(/\b(?:i(?:['’]ve| have)?\s+(?:spent|paid|bought|purchased|received|earned)|i(?:['’]ll| will)\s+(?:spend|pay|buy)|i need to pay|it cost me)(?:\s+(?:a|an))?\b/gi, ' ')
-      .replace(/^(?:\s*(?:per favore|please|registra|aggiungi|segna|registrami|segnami|add|record|spent|paid)\b[,:]?)+/gi, ' ')
+      .replace(/^(?:\s*(?:vorrei registrare|vorrei aggiungere|i want to record|i want to add|i would like to record|i would like to add|per favore|please|registra|aggiungi|segna|registrami|segnami|add|record|spent|paid)\b[,:]?)+/gi, ' ')
       .replace(/^[\s,.:;!?–—-]+|[\s,.:;!?–—-]+$/g, '').replace(/\s+/g, ' ');
     const connector = '(?:di|da|dal|dalla|dallo|dai|dagli|dalle|a|al|alla|allo|ai|agli|alle|in|con|per|del|della|dello|dei|degli|delle|on|for|at|from|to|with|of)';
     name = name.replace(new RegExp(`^(?:${connector}\\s+(?:(?:il|lo|la|un|una|the|a|an)\\s+)?)+`, 'i'), '')
@@ -1580,6 +1672,32 @@ html.assistant-open .assistant-orb { opacity:.9; }
     return {schemaVersion:2, revision:0, updatedAt:new Date().toISOString(), settings:{initialized:false, openingDate:today(), openingBalanceCents:0, salaryCents:0, budgetCents:0, savingsGoalCents:0, separateSavingsCents:null, payday:27}, transactions:[], recurring:[], rules:[], notes:[], lastBackup:null};
   }
 
+  // Validate a whole proposed batch before saving any part of it. Repeated
+  // ordinary purchases are legitimate; only an identified instalment is unique.
+  function validateTransactionBatch(items, existing = [], options = {}) {
+    if (!Array.isArray(items) || !items.length) throw Error('Nessun movimento da salvare.');
+    const replacing = new Set(options.replacingIds || []), ref = options.ref || today();
+    const retained = existing.filter(t => !replacing.has(t.id));
+    const ids = new Set(retained.map(t => t.id));
+    const occurrences = new Set(retained.filter(t => t.recurringId).map(t => `${t.recurringId}:${t.dueDate || t.date}`));
+    for (const t of items) {
+      if (!t || typeof t.id !== 'string' || ids.has(t.id)) throw Error('Movimento duplicato o non valido.');
+      if (!String(t.note || '').trim()) throw Error('Dai un nome a questo movimento.');
+      if (t.note.length > 150) throw Error('Usa un nome di massimo 150 caratteri.');
+      if (!validDate(t.date) || !Number.isSafeInteger(t.amountCents) || t.amountCents <= 0 || t.amountCents > LIMIT || !['income','expense'].includes(t.type) || !['paid','planned'].includes(t.status) || !CATEGORIES.includes(t.category)) throw Error('Movimento non valido.');
+      if (t.status === 'paid' && t.date > ref) throw Error('Una data futura deve restare prevista.');
+      if (t.status === 'planned' && t.includedInOpening) throw Error('Una previsione non può essere già nel saldo iniziale.');
+      if (t.recurringId) {
+        if (!validDate(t.dueDate)) throw Error('Scadenza collegata non valida.');
+        const k = `${t.recurringId}:${t.dueDate}`;
+        if (occurrences.has(k)) throw Error('Questa rata è già registrata. Aprila dal Piano per modificarla.');
+        occurrences.add(k);
+      }
+      ids.add(t.id);
+    }
+    return true;
+  }
+
   // Reject malformed imports before touching the existing local archive.
   function validate(raw) {
     if (!raw || raw.schemaVersion!==2 || !raw.settings || !Array.isArray(raw.transactions) || !Array.isArray(raw.recurring) || !Array.isArray(raw.rules)) throw Error('Backup MyMoney 2 non valido.');
@@ -1629,7 +1747,7 @@ html.assistant-open .assistant-orb { opacity:.9; }
     data.notes=['Importazione dal prototipo: il vecchio backup non contiene il saldo iniziale. Se necessario configurarlo in Dati. Rivedi i movimenti interpretati male nella vecchia versione. Le spese incluse nel saldo iniziale ora possono contare nel budget, senza modificare il conto.'];
     return validate(data);
   }
-  const api={CATEGORIES,MONTHS,norm,iso,today,dateObj,validDate,makeDate,shiftDays,shiftMonths,cents,money,id,clone,has,parseDate,parseAmount,entryName,classify,splitEntries,parseEntry,interpret,occurrences,cycle,within,totals,blank,validate,migrate};
+  const api={CATEGORIES,MONTHS,norm,iso,today,dateObj,validDate,makeDate,shiftDays,shiftMonths,cents,money,id,clone,has,parseDate,parseAmount,entryName,classify,splitEntries,parseEntry,interpret,occurrences,cycle,within,totals,blank,validate,validateTransactionBatch,migrate};
   if(typeof module!=='undefined'&&module.exports)module.exports=api;
   root.MM=api;
 })(typeof globalThis!=='undefined'?globalThis:this);
@@ -1640,6 +1758,16 @@ html.assistant-open .assistant-orb { opacity:.9; }
   const M=typeof module!=='undefined'&&module.exports?require('./core.js'):root.MM;
   const incomeWords=/\b(stipendio|busta paga|tredicesima|quattordicesima|bonus|rimborso|entrata|incassato|ricevuto|accredito|salary|paycheck|paycheque|wages|received|earned|refund|reimbursement)\b/;
   const editWords=/\b(imposta|cambia|modifica|aggiorna|porta|aumenta|riduci|correggi|rettifica)\b|^(?:please\s+)?(?:set|change|edit|update|increase|reduce|correct)\b/;
+  // Keep arbitrary instructions and questions outside the transaction fallback.
+  // Merchant names may be unknown, so we reject command/question syntax rather
+  // than requiring a category keyword for every legitimate expense.
+  function unsupportedRequest(text){
+    const n=M.norm(text).trim().replace(/^(?:(?:ciao|ehi|senti|scusa|hey|hi|please|per favore)[,\s]+)+/,'');
+    if(!/[?？]/.test(n)&&/^(?:vorrei registrare|vorrei aggiungere|i want to record|i want to add|i would like to record|i would like to add)\b/.test(n))return false;
+    if(/^(?:crea|create)\s+(?:spesa fissa|abbonamento|subscription)\b/.test(n))return false;
+    if(/^(?:crea|creami|create|make|fammi|fai|mostra|mostrami|show|dammi|give|puoi|potresti|mi dici|mi puoi|mi potresti)\b/.test(n)||/^\d+(?:[.,]\d+)?\s*[+*/×÷=]\s*\d/.test(n))return true;
+    return /[?？]/.test(n)||/^(?:calcola|calcolami|risolvi|dimmi|racconta|scrivi|scrivimi|spiega|spiegami|traduci|riassumi|consiglia|consigliami|genera|cerca|trova|calculate|compute|solve|tell|write|explain|translate|summarize|recommend|generate|search|find|posso|potrei|possiamo|potremmo|vorrei|mi conviene|riesco|quanto|quanta|quanti|quante|come|quando|perche|dove|chi|cosa|che cosa|e se|se|secondo te|can|could|should|would|what|how|when|why|where|who|do i|do you|is it|are there|i want to|i would|i'd)\b/.test(n);
+  }
   function inferType(name){return incomeWords.test(M.norm(name))?'income':'expense';}
   function inferCategory(name,rules){const c=M.classify(name,rules);return c.category||(/\b(tredicesima|quattordicesima|bonus)\b/.test(M.norm(name))?'Stipendio':'Altro');}
   function linkRecurring(d,state){
@@ -1658,6 +1786,8 @@ html.assistant-open .assistant-orb { opacity:.9; }
   }
   function command(text,state,ref=M.today()){
     text=String(text).trim();if(!text)throw Error('Scrivi o detta una spesa o una modifica.');if(text.length>4000)throw Error('Usa meno di 4.000 caratteri.');
+    if(unsupportedRequest(text)){const e=Error('Posso registrare spese e aggiornare MyMoney. Per cambiare una preferenza, usa un comando esplicito come “Imposta budget a 800 euro”.');e.code='unsupported-intent';throw e;}
+    if(/\b(?:ciascuno|ciascuna|cadauno|cadauna|l['’]uno|l['’]una|a testa|a persona|each|apiece|per person|per ticket|unitario)\b/i.test(text)||/\d\s*[x×*]\s*\d/.test(text))throw Error('Per più pezzi, indica il prezzo totale del movimento.');
     const n=M.norm(text), editing=editWords.test(n);
     const extra=/\b(tredicesima|quattordicesima|bonus)\b/.test(n);
     // Only a clear setting instruction changes future salary expectations.
@@ -1694,13 +1824,20 @@ html.assistant-open .assistant-orb { opacity:.9; }
       return {kind:'recurring',recurring:r,isNew:true,title:'Nuova spesa fissa: '+r.name,description:`${M.money(r.amountCents)} ogni ${months} mes${months===1?'e':'i'}, prima scadenza ${d.date.split('-').reverse().join('/')}. Nessun pagamento viene registrato.`};
     }
     // A monthly salary replaces a unique salary in the same calendar month; bonuses never do.
-    if(/\b(stipendio|busta paga|salary|paycheck|paycheque|wages)\b/.test(n)&&!extra&&/\b(questo mese|per questo mese|this month)\b/.test(n)){
+    const received=/\b(ricevuto|incassato|accreditato|arrivato|received|credited)\b/.test(n);
+    if(received&&/\b(stipendio|busta paga|salary|paycheck|paycheque|wages)\b/.test(n)&&/\b(?:non|not|never|mai|haven't|hasn't|didn't)\b/.test(n))throw Error('Non registro un accredito che non è arrivato. Mantieni lo stipendio previsto nel Piano o modifica la sua data.');
+    if(/\b(stipendio|busta paga|salary|paycheck|paycheque|wages)\b/.test(n)&&!extra&&(/\b(questo mese|per questo mese|this month)\b/.test(n)||received)){
       const d=M.parseEntry(n.replace(/\b(?:(?:per )?questo mese|(?:for )?this month)\b/g,''),ref,state.rules);
       if(!d.amountCents)throw Error(d.warnings.join(' '));if(!d.date)throw Error(d.warnings.join(' '));
-      const candidates=state.transactions.filter(t=>t.type==='income'&&t.category==='Stipendio'&&t.date.slice(0,7)===d.date.slice(0,7)&&! /\b(tredicesima|quattordicesima|bonus)\b/.test(M.norm(t.note)));
+      const correctingMonth=/\b(questo mese|per questo mese|this month)\b/.test(n);
+      const candidates=state.transactions.filter(t=>t.type==='income'&&t.category==='Stipendio'&&t.date.slice(0,7)===d.date.slice(0,7)&&(!received||correctingMonth||t.status==='planned')&&! /\b(tredicesima|quattordicesima|bonus)\b/.test(M.norm(t.note)));
       if(candidates.length>1)throw Error('Ci sono più stipendi questo mese. Apri il movimento da correggere nello storico.');
       const existing=candidates[0];
       const t=existing?{...M.clone(existing),amountCents:d.amountCents}:{...d,category:'Stipendio',type:'income',note:/\b(salary|paycheck|paycheque|wages)\b/.test(n)?'Salary':'Stipendio',createdAt:new Date().toISOString()};
+      if(received){
+        if(d.date>ref)throw Error('Un accredito ricevuto non può avere una data futura.');
+        if(!existing||existing.status==='planned'){t.status='paid';t.date=d.date;t.includedInOpening=d.date<state.settings.openingDate;}
+      }
       if(!existing&&t.date<state.settings.openingDate)t.includedInOpening=true;
       return {kind:'salary',transaction:t,existingId:existing?.id||null,title:existing?'Aggiorna lo stipendio del mese':'Registra lo stipendio del mese',description:existing?`${M.money(existing.amountCents)} → ${M.money(t.amountCents)}. ${t.includedInOpening?'È già compreso nel saldo iniziale: il saldo resta invariato.':'Corregge il movimento esistente, senza duplicarlo.'}`:'Una sola entrata per questo mese. Lo stipendio previsto dei mesi successivi non cambia.'};
     }
@@ -1713,25 +1850,22 @@ html.assistant-open .assistant-orb { opacity:.9; }
     return {kind:'transactions',items,title:items.length===1?(items[0].type==='income'?'Nuova entrata':'Nuova spesa'):`${items.length} movimenti`,description:'Controlla importo e data, poi conferma. Puoi correggere i dettagli o annullare dopo il salvataggio.'};
   }
   function applyCommand(state,proposal){
-    const next=M.clone(state);next.settings.initialized=true;
+    const next=M.clone(state);
     if(proposal.kind==='setting')next.settings[proposal.key]=proposal.value;
     else if(proposal.kind==='recurring'){
       if(proposal.isNew)next.recurring.push(proposal.recurring);
       else{if(!next.recurring.some(r=>r.id===proposal.recurring.id))throw Error('La ricorrenza è cambiata. Ripeti la richiesta.');next.recurring=next.recurring.map(r=>r.id===proposal.recurring.id?proposal.recurring:r);}
     }else{
       const items=proposal.kind==='salary'?[proposal.transaction]:proposal.items;
+      M.validateTransactionBatch(items,next.transactions,{replacingIds:proposal.kind==='salary'&&proposal.existingId?[proposal.existingId]:[]});
       if(proposal.kind==='salary'&&proposal.existingId)next.transactions=next.transactions.filter(t=>t.id!==proposal.existingId);
       for(const d of items){
-        if(!String(d.note||'').trim())throw Error('Dai un nome a questo movimento.');
-        if(d.note.length>150)throw Error('Usa un nome di massimo 150 caratteri.');
-        if(d.status==='paid'&&d.date>M.today())throw Error('Una data futura deve restare prevista.');
-        if(d.recurringId&&next.transactions.some(t=>t.recurringId===d.recurringId&&t.dueDate===d.dueDate))throw Error('Questa rata è già registrata. Aprila dal Piano per modificarla.');
         next.transactions.push({...d,createdAt:d.createdAt||new Date().toISOString()});
       }
     }
     return M.validate(next);
   }
-  const api={inferType,inferCategory,quickEntry,command,applyCommand,linkRecurring};Object.assign(M,api);
+  const api={inferType,inferCategory,quickEntry,command,applyCommand,linkRecurring,unsupportedRequest};Object.assign(M,api);
   if(typeof module!=='undefined'&&module.exports)module.exports=api;
 })(typeof globalThis!=='undefined'?globalThis:this);
 </script>
@@ -1756,8 +1890,18 @@ html.assistant-open .assistant-orb { opacity:.9; }
 
   function isQuestion(text) {
     const s = M.norm(text).trim();
-    return isPurchaseQuestion(s) || /[?？]/.test(s)
+    return isPurchaseQuestion(s) || M.unsupportedRequest?.(s) || /[?？]/.test(s)
+      || /^(?:posso|potrei|possiamo|potremmo|calcola|calcolami|dimmi|calculate|compute|tell|se)\b/.test(s)
       || /^(?:(?:ciao|ehi|senti|scusa|hey|hi|please|per favore)[,\s]+)*(?:quanto|quanta|quanti|quante|come|quando|perche|dove|chi|cosa|che cosa|e se|se invece|secondo te|dimmi se|mi dici se|what|how|when|why|where|who|and if|what if|do you think|tell me if)\b/.test(s);
+  }
+
+  function resolveFollowUp(text, previousAnswer, ref, language = 'it') {
+    const pattern = /^(?:(?:e\s+)?se\s+(?:invece\s+)?(?:costasse|costassero|fosse|fossero|spendessi)|(?:what|and)\s+if\s+(?:(?:it|they|that|this)\s+)?(?:costs?|were|was))\s+/i;
+    if (!pattern.test(String(text).trim()) || previousAnswer?.mode !== 'purchase' || previousAnswer.verdict === 'unknown' || !previousAnswer.item || previousAnswer.context?.asOf !== ref) return null;
+    const en = String(language).startsWith('en');
+    let resolved = String(text).trim().replace(pattern, `${en ? 'Can I afford' : 'Posso comprare'} ${previousAnswer.item} ${en ? 'for' : 'da'} `);
+    if (previousAnswer.context.purchaseDate && previousAnswer.context.purchaseDate > ref) resolved += ` ${previousAnswer.context.purchaseDate}`;
+    return resolved;
   }
 
   function purchaseName(text, ref, dateInfo, amountInfo) {
@@ -1774,19 +1918,29 @@ html.assistant-open .assistant-orb { opacity:.9; }
     return name && !/[A-ZÀ-Ý]/.test(name.split(/\s/)[0].slice(1)) ? name[0].toLocaleUpperCase() + name.slice(1) : name;
   }
 
-  function interpret(text, state, ref = M.today(), language = 'it') {
+  function interpret(text, state, ref = M.today(), language = 'it', context = {}) {
+    text = resolveFollowUp(text, context.previousAnswer, ref, language) || String(text || '');
     if (!isQuestion(String(text || ''))) return null;
     const en = String(language).startsWith('en');
     const tr = (it, english) => en ? english : it;
     const money = n => new Intl.NumberFormat(en ? 'en-IE' : 'it-IT', {style:'currency', currency:'EUR', maximumFractionDigits:n % 100 ? 2 : 0}).format(n / 100);
     const date = value => new Intl.DateTimeFormat(en ? 'en-GB' : 'it-IT', {day:'numeric', month:'long'}).format(M.dateObj(value));
-    const result = {kind:'affordability', verdict:'unknown', amountCents:null, item:'', horizonEnd:null, daysRemaining:null,
-      remainingCents:null, remainingDailyCents:null, title:tr('Facciamo due conti.', 'Let’s work it out.'), explanation:'', details:[], reasons:[], model:{}, canRecord:false};
-    const unknown = (code, message) => {result.reasons.push(code); result.explanation = message; return result;};
-    if (!isPurchaseQuestion(text)) return unknown('unsupported-question', tr('Posso simulare un acquisto senza registrarlo. Dimmi la domanda completa, per esempio: «Posso comprare scarpe da 80 euro?»', 'I can check a purchase without recording it. Tell me the full question, for example: “Can I afford shoes for 80 euros?”'));
+    const isLimit = /\b(?:quanto posso spendere|how much can i spend)\b/i.test(text);
+    const result = {kind:'affordability', mode:isLimit ? 'spending-limit' : 'purchase', verdict:'unknown', amountCents:null, item:'', horizonEnd:null, daysRemaining:null,
+      remainingCents:null, remainingDailyCents:null, spendingLimitCents:null, dailyLimitCents:null, title:tr('Facciamo due conti.', 'Let’s work it out.'), explanation:'', details:[], reasons:[], model:{}, canRecord:false,
+      context:{asOf:ref,question:text,mode:isLimit?'spending-limit':'purchase'}, action:{type:'none',label:''},
+      dataQuality:{level:'missing',label:tr('Da completare', 'Needs details'),issues:[],historyDays:0}};
+    const unknown = (code, message) => {
+      result.reasons.push(code); result.explanation = message; result.dataQuality.issues.push(code);result.dataQuality.level='missing';result.dataQuality.label=tr('Da completare','Needs details');
+      result.action = ['missing-balance','unconfirmed-opening-balance'].includes(code) ? {type:'open-preferences',field:'opening',label:tr('Verifica il saldo iniziale','Check opening balance')} : code==='ambiguous-commitments' ? {type:'open-plan',label:tr('Verifica il piano','Review commitments')} : {type:'rephrase',label:tr('Riformula','Try again')};
+      return result;
+    };
+    if (!isPurchaseQuestion(text)) return unknown('unsupported-question', tr('Mi occupo solo di MyMoney: spese, piano e acquisti. Per cambiare una preferenza, usa un comando esplicito come «Imposta budget a 800 euro».', 'I only handle MyMoney: expenses, your plan and purchases. To change a preference, use an explicit command such as “Set budget to 800 euros”.'));
     if (!M.validDate(ref)) return unknown('invalid-date', tr('Non riesco a verificare la data di oggi.', 'I can’t verify today’s date.'));
     if (/[$£¥]|\b(?:dollars?|dollari|sterline|pounds?|usd|gbp|jpy|chf|franchi)\b/i.test(text)) return unknown('unsupported-currency', tr('Il tuo archivio è in euro: indicami il prezzo in euro, senza conversioni indovinate.', 'Your records use euros: tell me the price in euros so I do not guess an exchange rate.'));
-    const dateInfo = M.parseDate(text, ref), amountInfo = M.parseAmount(dateInfo.masked);
+    const dateInfo = isLimit ? {date:ref,masked:M.norm(text),spans:[],explicit:false} : M.parseDate(text, ref), amountInfo = isLimit ? {amountCents:0,spans:[]} : M.parseAmount(dateInfo.masked);
+    if (!isLimit && /\b(?:rate|rata|al mese|ogni mese|mensil[ei]|instalments?|installments?|per month|every month|monthly|finanziamento|loan)\b/i.test(text)) return unknown('repeating-purchase', tr('Per rate o abbonamenti servono costo totale, durata e scadenze. Non considero una rata come prezzo dell’intero acquisto.', 'Instalments or subscriptions need a total cost, duration and due dates. One instalment is not the full purchase price.'));
+    if (!isLimit && (/\b(?:ciascuno|ciascuna|cadauno|cadauna|l['’]uno|l['’]una|a testa|a persona|each|apiece|per person|per ticket|unitario)\b/i.test(text) || /\b(?:comprare|comprarmi|acquistare|prendere|permettermi|buy|purchase|afford)\s+(?:(?:questi|queste|these|those)\s+)?(?:\d+|due|tre|quattro|cinque|sei|sette|otto|nove|dieci|two|three|four|five|six|seven|eight|nine|ten)\s+(?!euro)/i.test(text) || /\d\s*[x×*]\s*\d/.test(text))) return unknown('quantity-price', tr('Per più pezzi, dimmi il prezzo totale. Per esempio: «Posso spendere 100 euro in biglietti?»', 'For several items, tell me the total price. For example: “Can I spend 100 euros on tickets?”'));
     // Product model numbers (iPhone 17) are not prices. A price must carry a
     // currency, or be introduced by an explicit price/spending expression.
     const amountSpan = amountInfo.spans[0];
@@ -1801,11 +1955,12 @@ html.assistant-open .assistant-orb { opacity:.9; }
       if (competingNumber || alternativePrice) return unknown('ambiguous-price', tr('Ho sentito più prezzi. Dimmi un solo acquisto con il suo prezzo in euro.', 'I heard more than one price. Tell me one purchase and its price in euros.'));
     }
     result.amountCents = amountInfo.amountCents;
-    result.item = purchaseName(text, ref, dateInfo, amountInfo);
-    if (!Number.isSafeInteger(result.amountCents) || result.amountCents <= 0) return unknown('missing-price', tr('Dimmi un solo prezzo, per esempio: «Posso comprare scarpe da 180 euro?»', 'Tell me one price, for example: “Can I afford shoes for 180 euros?”'));
+    result.item = isLimit ? '' : purchaseName(text, ref, dateInfo, amountInfo);
+    result.context.purchaseDate=dateInfo.date;result.context.item=result.item;result.context.amountCents=result.amountCents;
+    if (!isLimit && (!Number.isSafeInteger(result.amountCents) || result.amountCents <= 0)) return unknown('missing-price', tr('Dimmi un solo prezzo, per esempio: «Posso comprare scarpe da 180 euro?»', 'Tell me one price, for example: “Can I afford shoes for 180 euros?”'));
     if (!dateInfo.date) return unknown('ambiguous-date', tr('Indica una sola data per l’acquisto.', 'Tell me one date for the purchase.'));
-    if (/\b(?:a rate|al mese|ogni mese|mensil[ei]|installments?|per month|every month|monthly|finanziamento|loan)\b/i.test(text)) return unknown('repeating-purchase', tr('Per ora simulo un acquisto singolo. Per rate o abbonamenti serve conoscere anche durata e costo totale.', 'For now I simulate a single purchase. Instalments or subscriptions also need a duration and total cost.'));
     if (!state?.settings?.initialized || !M.validDate(state.settings.openingDate) || state.settings.openingDate > ref) return unknown('missing-balance', tr('Prima imposta saldo e data iniziali nelle Preferenze: mi servono per fare un conto attendibile.', 'First set your opening balance and date in Preferences so I can calculate reliably.'));
+    if (state.settings.openingBalanceCents === 0 && context.balanceConfirmed !== true) return unknown('unconfirmed-opening-balance', tr('Il saldo iniziale risulta zero, ma potrebbe non essere stato dichiarato. Confermalo nelle Preferenze, anche se è davvero zero.', 'Your opening balance is zero, but it may never have been declared. Confirm it in Preferences, even if zero is correct.'));
     const s = state.settings, transactions = state.transactions || [], recurring = state.recurring || [];
     const cycle = M.cycle(ref, s.payday), paid = transactions.filter(t => t.status === 'paid' && t.date <= ref);
     const balance = s.openingBalanceCents + sum(paid.filter(t => !t.includedInOpening).map(t => t.type === 'income' ? t.amountCents : -t.amountCents));
@@ -1868,6 +2023,11 @@ html.assistant-open .assistant-orb { opacity:.9; }
     const unknownFixedDates = recurring.some(r => r.active && !r.startDate);
     const overdueSalary = transactions.some(t => t.status === 'planned' && regularSalary(t) && t.date <= ref);
     const budgetCrossesCycle = budgetRemainingCents !== null && horizonEnd > cycle.end;
+    const issues = [!fullHistory&&'limited-history',!hasPayday&&'unknown-next-income',overdueSalary&&'unconfirmed-salary',overdueCents>0&&'unconfirmed-commitments',budgetCrossesCycle&&'budget-horizon'].filter(Boolean);
+    result.dataQuality={level:issues.length?'limited':'ready',label:issues.length?tr('Stima prudente','Cautious estimate'):tr('Dati sufficienti per una stima','Enough data for an estimate'),issues,historyDays,completeHistory:fullHistory};
+    if(!hasPayday)result.action={type:'open-preferences',field:'salary',label:tr('Imposta la prossima entrata','Set expected income')};
+    else if(overdueSalary)result.action={type:'open-history',label:tr('Verifica lo stipendio','Check salary')};
+    else if(overdueCents>0)result.action={type:'open-plan',label:tr('Verifica gli impegni','Review commitments')};
     Object.assign(result.model, {asOf:ref, balanceCents:balance, cashRemainingCents, budgetRemainingCents, committedCents, overdueCents,
       protectedSavingsCents, separateSavingsUsedCents:0, fixedProvisionCents, historyFrom, historyDays, historyCents,
       dailyBaselineCents:Math.round(dailyCents), forecastCents, forecastBudgetCents, completeHistory:fullHistory,
@@ -1900,11 +2060,132 @@ html.assistant-open .assistant-orb { opacity:.9; }
       result.verdict = 'yes'; result.title = tr('Sì, dai conti ci stai.', 'Yes, the numbers work.'); result.reasons.push('within-known-limits');
       result.explanation = remainder + ' ' + tr('Impegni, risparmio e spese quotidiane stimate restano coperti, se hai registrato tutto.', 'Commitments, savings and estimated everyday spending remain covered, if your records are complete.');
     }
+    if (isLimit) {
+      // The daily envelope includes everyday spending. The extra margin below
+      // also reserves that historical spending through the next payday.
+      result.dailyLimitCents = Math.max(0, Math.floor(result.remainingCents / result.daysRemaining));
+      result.spendingLimitCents = Math.max(0, Math.min(cashRemainingCents - forecastCents, budgetRemainingCents === null ? Infinity : budgetRemainingCents - forecastBudgetCents));
+      const todayOnly = /\b(?:oggi|today)\b/i.test(text);
+      const estimate = !fullHistory || !hasPayday || overdueSalary || budgetCrossesCycle;
+      result.title = todayOnly ? tr(`${money(result.dailyLimitCents)} al giorno`, `${money(result.dailyLimitCents)} a day`) : tr(`${money(result.spendingLimitCents)} di margine extra`, `${money(result.spendingLimitCents)} extra headroom`);
+      result.explanation = todayOnly ? tr(`Dividendo il margine dopo impegni e risparmio sui ${result.daysRemaining} giorni ${period}, hai ${money(result.dailyLimitCents)} al giorno per le spese variabili.`, `Spreading the funds after commitments and savings over ${result.daysRemaining} days ${period} gives you ${money(result.dailyLimitCents)} a day for variable spending.`) : tr(`Dopo impegni, risparmio e spese variabili stimate restano ${money(result.spendingLimitCents)} ${period}.`, `After commitments, savings and estimated variable spending, ${money(result.spendingLimitCents)} remains ${period}.`);
+      if(estimate){result.verdict='caution';result.explanation+=' '+tr('È un limite provvisorio: i dati sono ancora incompleti.','This is a provisional limit: the records are still incomplete.');}
+      if(cashRemainingCents<0 || (budgetRemainingCents!==null&&budgetRemainingCents<0)){result.verdict='no';result.explanation=tr('Gli impegni e il risparmio assorbono già il margine disponibile. Verifica il piano prima di aggiungere altre spese.','Commitments and savings already use the available funds. Review the plan before adding more expenses.');result.action={type:'open-plan',label:tr('Verifica il piano','Review the plan')};}
+    }
     return result;
   }
-  const api = {interpret, isQuestion};
+  const api = {interpret, isQuestion, resolveFollowUp};
   if (typeof module !== 'undefined' && module.exports) module.exports = api;
   root.MyMoneyAdvisor = api;
+})(typeof globalThis !== 'undefined' ? globalThis : this);
+</script>
+<script>/* Pure view models: filtering never changes the archive or collapses movements. */
+(function (root) {
+  'use strict';
+  const M = typeof module !== 'undefined' && module.exports ? require('./core.js') : root.MM;
+  const absent = value => value === undefined || value === null || value === '';
+
+  function validateFilters(options = {}) {
+    const errors = [], filters = {
+      query:String(options.query ?? '').trim(), from:absent(options.from) ? '' : options.from, to:absent(options.to) ? '' : options.to,
+      category:options.category || '', minCents:absent(options.minCents) ? null : options.minCents,
+      maxCents:absent(options.maxCents) ? null : options.maxCents, status:options.status || 'all',
+      categoryLabel:typeof options.categoryLabel === 'function' ? options.categoryLabel : null
+    };
+    for (const field of ['from', 'to']) if (filters[field] !== '' && !M.validDate(filters[field])) errors.push({field, code:'invalid-date'});
+    if (M.validDate(filters.from) && M.validDate(filters.to) && filters.from > filters.to) errors.push({field:'dates', code:'reversed-date-range'});
+    for (const field of ['minCents', 'maxCents']) {
+      const amount = filters[field];
+      // UI parses localized euros first. This boundary accepts integer cents only.
+      if (amount !== null && (!Number.isSafeInteger(amount) || amount < 0)) errors.push({field, code:'invalid-amount'});
+    }
+    if (!errors.some(error => error.code === 'invalid-amount') && filters.minCents !== null && filters.maxCents !== null && filters.minCents > filters.maxCents) errors.push({field:'amounts', code:'reversed-amount-range'});
+    if (filters.category && !M.CATEGORIES.includes(filters.category)) errors.push({field:'category', code:'invalid-category'});
+    if (!['all', 'paid', 'planned'].includes(filters.status)) errors.push({field:'status', code:'invalid-status'});
+    return {valid:!errors.length, errors, filters};
+  }
+
+  function filterTransactions(items, options = {}) {
+    const result = validateFilters(options);
+    if (!result.valid) {
+      const error = new Error('invalid-filters'); error.code = 'invalid-filters'; error.errors = result.errors; throw error;
+    }
+    const f = result.filters, query = M.norm(f.query);
+    return items.filter(t => {
+      const amount = Math.abs(t.amountCents);
+      return (f.status === 'all' || t.status === f.status)
+        && (!f.from || t.date >= f.from) && (!f.to || t.date <= f.to)
+        && (!f.category || t.category === f.category)
+        && (f.minCents === null || amount >= f.minCents) && (f.maxCents === null || amount <= f.maxCents)
+        && (!query || M.norm(`${t.note || ''} ${t.category || ''} ${f.categoryLabel?.(t.category) || ''}`).includes(query));
+    });
+  }
+
+  const dueKey = t => M.validDate(t.dueDate) ? t.dueDate : t.date;
+  const compareDates = (a,b) => a.nextDate.localeCompare(b.nextDate) || a.dueDate.localeCompare(b.dueDate);
+
+  function planRows(state, ref = M.today()) {
+    if (!M.validDate(ref)) {const error = new Error('invalid-reference-date'); error.code = 'invalid-reference-date'; throw error;}
+    const records = state.recurring || [], transactions = state.transactions || [];
+    const ids = new Set(records.map(r => r.id)), linked = new Map();
+    for (const t of transactions) if (t.recurringId && t.type === 'expense') {
+      if (!linked.has(t.recurringId)) linked.set(t.recurringId, []);
+      linked.get(t.recurringId).push(t);
+    }
+    const opening = M.validDate(state.settings?.openingDate) ? state.settings.openingDate : ref;
+    const recurring = records.map(record => {
+      const payments = linked.get(record.id) || [], paid = new Set(), plans = new Map(), issues = [];
+      for (const t of payments.filter(t => t.status === 'paid')) {
+        const key = dueKey(t);
+        if (paid.has(key) && !issues.includes('duplicate-confirmed-occurrence')) issues.push('duplicate-confirmed-occurrence');
+        paid.add(key);
+      }
+      for (const t of payments.filter(t => t.status === 'planned')) {
+        const key = dueKey(t);
+        if (paid.has(key)) continue; // A stale draft never reopens an already paid occurrence.
+        if (!plans.has(key)) plans.set(key, []);
+        plans.get(key).push(t);
+      }
+      const candidates = new Map();
+      // Explicit plans survive pausing a recurrence or adjusting its start date.
+      // Keep the original due date for editing; display the actual planned date.
+      for (const [dueDate, entries] of plans) {
+        const transaction = [...entries].sort((a,b) => a.date.localeCompare(b.date) || a.id.localeCompare(b.id))[0];
+        if (entries.length > 1 && !issues.includes('duplicate-planned-occurrence')) issues.push('duplicate-planned-occurrence');
+        candidates.set(dueDate, {dueDate, nextDate:transaction.date, amountCents:transaction.amountCents, transaction});
+      }
+      const missingDate = !M.validDate(record.startDate);
+      if (record.active && !missingDate) {
+        // Search past the latest linked occurrence, not an arbitrary 6-month
+        // calendar window. This also finds annual or five-year commitments.
+        const anchor = [ref, opening, record.startDate, ...payments.map(dueKey).filter(M.validDate)].sort().at(-1);
+        const shiftedEnd = M.shiftMonths(anchor, record.months + 1);
+        const end = Number(shiftedEnd.slice(0,4)) > 2199 ? '2200-01-01' : shiftedEnd;
+        for (const dueDate of M.occurrences(record, opening, end)) {
+          if (paid.has(dueDate) || candidates.has(dueDate)) continue;
+          candidates.set(dueDate, {dueDate, nextDate:dueDate, amountCents:record.amountCents, transaction:null});
+        }
+      }
+      const pending = [...candidates.values()].sort(compareDates), next = pending[0];
+      const overdue = Boolean(next && next.nextDate < ref);
+      return {
+        record, nextDate:next?.nextDate || null, dueDate:next?.dueDate || null,
+        amountCents:next?.amountCents ?? record.amountCents, transaction:next?.transaction || null,
+        state:!record.active ? 'inactive' : missingDate ? 'missing-date' : !next ? 'no-next-date' : overdue ? 'overdue' : next.nextDate === ref ? 'today' : 'upcoming',
+        overdue, overdueCount:pending.filter(item => item.nextDate < ref).length,
+        active:Boolean(record.active), missingDate, automatic:Boolean(record.automatic), estimated:Boolean(record.estimated), issues
+      };
+    });
+    // Unlinked one-offs, incoming payments, and orphaned legacy links must stay
+    // visible. They are not recurring expenses and are never deduplicated here.
+    const planned = transactions.filter(t => t.status === 'planned' && (!t.recurringId || !ids.has(t.recurringId) || t.type !== 'expense'))
+      .slice().sort((a,b) => a.date.localeCompare(b.date) || a.id.localeCompare(b.id));
+    return {recurring, planned};
+  }
+
+  const api = {validateFilters, filterTransactions, planRows};
+  if (typeof module !== 'undefined' && module.exports) module.exports = api;
+  root.MMViews = api;
 })(typeof globalThis !== 'undefined' ? globalThis : this);
 </script>
 <script>/* Direct manipulation, interruptible panels, and quiet keyboard/pointer focus. */
@@ -1986,6 +2267,12 @@ html.assistant-open .assistant-orb { opacity:.9; }
     if(dialog===sheet)backdrop(0,!immediate);
     const end=dialog===sheet&&!desktop.matches?`translate3d(0,${dialog.getBoundingClientRect().height+32}px,0)`:'translate3d(0,14px,0) scale(.975)';
     if(immediate){finishClose(dialog);return;}
+    if(dialog.id==='voice-sheet'){
+      // Keep the particle canvas in the top layer until its reverse transition ends.
+      scene();
+      animate(dialog,[{opacity:1,transform:'none'},{opacity:1,transform:'none'}],900,()=>finishClose(dialog));
+      return;
+    }
     animate(dialog,[from,{transform:end,opacity:dialog===sheet?1:0}],dialog===sheet?240:180,()=>finishClose(dialog));
   }
   function stopCharge(){clearTimeout(holdTimer);holdTimer=0;cancelAnimationFrame(chargeFrame);chargeFrame=0;}
@@ -2094,7 +2381,7 @@ html.assistant-open .assistant-orb { opacity:.9; }
     // Safari chrome / safe area gaps are not the software keyboard.
     const input=document.activeElement?.matches('input,textarea,[contenteditable=true]');
     const difference=Math.max(0,innerHeight-height-top),keyboard=input&&difference>100?difference:0;
-    root.style.setProperty('--keyboard-bottom',`${keyboard}px`);
+    root.style.setProperty('--keyboard-bottom',`${keyboard}px`);root.classList.toggle('keyboard-open',keyboard>0);
   }
   const hintKey='mymoney-gestures-v1';let learned={};try{const saved=JSON.parse(localStorage.getItem(hintKey)||'{}');if(saved&&typeof saved==='object'&&!Array.isArray(saved))learned=saved;}catch(_){}
   function markHint(kind){learned[kind]=true;try{localStorage.setItem(hintKey,JSON.stringify(learned));}catch(_){}renderHints();}
@@ -2549,7 +2836,7 @@ window.MM_FIREBASE_CONFIG = Object.freeze({
     root.addEventListener('mm:languagechange',render);
     render();if(root.MM_FIREBASE_CONFIG)loadSDK().catch(()=>{});
   }
-  root.MMSync={initialState,init,saveLocal,handlesStorage,ownsArchive:()=>!!uid||!!read(META)};
+  root.MMSync={archiveKey:()=>uid?accountKey(uid):GUEST,initialState,init,saveLocal,handlesStorage,ownsArchive:()=>!!uid||!!read(META)};
 })(window);
 </script>
 <script>/* Local-first UI. Optional, explicitly connected accounts sync through MMSync. */
@@ -2558,7 +2845,7 @@ window.MM_FIREBASE_CONFIG = Object.freeze({
   const I=window.MyMoneyI18n,tr=I.t,money=I.money;
   const M=window.MM, UI=window.MMUI, KEY='mymoney-local-v2', PREVIOUS=KEY+'-previous', LEGACY='mymoney-ai-v1';
   const $=s=>document.querySelector(s), $$=s=>[...document.querySelectorAll(s)];
-  let state=M.blank(), storageOK=true, readOnly=false, currentView='home', historyFilter='all', reportMode='month', reportOffset=0, editingId=null, recEditingId=null, drafts=[], speech=null, toastTimer, proposal=null, proposalRevision=null, editingRevision=null, recRevision=null, settingsDirty=false, settingsRevision=null, advisorQuestion=null;
+  let state=M.blank(), storageOK=true, readOnly=false, currentView='home', historyFilter='all', reportMode='month', reportOffset=0, editingId=null, recEditingId=null, drafts=[], speech=null, toastTimer, proposal=null, proposalRevision=null, editingRevision=null, recRevision=null, settingsDirty=false, settingsRevision=null, advisorQuestion=null, lastAnswer=null, advisorAction=null;
   const ICONS={
     check:'<path d="m5 12 4 4L19 6"/>',info:'<circle cx="12" cy="12" r="9"/><path d="M12 11v6M12 7h.01"/>',target:'<circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1"/>',
     wallet:'<path d="M4 6h14a2 2 0 0 1 2 2v10H4a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h13v2"/><path d="M20 10h-5v4h5"/>',
@@ -2583,7 +2870,7 @@ window.MM_FIREBASE_CONFIG = Object.freeze({
   // Insert only trusted SVG templates; user text always uses textContent.
   function icon(name){const span=document.createElement('span');span.innerHTML=`<svg viewBox="0 0 24 24" aria-hidden="true">${ICONS[name]||ICONS.wallet}</svg>`;return span.firstChild;}
   function decorate(){for(const e of $$('[data-icon]'))e.replaceChildren(icon(e.dataset.icon));}
-  function el(tag, cls, text){const e=document.createElement(tag);if(cls)e.className=cls;if(text!==undefined)e.textContent=String(text);return e;}
+  function el(tag, cls, text){const e=document.createElement(tag);if(cls)e.className=cls;if(tag==='button')e.classList.add('button');if(text!==undefined)e.textContent=String(text);return e;}
   function toastHost(){const toast=$('#toast');(UI.dialogs().at(-1)||document.body).append(toast);return toast;}
   function say(message){clearTimeout(toastTimer);toastHost().textContent=I.text(message);$('#toast').hidden=false;toastTimer=setTimeout(()=>$('#toast').hidden=true,4200);}
   function errBox(selector,message){const box=$(selector);box.textContent=I.text(message);box.hidden=!message;}
@@ -2592,6 +2879,15 @@ window.MM_FIREBASE_CONFIG = Object.freeze({
   const catIcon=c=>({Casa:'home',Spesa:'cart','Mangiare fuori':'cup',Auto:'car',Trasporti:'car',Viaggi:'plane',Salute:'heart',Sport:'heart',Shopping:'bag',Stipendio:'income',Rimborsi:'income'})[c]||'repeat';
   function option(select,value,label){const o=el('option',null,label);o.value=value;select.append(o);}
   function categoryOptions(select,value=''){select.replaceChildren();option(select,'',tr('Scegli categoria…'));M.CATEGORIES.forEach(c=>option(select,c,I.category(c)));select.value=value;}
+
+
+  function balanceSignature(settings=state.settings){return settings.openingDate+':'+settings.openingBalanceCents;}
+  function balanceKey(){return 'mymoney-balance-confirmed:'+ (window.MMSync?.archiveKey()||'guest');}
+  function balanceConfirmed(){try{return localStorage.getItem(balanceKey())===balanceSignature();}catch(_){return false;}}
+  function hasOpeningBalance(){return state.settings.initialized&&(state.settings.openingBalanceCents!==0||balanceConfirmed());}
+  function markBalanceConfirmed(){try{localStorage.setItem(balanceKey(),balanceSignature());}catch(_){/* Advisor remains cautious if storage is unavailable. */}}
+  function filterCategories(){const select=$('#filter-category'),value=select.value;select.replaceChildren();option(select,'',tr('Tutte le categorie'));M.CATEGORIES.forEach(c=>option(select,c,I.category(c)));select.value=value;}
+  function clearHistoryFilters(){for(const id of ['from','to','category','min','max'])$('#filter-'+id).value='';renderHistory();}
 
   // Never claim a write succeeded when browser storage rejects it.
   function load(){
@@ -2669,17 +2965,25 @@ window.MM_FIREBASE_CONFIG = Object.freeze({
     if(overdue.length)alerts.append(el('div','notice',tr('{count} scadenze ricorrenti da confermare nel Piano. Anche gli addebiti automatici richiedono verifica.',{count:overdue.length})));
 
     transactionsInto($('#recent'),sortedTransactions().slice(0,3));
-    const upcoming=[];
-    for(const r of state.recurring){const date=M.occurrences(r,M.today(),M.shiftMonths(M.today(),13)).find(d=>!isPaidOccurrence(r.id,d));if(date)upcoming.push({r,date});}
-    upcoming.sort((a,b)=>a.date.localeCompare(b.date));const u=$('#home-upcoming');u.replaceChildren();
-    for(const {r,date} of upcoming.slice(0,3)){const b=el('button','upcoming-mini'),l=el('span');l.append(el('strong',null,r.name),el('small',null,formatDate(date)));b.append(l,el('span',null,money(r.amountCents)));b.addEventListener('click',()=>draftRecurring(r,date));u.append(b);}
+    const upcoming=window.MMViews.planRows(state,M.today()).recurring.filter(row=>row.nextDate).sort((a,b)=>a.nextDate.localeCompare(b.nextDate));const u=$('#home-upcoming');u.replaceChildren();
+    for(const row of upcoming.slice(0,3)){const b=el('button','upcoming-mini'),l=el('span');l.append(el('strong',null,row.record.name),el('small',null,formatDate(row.nextDate)));b.append(l,el('span',null,money(row.amountCents)));b.addEventListener('click',()=>row.transaction?editTransaction(row.transaction):draftRecurring(row.record,row.dueDate));u.append(b);}
     if(!upcoming.length)u.append(el('p','tiny',tr('Nessuna scadenza in arrivo. Aggiungi le tue spese fisse nel Piano.')));
-    if(!s.initialized){$('#balance').textContent='—';$('#available').textContent='—';}
+    if(!hasOpeningBalance()){$('#balance').textContent='—';$('#balance-caption').textContent=tr('Conferma il saldo iniziale nelle Preferenze.');}
 
   }
   function renderHistory(){
-    const query=M.norm($('#search').value||'');
-    const list=sortedTransactions().filter(t=>(historyFilter==='all'||t.status===historyFilter)&&M.norm(t.note+' '+t.category+' '+I.category(t.category)).includes(query));
+    const raw={from:$('#filter-from').value,to:$('#filter-to').value,category:$('#filter-category').value,min:$('#filter-min').value.trim(),max:$('#filter-max').value.trim()};
+    let list=[],error='';
+    try{
+      const opts={query:$('#search').value,status:historyFilter,from:raw.from,to:raw.to,category:raw.category,categoryLabel:I.category};
+      for(const bound of ['min','max'])if(raw[bound]){if(!/^(?:\d+(?:[.,]\d{1,2})?|[.,]\d{1,2})$/.test(raw[bound]))throw Error(tr('Inserisci importi positivi con al massimo due decimali.'));opts[bound+'Cents']=M.cents(raw[bound]);}
+      const check=window.MMViews.validateFilters(opts);
+      if(!check.valid)throw Error(check.errors.some(e=>e.code==='invalid-date'||e.code==='reversed-date-range')?tr('La data iniziale deve precedere quella finale.'):tr('Il minimo deve essere minore o uguale al massimo.'));
+      list=window.MMViews.filterTransactions(sortedTransactions(),opts);
+    }catch(e){error=e.message;}
+    errBox('#filter-error',error);if(error)$('#search-options').open=true;
+    const count=Object.values(raw).filter(Boolean).length;$('#filter-count').textContent=count?String(count):'';
+    const filtered=count>0||$('#search').value.trim()||historyFilter!=='all';$('#filter-results').hidden=!filtered||!!error;$('#filter-results').textContent=list.length===1?tr('1 movimento'):tr('{count} movimenti',{count:list.length});
     transactionsInto($('#all-transactions'),list);renderReport();
   }
   function reportBounds(){
@@ -2703,22 +3007,29 @@ window.MM_FIREBASE_CONFIG = Object.freeze({
   function renderPlan(){
     const x=M.totals(state),b=$('#plan-budget');b.replaceChildren();b.append(el('h3',null,tr('Dove va il budget')));
     line(b,tr('Budget del ciclo'),money(state.settings.budgetCents));line(b,tr('Fisse: equivalente mensile'),'− '+money(x.fixedEquivalent));line(b,tr('Variabili già pagate'),'− '+money(x.paidVariable));line(b,tr('Variabili previste nel ciclo'),'− '+money(x.plannedVariable));line(b,tr('Libero dopo gli impegni'),money(x.available),true);
-    b.append(el('p','tiny',tr('Uscite effettivamente registrate nel ciclo: {amount}. Le rate bimestrali o semestrali sono ripartite per il budget: sul conto esce l’importo intero alla conferma del pagamento. Gli importi già accantonati prima dell’avvio non sono noti.',{amount:money(x.spent)})));
-    const list=$('#recurring-list');list.replaceChildren();
-    for(const r of state.recurring){const row=el('button','row');row.type='button';const l=el('span');l.append(el('span','row-title',r.name),el('span','row-sub',`${r.active?tr('Attiva'):tr('Non ancora attiva')} · ${r.automatic?tr('addebito automatico'):tr('pagamento manuale')}${r.estimated?tr(' · da verificare'):''}`));const right=el('span','row-money',money(r.amountCents));right.append(el('small',null,r.months===1?tr('al mese'):tr('ogni {count} mesi',{count:r.months})));row.append(l,right);row.addEventListener('click',()=>editRecurring(r));list.append(row);}
-    if(!state.recurring.length)list.append(el('p','empty',tr('Nessuna spesa fissa. Aggiungine una.')));
-    const upcoming=[];
-    for(const r of state.recurring)for(const date of M.occurrences(r,state.settings.openingDate,M.shiftMonths(M.today(),7)))if(!isPaidOccurrence(r.id,date))upcoming.push({r,date});
-    upcoming.sort((a,b)=>a.date.localeCompare(b.date));const u=$('#upcoming');u.replaceChildren();
-    for(const {r,date} of upcoming.slice(0,12)){const row=el('button','row');row.type='button';const l=el('span');l.append(el('span','row-title',r.name),el('span','row-sub',`${formatDate(date,true)}${date<M.today()?tr(' · scadenza passata, verifica'):''}${r.estimated?tr(' · da verificare'):''}`));const right=el('span','row-money',money(r.amountCents));right.append(el('small',null,tr('Tocca per registrare')));row.append(l,right);row.addEventListener('click',()=>draftRecurring(r,date));u.append(row);}
-    if(!upcoming.length)u.append(el('p','empty',tr('Nessuna scadenza nei prossimi mesi.')));
+    b.append(el('p','tiny',tr('Le spese fisse sono ripartite per mese. Il saldo cambia quando confermi il pagamento.')));
+    const rows=window.MMViews.planRows(state,M.today()),list=$('#recurring-list');list.replaceChildren();
+    for(const item of rows.recurring){
+      const r=item.record,wrap=el('div','plan-item'),row=el('button','row'),left=el('span','plan-copy');row.type='button';
+      let status=!r.active?tr('Sospesa'):item.overdue?tr('Da verificare'):tr('Attiva');
+      let date=item.nextDate?(r.automatic?tr('Prossimo addebito automatico {date}',{date:formatDate(item.nextDate,true)}):tr('Prossimo pagamento {date}',{date:formatDate(item.nextDate,true)})):tr('Data da definire');
+      if(item.overdue)date=tr('Scadenza {date}',{date:formatDate(item.nextDate,true)});
+      if(!r.active&&!item.transaction)date=tr('Non inclusa nel budget');
+      left.append(el('span','row-title',r.name),el('span','row-sub',status+' · '+date+(r.estimated?tr(' · da verificare'):'')));
+      const right=el('span','row-money',money(item.amountCents));right.append(el('small',null,r.months===1?tr('al mese'):tr('ogni {count} mesi',{count:r.months})));
+      row.append(left,right);row.setAttribute('aria-label',tr('Modifica {name}',{name:r.name}));row.addEventListener('click',()=>editRecurring(r));wrap.append(row);
+      if(item.dueDate){const pay=el('button','quiet plan-pay',item.transaction?tr('Apri movimento'):item.overdue||item.nextDate<=M.today()?tr('Registra pagamento'):tr('Prepara pagamento'));pay.type='button';pay.append(icon('arrow'));pay.addEventListener('click',()=>item.transaction?editTransaction(item.transaction):draftRecurring(r,item.dueDate));wrap.append(pay);}
+      list.append(wrap);
+    }
+    if(!rows.recurring.length)list.append(el('p','empty',tr('Nessuna spesa fissa. Aggiungine una.')));
+    $('#planned-section').hidden=!rows.planned.length;transactionsInto($('#planned-list'),rows.planned);
     const notes=$('#plan-notes');notes.replaceChildren();if(state.notes.length)state.notes.forEach(n=>notes.append(el('p','muted',n)));else notes.append(el('p','muted',tr('Nessuna voce in sospeso.')));
   }
   function renderSettings(){
     const s=state.settings;
     if(!settingsDirty){
     $('#s-opening').value=val(s.openingBalanceCents);$('#s-date').value=s.openingDate;$('#s-salary').value=val(s.salaryCents);$('#s-day').value=s.payday;$('#s-budget').value=val(s.budgetCents);$('#s-goal').value=val(s.savingsGoalCents);$('#s-savings').value=s.separateSavingsCents===null?'':val(s.separateSavingsCents);
-      settingsRevision=state.revision;
+      settingsRevision=state.revision;$('#s-opening-confirm').checked=hasOpeningBalance();
     }
     $('#backup-status').textContent=state.lastBackup?tr('Ultima esportazione avviata: {date}. Verifica di aver salvato il file.',{date:new Date(state.lastBackup).toLocaleString(I.locale)}):tr('Nessun backup esportato.');
     const r=$('#learned-rules');r.replaceChildren();
@@ -2732,7 +3043,7 @@ window.MM_FIREBASE_CONFIG = Object.freeze({
   }
   function goQuiet(view){
     for(const v of ['home','history','plan','settings'])$(`#view-${v}`).hidden=v!==view;
-    $('#welcome').hidden=state.settings.initialized||view!=='home';
+    $('#welcome').hidden=state.settings.initialized||state.transactions.length>0||state.recurring.length>0||view!=='home';
     $('#data-title').textContent=({home:tr('I tuoi dati'),history:tr('Movimenti'),plan:tr('Il tuo piano'),settings:tr('Preferenze')})[view];
   }
 
@@ -2786,20 +3097,30 @@ window.MM_FIREBASE_CONFIG = Object.freeze({
     openDrafts([{id:M.id(),date:due>M.today()?due:M.today(),amountCents:r.amountCents,type:'expense',category:r.category,note:r.name,status:due>M.today()?'planned':'paid',includedInOpening:false,countBudget:true,recurringId:r.id,dueDate:due,reason:tr('Rata collegata: nel budget è già compresa nelle spese fisse equivalenti.')}]);
   }
   function showAdvice(question){
-    const answer=window.MyMoneyAdvisor.interpret(question,state,M.today(),I.language);
+    const answer=window.MyMoneyAdvisor.interpret(question,state,M.today(),I.language,{previousAnswer:lastAnswer,balanceConfirmed:balanceConfirmed()});
     if(!answer)return false;
-    advisorQuestion=question;
+    // Keep the resolved question for state/language refreshes, not a recursive follow-up.
+    advisorQuestion=answer.context?.question||question;lastAnswer=answer;advisorAction=answer.action;
     UI.swapContent($('#voice-sheet .assistant-content'),()=>{
       $('#voice-compose').hidden=true;$('#command-preview').hidden=true;$('#advisor-answer').hidden=false;
       $('#voice-title').textContent=tr('Facciamo due conti.');
-      $('#advisor-item').textContent=answer.amountCents?`${answer.item||tr('Il tuo acquisto')} · ${money(answer.amountCents)}`:tr('Il tuo acquisto');
+      $('#advisor-item').textContent=answer.mode==='spending-limit'?tr('Il tuo margine'):answer.amountCents?`${answer.item||tr('Il tuo acquisto')} · ${money(answer.amountCents)}`:tr('Il tuo acquisto');
       $('#advisor-title').textContent=answer.title;$('#advisor-explanation').textContent=answer.explanation;
       $('#advisor-answer').dataset.verdict=answer.verdict;
       $('#advisor-lines').replaceChildren(...answer.details.map(line=>el('li',null,line)));
+      $('#advisor-quality').textContent=answer.dataQuality?.label||'';
+      $('#advisor-action').hidden=!answer.action?.label||answer.action.type==='none';$('#advisor-action').textContent=answer.action?.label||'';
       $('#advisor-details').open=false;$('#advisor-details').hidden=!answer.details.length;$('#advisor-title').tabIndex=-1;$('#advisor-title').focus({preventScroll:true});
     });
     return true;
   }
+  function resetAssistantSession(){lastAnswer=null;advisorQuestion=null;advisorAction=null;}
+  function composeState(){
+    const value=$('#natural').value.trim();$('#interpret').hidden=!value||!!speech;
+    $('#voice-text').hidden=!value&&!$('#voice-sheet').classList.contains('is-typing');
+    $('#natural').readOnly=!!speech;
+  }
+  function typeToAssistant(){cancelVoice();closeProposal();voiceStatus('');$('#voice-sheet').classList.add('is-typing');composeState();$('#natural').focus();}
   function analyze(){
     cancelVoice();closeProposal();
     const text=$('#natural').value.trim();
@@ -2819,7 +3140,7 @@ window.MM_FIREBASE_CONFIG = Object.freeze({
     event.preventDefault();errBox('#editor-error','');
     try{
       if(editingRevision!==state.revision)throw Error(tr('I dati sono cambiati mentre modificavi. Chiudi e riapri il movimento.'));
-      const before=M.clone(state),next=M.clone(state), additions=[], rules=[];next.settings.initialized=true;
+      const before=M.clone(state),next=M.clone(state), additions=[], rules=[];
       for(const box of $$('#drafts .draft')){
         const d=drafts[Number(box.dataset.index)],get=k=>box.querySelector(`[data-field="${k}"]`);
         const amountCents=M.cents(get('amount').value),date=get('date').value,status=get('status').value;
@@ -2834,6 +3155,7 @@ window.MM_FIREBASE_CONFIG = Object.freeze({
         additions.push(t);
         if(get('learn').checked){const phrase=M.norm(get('phrase').value).trim();if(phrase.length<3)throw Error(tr('Per memorizzare una preferenza indica una frase di almeno 3 caratteri.'));rules.push({phrase,category:t.category});}
       }
+      M.validateTransactionBatch(additions,next.transactions,{replacingIds:editingId?[editingId]:[]});
       if(editingId)next.transactions=next.transactions.filter(t=>t.id!==editingId);
       const duplicates=additions.some(a=>next.transactions.some(t=>t.date===a.date&&t.amountCents===a.amountCents&&t.type===a.type&&t.note===a.note));
       if(duplicates&&!window.confirm(tr('Un movimento uguale esiste già. Aggiungerlo comunque?')))return;
@@ -2853,14 +3175,15 @@ window.MM_FIREBASE_CONFIG = Object.freeze({
     const before=M.clone(state),next=M.clone(state),r={id:recEditingId||M.id(),name:$('#r-name').value.trim(),amountCents:M.cents($('#r-amount').value),months:Number($('#r-months').value),startDate:$('#r-date').value||null,category:$('#r-category').value,active:$('#r-active').checked,automatic:$('#r-auto').checked,estimated:$('#r-estimated').checked};
     if(!r.name||!r.amountCents||r.active&&!r.startDate)throw Error(tr('Indica nome, importo e prima scadenza se la ricorrenza è attiva.'));
     if(recEditingId)next.recurring=next.recurring.map(x=>x.id===recEditingId?r:x);else next.recurring.push(r);
-    next.settings.initialized=true;commit(next);UI.close($('#rec-editor'));sayUndo(tr('Spesa fissa aggiornata.'),before);
+    commit(next);UI.close($('#rec-editor'));sayUndo(tr('Spesa fissa aggiornata.'),before);
   }catch(err){errBox('#rec-error',err.message);}});
   $('#settings-form').addEventListener('input',()=>{if(!settingsDirty)settingsRevision=state.revision;settingsDirty=true;});
+  for(const id of ['s-opening','s-date'])$('#'+id).addEventListener('input',()=>{$('#s-opening-confirm').checked=true;});
   $('#settings-form').addEventListener('submit',e=>{e.preventDefault();try{
     if(settingsDirty&&settingsRevision!==state.revision)throw Error(tr('I dati sono cambiati mentre modificavi le preferenze. Ricarica la pagina per vedere i valori aggiornati prima di salvarli.'));
-    const next=M.clone(state);next.settings={initialized:true,openingDate:$('#s-date').value,openingBalanceCents:M.cents($('#s-opening').value),salaryCents:M.cents($('#s-salary').value),budgetCents:M.cents($('#s-budget').value),savingsGoalCents:M.cents($('#s-goal').value),payday:Number($('#s-day').value),separateSavingsCents:$('#s-savings').value.trim()?M.cents($('#s-savings').value):null};
+    const next=M.clone(state);next.settings={initialized:hasOpeningBalance()||$('#s-opening-confirm').checked,openingDate:$('#s-date').value,openingBalanceCents:M.cents($('#s-opening').value),salaryCents:M.cents($('#s-salary').value),budgetCents:M.cents($('#s-budget').value),savingsGoalCents:M.cents($('#s-goal').value),payday:Number($('#s-day').value),separateSavingsCents:$('#s-savings').value.trim()?M.cents($('#s-savings').value):null};
     if(state.settings.initialized&&(next.settings.openingBalanceCents!==state.settings.openingBalanceCents||next.settings.openingDate!==state.settings.openingDate)&&!confirm(tr('Modificare la situazione iniziale ricalcolerà tutto il saldo. Non usare questa funzione per registrare una nuova entrata. Continuare?')))return;
-    commit(next);settingsDirty=false;renderSettings();say(tr('Impostazioni salvate.'));
+    const confirmed=$('#s-opening-confirm').checked;commit(next);if(confirmed)markBalanceConfirmed();settingsDirty=false;render();say(tr('Impostazioni salvate.'));
   }catch(err){say(err.message);}});
 
   // Offer file sharing on mobile and a download fallback on desktop.
@@ -2912,14 +3235,14 @@ window.MM_FIREBASE_CONFIG = Object.freeze({
   // Recognition stays optional. Each callback belongs to exactly one live session.
   let speechTimers=[];
   function voiceStatus(text,attention=false){$('#voice-status').textContent=I.text(text);$('#voice-status').classList.toggle('attention',attention);}
-  function voiceUI(active){UI.setVoice(active);$('#voice-sheet').classList.toggle('is-listening',active);$('#mic').classList.toggle('mic-listening',active);$('#mic').setAttribute('aria-pressed',String(active));$('#mic').setAttribute('aria-label',active?tr('Termina dettatura'):tr('Avvia dettatura'));}
+  function voiceUI(active){UI.setVoice(active);window.MMParticles?.setListening(active);$('#voice-sheet').classList.toggle('is-listening',active);$('#mic').classList.toggle('mic-listening',active);$('#mic').setAttribute('aria-pressed',String(active));$('#mic').setAttribute('aria-label',active?tr('Termina dettatura'):tr('Avvia dettatura'));}
   function clearSpeechTimers(){speechTimers.forEach(clearTimeout);speechTimers=[];}
-  function cancelVoice(){const previous=speech;speech=null;clearSpeechTimers();voiceUI(false);if(previous){try{previous.abort();}catch(_){}}}
+  function cancelVoice(){const previous=speech;speech=null;window.MMVoiceMeter?.stop();clearSpeechTimers();voiceUI(false);composeState();if(previous){try{previous.abort();}catch(_){}}}
   function beginRecognition(){
-    cancelVoice();closeProposal();$('#natural').value='';$('#assistant-example').hidden=false;
+    cancelVoice();closeProposal();$('#natural').value='';$('#voice-sheet').classList.remove('is-typing');composeState();
     $('#voice-consent').hidden=true;$('#voice-compose').hidden=false;
     const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
-    if(!SR){voiceStatus(tr('Scrivi qui o usa il microfono della tastiera.'),true);return;}
+    if(!SR){$('#voice-sheet').classList.add('is-typing');composeState();voiceStatus(tr('Scrivi qui o usa il microfono della tastiera.'),true);return;}
     try{
       const r=new SR();speech=r;r.lang=I.locale;r.interimResults=true;r.continuous=false;
       let finalText='',failed=false;
@@ -2927,10 +3250,11 @@ window.MM_FIREBASE_CONFIG = Object.freeze({
       const startup=setTimeout(()=>{if(speech!==r)return;cancelVoice();voiceStatus(tr('Tocca il microfono per riprovare, oppure scrivi.'),true);},9000);
       speechTimers.push(startup,setTimeout(()=>{if(speech!==r)return;cancelVoice();voiceStatus(tr('Dettatura terminata. Puoi continuare dal testo.'),true);},45000));
       r.onstart=()=>{if(speech!==r)return;clearTimeout(startup);voiceStatus(tr('Ti ascolto…'));};
-      r.onresult=e=>{if(speech!==r)return;let all='';finalText='';for(let i=0;i<e.results.length;i++){all+=e.results[i][0].transcript+' ';if(e.results[i].isFinal)finalText+=e.results[i][0].transcript+' ';}$('#natural').value=all.trim();$('#assistant-example').hidden=!!all.trim();const orb=$('.assistant-orb');if(!matchMedia('(prefers-reduced-motion: reduce)').matches){orb.getAnimations().forEach(a=>a.cancel());orb.animate([{transform:'translate(-50%,-50%) scale(1)'},{transform:'translate(-50%,-50%) scale(1.045)'},{transform:'translate(-50%,-50%) scale(1)'}],{duration:440,easing:'ease-out'});}};
+      r.onresult=e=>{if(speech!==r)return;let all='';finalText='';for(let i=0;i<e.results.length;i++){all+=e.results[i][0].transcript+' ';if(e.results[i].isFinal)finalText+=e.results[i][0].transcript+' ';}$('#natural').value=all.trim();composeState();};
       r.onerror=e=>{if(speech!==r)return;failed=true;const messages={'not-allowed':tr('Microfono non autorizzato. Puoi abilitarlo in Safari oppure scrivere qui.'),'audio-capture':tr('Microfono non disponibile. Puoi scrivere qui.'),'no-speech':tr('Non ho sentito una frase. Tocca il microfono per riprovare.'),'network':tr('Voce non disponibile. Controlla la connessione oppure scrivi.'),'aborted':tr('Dettatura interrotta. Puoi riprovare.')};cancelVoice();voiceStatus(messages[e.error]||tr('Puoi riprovare con il microfono oppure scrivere.'),true);};
-      r.onend=()=>{if(speech!==r)return;speech=null;clearSpeechTimers();voiceUI(false);if(!failed&&finalText.trim()){$('#natural').value=finalText.trim();analyze();}else if(!failed)voiceStatus(tr('Puoi riprovare o continuare dal testo.'),true);};
-      r.start();
+      r.onend=()=>{if(speech!==r)return;speech=null;window.MMVoiceMeter?.stop();clearSpeechTimers();voiceUI(false);composeState();if(!failed&&finalText.trim()){$('#natural').value=finalText.trim();analyze();}else if(!failed)voiceStatus(tr('Puoi riprovare o continuare dal testo.'),true);};
+      r.start();composeState();
+      window.MMVoiceMeter?.start(level=>{if(speech===r)window.MMParticles?.setAudioLevel(level);},{recognitionActive:true,allowConcurrent:true}).catch(()=>{});
     }catch(_){cancelVoice();voiceStatus(tr('Tocca il microfono per riprovare, oppure scrivi.'),true);}
   }
   function startVoice(){
@@ -2938,27 +3262,28 @@ window.MM_FIREBASE_CONFIG = Object.freeze({
     closeProposal();UI.open($('#voice-sheet'));$('#voice-title').textContent=tr('Sono qui.');
     beginRecognition();
   }
-  $('#assistant-example').addEventListener('click',()=>{cancelVoice();$('#natural').value=tr('Posso permettermi scarpe da 180 €?');analyze();});
+  $('#assistant-type').addEventListener('click',typeToAssistant);
+  $('#advisor-action').addEventListener('click',()=>{const action=advisorAction;if(!action)return;if(action.type==='open-preferences'){UI.close($('#voice-sheet'),{immediate:true});go('settings');const target=$(action.field==='salary'?'#s-salary':'#s-opening');target.closest('details')?.setAttribute('open','');target.scrollIntoView({block:'center'});target.focus({preventScroll:true});}else if(action.type==='open-plan'||action.type==='open-history'){UI.close($('#voice-sheet'),{immediate:true});go(action.type==='open-plan'?'plan':'history');}else typeToAssistant();});
   $('#advisor-voice').addEventListener('click',beginRecognition);
-  $('#advisor-write').addEventListener('click',()=>{closeProposal();$('#natural').focus();});
+  $('#advisor-write').addEventListener('click',typeToAssistant);
   $('#voice-enable').addEventListener('click',beginRecognition);
   $('#voice-write').addEventListener('click',()=>{$('#voice-consent').hidden=true;$('#voice-compose').hidden=false;voiceStatus(tr('Scrivi una spesa o una modifica.'));$('#natural').focus();});
   $('#close-voice').addEventListener('click',()=>UI.close($('#voice-sheet')));
   $('#close-quick').addEventListener('click',()=>UI.close($('#quick-sheet')));
   $('#settings-voice').addEventListener('click',startVoice);
   document.addEventListener('mm:closing',e=>{
-    if(e.target.id==='voice-sheet')cancelVoice();
+    if(e.target.id==='voice-sheet'){cancelVoice();resetAssistantSession();}
     const toast=$('#toast');if(e.target.contains(toast))(UI.dialogs().filter(d=>d!==e.target).at(-1)||document.body).append(toast);
   });
   // Discard drafts after the exit animation, without collapsing the visible panel.
   document.addEventListener('close',e=>{
     if(e.target.tagName!=='DIALOG'||e.target.open)return;
-    if(e.target.id==='voice-sheet'){cancelVoice();closeProposal();$('#assistant-example').hidden=false;$('#natural').value='';voiceStatus('');$('#command-lines').replaceChildren();}
+    if(e.target.id==='voice-sheet'){cancelVoice();closeProposal();resetAssistantSession();$('#natural').value='';$('#voice-sheet').classList.remove('is-typing');composeState();voiceStatus('');$('#command-lines').replaceChildren();}
     if(e.target.id==='quick-sheet'){resetQuick();}
     if(e.target.id==='editor'){drafts=[];editingId=null;editingRevision=null;$('#drafts').replaceChildren();errBox('#editor-error','');}
     if(e.target.id==='rec-editor'){$('#rec-form').reset();recEditingId=null;recRevision=null;errBox('#rec-error','');}
     if(e.target.id==='data-sheet'){
-      settingsDirty=false;settingsRevision=null;$('#search').value='';historyFilter='all';reportMode='month';reportOffset=0;
+      settingsDirty=false;settingsRevision=null;$('#search').value='';clearHistoryFilters();historyFilter='all';reportMode='month';reportOffset=0;
       $('#history-filters [data-filter="all"]').click();$('#report-modes [data-report="month"]').click();
       renderSettings();
     }
@@ -3021,7 +3346,7 @@ window.MM_FIREBASE_CONFIG = Object.freeze({
     }catch(error){errBox('#quick-error',error.message);}});
     $('#top-add').addEventListener('click',quickFocus);
     $('#natural').addEventListener('keydown',e=>{if(e.key==='Enter'&&!e.shiftKey&&!e.isComposing){e.preventDefault();analyze();}});
-    $('#natural').addEventListener('input',()=>{closeProposal();$('#assistant-example').hidden=!!$('#natural').value.trim();});
+    $('#natural').addEventListener('input',()=>{closeProposal();composeState();});
     $$('[data-example]').forEach(b=>b.addEventListener('click',()=>{$('#natural').value=b.dataset.example;closeProposal();$('#natural').focus();}));
     $('#command-close').addEventListener('click',beginRecognition);
     $('#command-edit').addEventListener('click',()=>{
@@ -3062,15 +3387,18 @@ window.MM_FIREBASE_CONFIG = Object.freeze({
       for(const node of box.querySelectorAll('.notice,.reason'))node.textContent=I.text(node.textContent);
     }
     if($('#editor').open){$('#editor-title').textContent=editingId?tr('Modifica movimento'):drafts.length>1?tr('Controlla {count} movimenti',{count:drafts.length}):tr('Tutto giusto?');$('#save-drafts').textContent=editingId?tr('Salva modifiche'):drafts.length>1?tr('Conferma e salva tutto'):tr('Conferma e salva');}
-    updateQuickHint();if(proposal)showProposal();if(advisorQuestion)showAdvice(advisorQuestion);
+    filterCategories();updateQuickHint();if(proposal)showProposal();
     if(wasSpeaking)voiceStatus(tr('Dettatura interrotta. Tocca il microfono per riprendere.'));
     for(const selector of ['#voice-status','#install-status','#persistent-status','#environment','#storage-warning','#quick-error','#editor-error','#rec-error','#command-error']){const node=$(selector);node.textContent=I.text(node.textContent);}
   });
   $$('[data-go]').forEach(b=>b.addEventListener('click',()=>go(b.dataset.go)));
   $$('[data-import]').forEach(b=>b.addEventListener('click',()=>$('#import-file').click()));
-  $('#setup-new').addEventListener('click',()=>{try{const next=M.clone(state);next.settings.initialized=true;commit(next);quickFocus();say(tr('Pronto. Puoi impostare il saldo iniziale in Preferenze.'));}catch(e){say(e.message);}});$('#interpret').addEventListener('click',analyze);$('#history-add').addEventListener('click',quickFocus);
+  $('#setup-new').addEventListener('click',quickFocus);$('#interpret').addEventListener('click',analyze);$('#history-add').addEventListener('click',quickFocus);
   $('#close-editor').addEventListener('click',()=>UI.close($('#editor')));$('#close-rec').addEventListener('click',()=>UI.close($('#rec-editor')));$('#new-recurring').addEventListener('click',()=>editRecurring());
+  filterCategories();
   $('#search').addEventListener('input',renderHistory);
+  for(const id of ['from','to','category','min','max'])$('#filter-'+id).addEventListener('input',renderHistory);
+  $('#clear-filters').addEventListener('click',clearHistoryFilters);
   $$('#history-filters button').forEach(b=>b.addEventListener('click',()=>{historyFilter=b.dataset.filter;$$('#history-filters button').forEach(x=>x.classList.toggle('active',x===b));renderHistory();}));
   $$('#report-modes button').forEach(b=>b.addEventListener('click',()=>{reportMode=b.dataset.report;reportOffset=0;$$('#report-modes button').forEach(x=>x.classList.toggle('active',x===b));renderReport();}));
   $('#report-prev').addEventListener('click',()=>{reportOffset--;renderReport();});$('#report-next').addEventListener('click',()=>{reportOffset++;renderReport();});
@@ -3078,7 +3406,7 @@ window.MM_FIREBASE_CONFIG = Object.freeze({
   $$('dialog details').forEach(d=>d.dataset.initialOpen=String(d.open));
   load();render();setupQuick();UI.init({manual:quickFocus,voice:startVoice,data:()=>go('home'),suspend:()=>{if(speech){cancelVoice();voiceStatus(tr('Dettatura interrotta. Tocca il microfono per riprendere.'));}}});setupOffline();
   window.MMSync?.init({getState:()=>M.clone(state),replaceState:next=>{state=M.validate(next);readOnly=false;render();},notify:say,resetDrafts:()=>{
-    cancelVoice();closeProposal();settingsDirty=false;editingId=null;recEditingId=null;drafts=[];editingRevision=null;recRevision=null;proposalRevision=null;
+    cancelVoice();closeProposal();resetAssistantSession();settingsDirty=false;editingId=null;recEditingId=null;drafts=[];editingRevision=null;recRevision=null;proposalRevision=null;
     clearTimeout(toastTimer);$('#toast').replaceChildren();$('#toast').hidden=true;$('#drafts').replaceChildren();
     for(const dialog of UI.dialogs())if(dialog.id!=='data-sheet')UI.close(dialog,{immediate:true});
     $('#natural').value='';$('#q-name').value='';$('#q-amount').value='';$('#q-category').value='';$('#q-type').value='auto';$('#q-date').value=M.today();
@@ -3102,7 +3430,7 @@ window.MM_FIREBASE_CONFIG = Object.freeze({
   let energy = 0, luminosity = 1, lost = false, renderer = null, destroyed = false;
   let touchX = .5, touchY = .5, contactX = .5, contactY = .5;
   let attraction = 0, attractionTarget = 0, attractionVelocity = 0;
-  let assistantAmount = 0, assistantTarget = 0, assistantVelocity = 0;
+  let assistantMix = 0, fallbackCanvas = null;
   let holding = false, releasing = false, quietUntil = 0;
   // This is a backing-pixel policy, not a frame-rate limit. UI remains full resolution.
   const saveData = !!navigator.connection?.saveData;
@@ -3131,7 +3459,6 @@ window.MM_FIREBASE_CONFIG = Object.freeze({
     uniform float u_energy;
     uniform float u_light;
     uniform vec3 u_touch;
-    uniform float u_assistant;
 
     float hash(vec2 p) {
       p = fract(p * vec2(123.34, 456.21));
@@ -3170,14 +3497,6 @@ window.MM_FIREBASE_CONFIG = Object.freeze({
       vec2 pickup = vec2((sourceAxis - touchPoint.x) * .64, 0.0);
       p += (contact * 1.65 + pickup) * gather;
       p += vec2(-contact.y, contact.x) * gather * .12;
-      // Gather the same silk around the assistant at 50% x / 33% y in CSS
-      // coordinates. Inverse mapping contracts the material, not the canvas;
-      // at zero this is exactly the original idle field.
-      vec2 assistantPoint = vec2(0.0, .17);
-      vec2 assistantContact = screenP - assistantPoint;
-      p = mix(p, (p - assistantPoint) * 2.6, u_assistant);
-      float assistantFocus = exp(-dot(assistantContact, assistantContact) * 16.0) * u_assistant;
-      p += vec2(-assistantContact.y, assistantContact.x) * assistantFocus * .18;
       // A slow domain warp makes light behave like folded silk, without a mesh.
       vec2 q = vec2(cloud(p * 2.7 + vec2(.13 * t, -.17 * t)),
                     cloud(p * 2.5 + vec2(5.4 - .12 * t, 2.1 + .14 * t)));
@@ -3215,7 +3534,7 @@ window.MM_FIREBASE_CONFIG = Object.freeze({
       float satin = pow(max(0.0, grainFold), 7.0) * exp(-abs(left - .022) * 24.0);
       color += cyan * satin * .045 * leftFlow;
       // Concentration brightens only the material already present in the folds.
-      color = ink + (color - ink) * (1.0 + gather * .48 + assistantFocus * .22);
+      color = ink + (color - ink) * (1.0 + gather * .48);
       float breath = 1.0 + sin(u_time * .37) * .055;
       float centreQuiet = 1.0 - exp(-dot(screenP * vec2(3.0, 5.0), screenP * vec2(3.0, 5.0))) * .17;
       float vignette = 1.0 - smoothstep(.29, .79, length(screenP * vec2(.9, .82))) * .56;
@@ -3263,7 +3582,6 @@ window.MM_FIREBASE_CONFIG = Object.freeze({
       const activity = gl.getUniformLocation(program, 'u_energy');
       const light = gl.getUniformLocation(program, 'u_light');
       const touch = gl.getUniformLocation(program, 'u_touch');
-      const assistant = gl.getUniformLocation(program, 'u_assistant');
       compiled.forEach(shader => gl.deleteShader(shader));
       compiled.length = 0;
       return {
@@ -3274,7 +3592,6 @@ window.MM_FIREBASE_CONFIG = Object.freeze({
           gl.uniform1f(activity, energy);
           gl.uniform1f(light, luminosity);
           gl.uniform3f(touch, touchX, 1 - touchY, attraction);
-          gl.uniform1f(assistant, assistantAmount);
           gl.drawArrays(gl.TRIANGLES, 0, 3);
         },
         dispose() {
@@ -3293,9 +3610,11 @@ window.MM_FIREBASE_CONFIG = Object.freeze({
   function canvasRenderer() {
     // A second canvas is needed because a WebGL context cannot become a 2D one.
     const fallback = document.createElement('canvas');
+    fallbackCanvas = fallback;
     fallback.className = 'ambient-fallback';
     fallback.setAttribute('aria-hidden', 'true');
     fallback.style.cssText = 'position:absolute;inset:0;width:100%;height:100%;pointer-events:none';
+    fallback.style.opacity = String(fluidOpacity());
     canvas.insertAdjacentElement('afterend', fallback);
     const ctx = fallback.getContext('2d', { alpha: false });
     if (!ctx) { fallback.remove(); return { draw() {}, dispose() {} }; }
@@ -3315,8 +3634,7 @@ window.MM_FIREBASE_CONFIG = Object.freeze({
           const amount = attraction * .72 * Math.exp(-(dx * dx + dy * dy) / (reach * reach));
           x += (touchX - x) * amount;
           y += (touchY - y) * amount;
-          const scale = 1 + assistantAmount * 1.6;
-          return [.5 + (x - .5) / scale, .5 + (y - .5 - .17 * 2.6 * assistantAmount) / scale];
+          return [x, y];
         };
         const glows = [
           [.15 + Math.sin(t) * .09, .65 + Math.cos(t * .7) * .09, '50,139,140'],
@@ -3325,7 +3643,7 @@ window.MM_FIREBASE_CONFIG = Object.freeze({
         ];
         glows.forEach(([x, y, rgb]) => {
           [x, y] = pull(x, y);
-          const r = h * .55 / (1 + assistantAmount * 1.6), gradient = ctx.createRadialGradient(x * w, y * h, 0, x * w, y * h, r);
+          const r = h * .55, gradient = ctx.createRadialGradient(x * w, y * h, 0, x * w, y * h, r);
           gradient.addColorStop(0, `rgba(${rgb},${.19 * luminosity * (1 + energy * .4)})`);
           gradient.addColorStop(.45, `rgba(${rgb},${.055 * luminosity})`);
           gradient.addColorStop(1, `rgba(${rgb},0)`);
@@ -3347,12 +3665,12 @@ window.MM_FIREBASE_CONFIG = Object.freeze({
         }
         ctx.globalCompositeOperation = 'source-over';
       },
-      dispose() { fallback.remove(); }
+      dispose() { fallback.remove(); if (fallbackCanvas === fallback) fallbackCanvas = null; }
     };
   }
 
   function draw() {
-    if (renderer && !lost) renderer.draw();
+    if (renderer && !lost && assistantMix < .42) renderer.draw();
   }
   function sizeBuffer() {
     // A soft background can trade pixels for cadence without softening text.
@@ -3373,7 +3691,7 @@ window.MM_FIREBASE_CONFIG = Object.freeze({
   function adaptResolution(interval, timestamp) {
     // Reallocating a WebGL drawing buffer clears it and may stall the GPU.
     // Learn/adjust quality only between gestures, never during the popup handoff.
-    if (holding || releasing || assistantTarget || assistantAmount > .001 || timestamp < quietUntil || scene !== 'idle') {
+    if (holding || releasing || assistantMix > 0 || timestamp < quietUntil || scene !== 'idle') {
       sampleTime = sampleCount = lateFrames = 0;
       return;
     }
@@ -3399,27 +3717,15 @@ window.MM_FIREBASE_CONFIG = Object.freeze({
   }
   function tick(timestamp) {
     frame = 0;
-    if (document.hidden || reducedMotion.matches || lost || destroyed) return;
+    if (document.hidden || reducedMotion.matches || lost || destroyed || assistantMix >= .42) return;
     const interval = Math.max(0, timestamp - lastPaint);
     const delta = Math.min(interval / 1000, .06);
     lastPaint = timestamp;
     adaptResolution(interval, timestamp);
-    // Keep the clock continuous while the gathered material moves more calmly.
-    time += delta * (1 + energy * .9) * (1 - assistantAmount * .35);
+    time += delta * (1 + energy * .9);
     const ease = 1 - Math.exp(-delta * 4.5);
     energy += (target[0] - energy) * ease;
     luminosity += (target[1] - luminosity) * ease;
-    // Critically damped motion preserves velocity even if the assistant closes
-    // halfway through opening. About 95% settled after 680ms, 99% after 950ms.
-    const assistantSpeed = 7, assistantDecay = Math.exp(-assistantSpeed * delta);
-    const assistantOffset = assistantAmount - assistantTarget;
-    const assistantMotion = assistantVelocity + assistantSpeed * assistantOffset;
-    assistantAmount = assistantTarget + (assistantOffset + assistantMotion * delta) * assistantDecay;
-    assistantVelocity = (assistantVelocity - assistantSpeed * assistantMotion * delta) * assistantDecay;
-    if (Math.abs(assistantAmount - assistantTarget) < .0001 && Math.abs(assistantVelocity) < .001) {
-      assistantAmount = assistantTarget;
-      assistantVelocity = 0;
-    }
     const contactEase = 1 - Math.exp(-delta * 20);
     touchX += (contactX - touchX) * contactEase;
     touchY += (contactY - touchY) * contactEase;
@@ -3445,15 +3751,13 @@ window.MM_FIREBASE_CONFIG = Object.freeze({
   function resume() {
     cancelAnimationFrame(frame);
     frame = 0;
-    if (document.hidden || lost || destroyed) return;
+    if (document.hidden || lost || destroyed || assistantMix >= .42) return;
     lastPaint = performance.now();
     sampleTime = sampleCount = lateFrames = 0;
     if (reducedMotion.matches) {
       energy = target[0];
       luminosity = target[1];
       attraction = attractionTarget = attractionVelocity = 0;
-      assistantAmount = assistantTarget;
-      assistantVelocity = 0;
       releasing = false;
     }
     draw();
@@ -3499,19 +3803,35 @@ window.MM_FIREBASE_CONFIG = Object.freeze({
     releasing = true;
     quietUntil = performance.now() + 700;
   }
+  function fluidOpacity() {
+    const phase = Math.max(0, Math.min(1, assistantMix / .42));
+    return 1 - phase * phase * (3 - 2 * phase);
+  }
+  function setAssistantMix(amount) {
+    if (destroyed || !Number.isFinite(amount)) return;
+    const wasHidden = assistantMix >= .42;
+    assistantMix = Math.max(0, Math.min(1, amount));
+    const opacity = String(fluidOpacity());
+    canvas.style.opacity = opacity;
+    if (fallbackCanvas) fallbackCanvas.style.opacity = opacity;
+    if (assistantMix >= .42) {
+      cancelAnimationFrame(frame);
+      frame = 0;
+      // A held gesture may finish while this renderer is asleep. Return to a
+      // resting field, rather than replaying an old contact when it reappears.
+      attraction = attractionTarget = attractionVelocity = 0;
+      holding = releasing = false;
+    } else if (wasHidden) resume();
+  }
   function assistant(active) {
-    if (destroyed) return;
-    assistantTarget = active ? 1 : 0;
-    quietUntil = performance.now() + 1000;
-    if (reducedMotion.matches) {
-      assistantAmount = assistantTarget;
-      assistantVelocity = 0;
-      draw();
-    }
+    // The point cloud owns a single reversible transition. Never run two
+    // independent fades or paint the fluid underneath the visible particles.
+    if (window.MMParticles) window.MMParticles.setActive(active);
+    else if (!active) setAssistantMix(0);
   }
   // All points are CSS pixels relative to #experience. Gestures own timing;
   // this renderer owns continuous interpolation and the brief popup handoff.
-  const api = Object.freeze({ begin, move, charge, release, handoff, assistant });
+  const api = Object.freeze({ begin, move, charge, release, handoff, assistant, setAssistantMix });
   window.MyMoneyOrbit = api;
   function sceneChanged() {
     const next = document.documentElement.dataset.scene || 'idle';
@@ -3582,6 +3902,397 @@ window.MM_FIREBASE_CONFIG = Object.freeze({
   on(window, 'pageshow', () => { if (!destroyed) { resize(); resume(); } });
   resize();
   resume();
+})();
+</script>
+<script>/* Two curved drops, drawn as a volume of points. No image or recorded audio. */
+(() => {
+  'use strict';
+  const motion = window.matchMedia('(prefers-reduced-motion: reduce)');
+  const reducedData = !!navigator.connection?.saveData;
+  let canvas = null, renderer = null, width = 1, height = 1, ratio = 1;
+  let active = false, destroyed = false, listening = false, frame = 0, last = 0, clock = 0;
+  let phase = 0, audio = 0, level = 0, audioAt = 0;
+  const smooth = x => { x = Math.max(0, Math.min(1, x)); return x * x * (3 - 2 * x); };
+  const count = reducedData ? 2400 : window.matchMedia('(pointer: coarse)').matches ? 5800 : 8000;
+  let randomState = 17861;
+  function random() {
+    randomState ^= randomState << 13; randomState ^= randomState >>> 17; randomState ^= randomState << 5;
+    return (randomState >>> 0) / 4294967296;
+  }
+  function buildCloud() {
+    const points = new Float32Array(count * 7);
+    // A tapering tube along this cubic makes a curved teardrop. The opposite
+    // copy preserves the brand's diagonal negative space, including in silence.
+    const a = [.44, -.49], b = [-.03, -.84], c = [-.91, -.04], d = [-.4, .23];
+    for (let i = 0; i < count; i++) {
+      const u = .008 + random() * .984, v = 1 - u;
+      const x = v*v*v*a[0] + 3*v*v*u*b[0] + 3*v*u*u*c[0] + u*u*u*d[0];
+      const y = v*v*v*a[1] + 3*v*v*u*b[1] + 3*v*u*u*c[1] + u*u*u*d[1];
+      const dx = 3*v*v*(b[0]-a[0]) + 6*v*u*(c[0]-b[0]) + 3*u*u*(d[0]-c[0]);
+      const dy = 3*v*v*(b[1]-a[1]) + 6*v*u*(c[1]-b[1]) + 3*u*u*(d[1]-c[1]);
+      const length = Math.hypot(dx, dy), angle = random() * Math.PI * 2;
+      const radius = .245 * Math.pow(Math.sin(Math.PI * u), .58) * (.30 + .70 * u);
+      const shell = random() < .62 ? .80 + random() * .20 : Math.sqrt(random()) * .8;
+      const side = i % 2 ? -1 : 1, offset = Math.cos(angle) * radius * shell;
+      points.set([side * (x - dy / length * offset), side * (y + dx / length * offset),
+        Math.sin(angle) * radius * shell * .85, random() * Math.PI * 2, random(), .75 + random() * 1.40, i % 2], i * 7);
+    }
+    return points;
+  }
+  const points = buildCloud();
+  function geometry() {
+    // CSS pixel coordinates; root content starts below ~56svh.
+    const visibleHeight = Math.min(height, window.visualViewport?.height || height);
+    const short = visibleHeight < 600;
+    const diameter = short ? Math.min(150, width * .62) : Math.min(440, width < 700 ? width * .74 : visibleHeight * .46);
+    return { x: width / 2, y: visibleHeight * (short ? .25 : .33), scale: diameter / 1.42 };
+  }
+  function webGL() {
+    const gl = canvas.getContext('webgl', { alpha: true, premultipliedAlpha: true, antialias: false, depth: false, stencil: false, powerPreference: 'low-power' });
+    if (!gl) return null;
+    let program, buffer;
+    const shaders = [];
+    try {
+      function compile(type, source) {
+        const shader = gl.createShader(type); shaders.push(shader);
+        gl.shaderSource(shader, source); gl.compileShader(shader);
+        if (!gl.getShaderParameter(shader, gl.COMPILE_STATUS)) throw new Error('Particle shader unavailable');
+        return shader;
+      }
+      program = gl.createProgram();
+      gl.attachShader(program, compile(gl.VERTEX_SHADER, `
+        attribute vec3 a_position;
+        attribute vec4 a_detail;
+        uniform vec2 u_view;
+        uniform vec3 u_geometry;
+        uniform float u_time;
+        uniform float u_audio;
+        uniform float u_ratio;
+        uniform float u_reduced;
+        varying float v_alpha;
+        varying vec3 v_color;
+        void main() {
+          vec3 p = a_position;
+          float seed = a_detail.x;
+          // The only expansion driver is measured microphone energy. Slow
+          // quiet drift is material motion, not a simulated listening waveform.
+          float drift = sin(u_time * .32 + seed) * .009 * (1.0 - u_reduced);
+          vec2 ray = normalize(p.xy + vec2(.001));
+          float scatter = u_audio * (.055 + a_detail.y * a_detail.y * .22) * (1.0 - u_reduced);
+          p.xy += ray * scatter + vec2(cos(seed + u_time * .21), sin(seed - u_time * .18)) * drift;
+          p.z += sin(seed + u_time * .25) * .018 * (1.0 - u_reduced);
+          float turn = sin(u_time * .16) * .09 * (1.0 - u_reduced);
+          p.x = p.x * cos(turn) + p.z * sin(turn);
+          float depth = 1.0 + p.z * .20;
+          vec2 screen = u_geometry.xy + p.xy * u_geometry.z * depth;
+          gl_Position = vec4(screen / u_view * vec2(2.0, -2.0) + vec2(-1.0, 1.0), 0.0, 1.0);
+          gl_PointSize = a_detail.z * u_ratio * (1.0 + p.z * .25);
+          float front = smoothstep(-.15, .15, p.z);
+          vec3 navy = vec3(.20, .40, .60), teal = vec3(.23, .67, .67), cyan = vec3(.48, .84, .85);
+          v_color = mix(navy, teal, .32 + front * .36 + p.y * .18);
+          v_color = mix(v_color, cyan, smoothstep(.48, .96, a_detail.y) * (.45 + front * .55));
+          // Near points catch more cyan; the far surface remains navy, making
+          // the volume readable without filling the negative space or whitening it.
+          v_alpha = min(.94, (.42 + a_detail.y * .58) * (.72 + front * .48) * (1.0 + u_audio * .13));
+        }
+      `));
+      gl.attachShader(program, compile(gl.FRAGMENT_SHADER, `
+        precision mediump float;
+        varying float v_alpha;
+        varying vec3 v_color;
+        void main() {
+          float r = length(gl_PointCoord - .5);
+          float edge = 1.0 - smoothstep(.28, .5, r);
+          gl_FragColor = vec4(v_color, v_alpha * edge);
+        }
+      `));
+      gl.linkProgram(program);
+      if (!gl.getProgramParameter(program, gl.LINK_STATUS)) throw new Error('Particle program unavailable');
+      gl.useProgram(program);
+      buffer = gl.createBuffer(); gl.bindBuffer(gl.ARRAY_BUFFER, buffer); gl.bufferData(gl.ARRAY_BUFFER, points, gl.STATIC_DRAW);
+      const position = gl.getAttribLocation(program, 'a_position'), detail = gl.getAttribLocation(program, 'a_detail');
+      gl.enableVertexAttribArray(position); gl.vertexAttribPointer(position, 3, gl.FLOAT, false, 28, 0);
+      gl.enableVertexAttribArray(detail); gl.vertexAttribPointer(detail, 4, gl.FLOAT, false, 28, 12);
+      const uniforms = Object.fromEntries(['view', 'geometry', 'time', 'audio', 'ratio', 'reduced'].map(key => [key, gl.getUniformLocation(program, 'u_' + key)]));
+      gl.enable(gl.BLEND); gl.blendFuncSeparate(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA, gl.ONE, gl.ONE_MINUS_SRC_ALPHA);
+      shaders.forEach(shader => gl.deleteShader(shader)); shaders.length = 0;
+      return {
+        draw() {
+          const g = geometry();
+          gl.viewport(0, 0, canvas.width, canvas.height); gl.clearColor(0, 0, 0, 0); gl.clear(gl.COLOR_BUFFER_BIT);
+          gl.uniform2f(uniforms.view, width, height); gl.uniform3f(uniforms.geometry, g.x, g.y, g.scale);
+          gl.uniform1f(uniforms.time, clock); gl.uniform1f(uniforms.audio, audio); gl.uniform1f(uniforms.ratio, ratio); gl.uniform1f(uniforms.reduced, motion.matches ? 1 : 0);
+          gl.drawArrays(gl.POINTS, 0, count);
+        },
+        dispose() { gl.deleteBuffer(buffer); gl.deleteProgram(program); }
+      };
+    } catch (_) {
+      shaders.forEach(shader => gl.deleteShader(shader));
+      if (buffer) gl.deleteBuffer(buffer); if (program) gl.deleteProgram(program);
+      return null;
+    }
+  }
+  function flatRenderer() {
+    const ctx = canvas.getContext('2d', { alpha: true });
+    if (!ctx) return null;
+    const palette = ['#376982', '#438b94', '#6db6ba'];
+    return {
+      draw() {
+        const g = geometry(); ctx.setTransform(ratio, 0, 0, ratio, 0, 0); ctx.clearRect(0, 0, width, height);
+        for (let i = 0; i < count; i += 3) {
+          const n = i * 7, x = points[n], y = points[n + 1], seed = points[n + 3], tint = points[n + 4];
+          const spread = motion.matches ? 1 : 1 + audio * (.12 + tint * .27);
+          const drift = motion.matches ? 0 : Math.sin(clock * .32 + seed) * .009;
+          ctx.fillStyle = palette[Math.min(2, Math.floor(tint * 3))]; ctx.globalAlpha = .3 + tint * .6;
+          ctx.beginPath(); ctx.arc(g.x + (x * spread + drift) * g.scale, g.y + (y * spread + drift * .4) * g.scale, points[n + 5] * .65, 0, Math.PI * 2); ctx.fill();
+        }
+        ctx.globalAlpha = 1;
+      },
+      dispose() {}
+    };
+  }
+  function newCanvas() {
+    const host = document.querySelector('#voice-sheet');
+    if (!host) return false;
+    canvas = document.createElement('canvas'); canvas.className = 'assistant-particles';
+    canvas.setAttribute('aria-hidden', 'true');
+    canvas.style.cssText = 'position:fixed;inset:0;width:100%;height:100%;pointer-events:none;z-index:0;opacity:0;';
+    host.prepend(canvas);
+    return true;
+  }
+  function createRenderer() {
+    if (renderer) return true;
+    if (!newCanvas()) return false;
+    renderer = webGL();
+    if (!renderer) {
+      // A canvas cannot change context types after WebGL has been acquired.
+      canvas.remove(); if (!newCanvas()) return false;
+      renderer = flatRenderer();
+    }
+    if (!renderer) { canvas.remove(); canvas = null; return false; }
+    canvas.addEventListener('webglcontextlost', contextLost);
+    resize();
+    return true;
+  }
+  function contextLost(event) {
+    event.preventDefault(); renderer?.dispose(); renderer = null;
+    canvas?.removeEventListener('webglcontextlost', contextLost); canvas?.remove(); canvas = null;
+    if (!newCanvas()) { setActive(false); return; }
+    renderer = flatRenderer();
+    if (!renderer) { setActive(false); return; }
+    resize(); applyTransition();
+  }
+  function resize() {
+    if (!canvas) return;
+    const rect = canvas.getBoundingClientRect();
+    width = Math.max(1, rect.width || window.innerWidth); height = Math.max(1, rect.height || window.innerHeight);
+    ratio = Math.min(window.devicePixelRatio || 1, 2, Math.sqrt(2100000 / (width * height)));
+    canvas.width = Math.round(width * ratio); canvas.height = Math.round(height * ratio);
+    if (phase > .46) renderer?.draw();
+  }
+  function applyTransition() {
+    window.MyMoneyOrbit?.setAssistantMix(phase);
+    // A short gap gives the fluid time to disappear before the first point.
+    if (canvas) canvas.style.opacity = String(smooth((phase - .46) / .54));
+  }
+  function tick(now) {
+    frame = 0;
+    if (destroyed || document.hidden) return;
+    const dt = Math.min(.05, Math.max(0, (now - last) / 1000)); last = now;
+    phase = Math.max(0, Math.min(1, phase + (active ? 1 : -1) * dt / .9));
+    // A stalled or ended meter must never leave the cloud stuck expanded.
+    const target = listening && now - audioAt < 220 ? level : 0;
+    audio += (target - audio) * (1 - Math.exp(-dt * (target > audio ? 18 : 7)));
+    if (audio < .0001) audio = 0;
+    clock += dt;
+    applyTransition();
+    if (phase > .46) renderer?.draw();
+    if (active || phase > 0) frame = requestAnimationFrame(tick);
+    else {
+      audio = level = 0;
+      if (canvas) canvas.style.display = 'none';
+    }
+  }
+  function wake() {
+    cancelAnimationFrame(frame); frame = 0;
+    if (document.hidden || destroyed) return;
+    if (motion.matches) {
+      phase = active ? 1 : 0; audio = 0; applyTransition();
+      if (active) renderer?.draw(); else if (canvas) canvas.style.display = 'none';
+      return;
+    }
+    last = performance.now();
+    if (active || phase > 0) frame = requestAnimationFrame(tick);
+  }
+  function setActive(value) {
+    if (destroyed) return false;
+    const next = !!value;
+    if (next && !createRenderer()) return false;
+    if (next === active) return true;
+    active = next;
+    if (canvas) canvas.style.display = '';
+    if (!active) { listening = false; level = 0; }
+    wake();
+    return true;
+  }
+  function setAudioLevel(value) {
+    level = Number.isFinite(value) && listening && active ? Math.max(0, Math.min(1, value)) : 0;
+    audioAt = performance.now();
+  }
+  function setListening(value) { listening = !!value; if (!listening) level = 0; }
+  function visibility() { if (document.hidden) { cancelAnimationFrame(frame); frame = 0; audio = level = 0; } else wake(); }
+  function destroy() {
+    if (destroyed) return;
+    destroyed = true; active = listening = false; cancelAnimationFrame(frame); frame = 0;
+    window.MyMoneyOrbit?.setAssistantMix(0);
+    renderer?.dispose(); renderer = null; canvas?.remove(); canvas = null;
+    document.removeEventListener('visibilitychange', visibility);
+    window.visualViewport?.removeEventListener('resize', resize);window.removeEventListener('resize', resize); window.removeEventListener('pagehide', pagehide); window.removeEventListener('pageshow', pageshow);
+    if (motion.removeEventListener) motion.removeEventListener('change', wake); else motion.removeListener(wake);
+    if (window.MMParticles === api) delete window.MMParticles;
+  }
+  function pagehide(event) {
+    if (!event.persisted) destroy();
+    else { cancelAnimationFrame(frame); frame = 0; audio = level = 0; }
+  }
+  function pageshow() { if (!destroyed) wake(); }
+  const api = Object.freeze({ setActive, setAudioLevel, setListening, destroy });
+  window.MMParticles = api;
+  document.addEventListener('visibilitychange', visibility);
+  window.visualViewport?.addEventListener('resize', resize, { passive: true });window.addEventListener('resize', resize, { passive: true }); window.addEventListener('pagehide', pagehide);
+  window.addEventListener('pageshow', pageshow);
+  if (motion.addEventListener) motion.addEventListener('change', wake); else motion.addListener(wake);
+})();
+</script>
+<script>/* Local microphone amplitude only. No recording, upload or synthesized levels. */
+(() => {
+  'use strict';
+  let current = null, destroyed = false;
+  const finite = value => Number.isFinite(value) ? value : 0;
+  function emit(session, level, details) {
+    try { session.callback(level, details); } catch (_) { /* UI failure must not retain the microphone. */ }
+  }
+  function releaseStream(stream) { stream?.getTracks().forEach(track => { try { track.stop(); } catch (_) {} }); }
+  function dispose(session, status = 'cancelled', reason = 'stopped') {
+    if (!session || session.disposed) return;
+    session.disposed = true;
+    cancelAnimationFrame(session.frame);
+    clearTimeout(session.timeout);
+    session.remove.forEach(remove => remove());
+    try { session.source?.disconnect(); session.analyser?.disconnect(); } catch (_) {}
+    releaseStream(session.stream);
+    if (session.context && session.context.state !== 'closed') {
+      try { Promise.resolve(session.context.close()).catch(() => {}); } catch (_) {}
+    }
+    session.cancel({ status, reason });
+    if (current === session) current = null;
+    emit(session, 0, { status, reason, rms: 0, peak: 0 });
+  }
+  function stop(reason = 'stopped') { dispose(current, 'cancelled', reason); }
+  function unavailable(callback, reason) {
+    try { callback(0, { status: 'unavailable', reason, rms: 0, peak: 0 }); } catch (_) {}
+    return { status: 'unavailable', reason };
+  }
+  function listen(session, target, name, handler) {
+    target.addEventListener(name, handler);
+    session.remove.push(() => target.removeEventListener(name, handler));
+  }
+  async function start(callback, options = {}) {
+    stop('restarted');
+    if (typeof callback !== 'function') return { status: 'unavailable', reason: 'missing-callback' };
+    if (destroyed || document.hidden) return unavailable(callback, 'inactive-page');
+    const AudioContext = window.AudioContext || window.webkitAudioContext;
+    if (!AudioContext || !navigator.mediaDevices?.getUserMedia) return unavailable(callback, 'unsupported');
+    if (navigator.userActivation?.isActive === false) return unavailable(callback, 'gesture-required');
+    const agent = navigator.userAgent || '';
+    const webKit = /iPhone|iPad|iPod/.test(agent) || /Safari/.test(agent) && !/Chrome|Chromium|Edg|Android/.test(agent);
+    // Some WebKit versions mute a second capture track during recognition.
+    // A caller may opt into a real attempt; mute/interruption then tears down
+    // only this meter, leaving the browser recognizer entirely untouched.
+    if (options.recognitionActive && webKit && options.allowConcurrent !== true) return unavailable(callback, 'concurrent-capture');
+    const session = { callback, disposed: false, frame: 0, timeout: 0, context: null, stream: null, source: null, analyser: null, remove: [], cancel: null };
+    const cancellation = new Promise(resolve => { session.cancel = resolve; });
+    current = session;
+    emit(session, 0, { status: 'starting', rms: 0, peak: 0 });
+    try {
+      // Both calls happen synchronously in start(), before its first await, so
+      // the original click/press can unlock Web Audio and request capture.
+      session.context = new AudioContext({ latencyHint: 'interactive' });
+      const resumed = Promise.resolve(session.context.resume()).then(() => true, () => false);
+      const capture = navigator.mediaDevices.getUserMedia({ audio: { echoCancellation: true, noiseSuppression: true, autoGainControl: false }, video: false });
+      const media = Promise.resolve(capture).then(stream => {
+        if (session.disposed || current !== session) { releaseStream(stream); return { status: 'cancelled', reason: 'stale-capture' }; }
+        return { stream };
+      }, error => ({ error }));
+      const acquired = await Promise.race([media, cancellation]);
+      if (!acquired.stream) {
+        if (acquired.error) throw acquired.error;
+        return { status: acquired.status || 'cancelled', reason: acquired.reason || 'stopped' };
+      }
+      session.stream = acquired.stream;
+      if (session.disposed || current !== session) { releaseStream(session.stream); return { status: 'cancelled', reason: 'stale-capture' }; }
+      const ready = await Promise.race([resumed, cancellation, new Promise(resolve => { session.timeout = setTimeout(() => resolve(false), 1800); })]);
+      clearTimeout(session.timeout); session.timeout = 0;
+      if (session.disposed || current !== session) return { status: 'cancelled', reason: 'stopped' };
+      if (ready !== true || session.context.state !== 'running') {
+        dispose(session, 'unavailable', 'audio-context-suspended');
+        return { status: 'unavailable', reason: 'audio-context-suspended' };
+      }
+      const tracks = session.stream.getAudioTracks();
+      if (!tracks.length || tracks.some(track => track.muted || track.readyState !== 'live')) {
+        dispose(session, 'unavailable', 'capture-muted');
+        return { status: 'unavailable', reason: 'capture-muted' };
+      }
+      session.analyser = session.context.createAnalyser();
+      session.analyser.fftSize = 512;
+      session.analyser.smoothingTimeConstant = 0;
+      session.source = session.context.createMediaStreamSource(session.stream);
+      session.source.connect(session.analyser); // Deliberately never connect to speakers.
+      const samples = new Float32Array(session.analyser.fftSize);
+      tracks.forEach(track => {
+        listen(session, track, 'mute', () => dispose(session, 'unavailable', 'capture-muted'));
+        listen(session, track, 'ended', () => dispose(session, 'unavailable', 'capture-ended'));
+      });
+      listen(session, session.context, 'statechange', () => {
+        if (session.context.state !== 'running') dispose(session, 'unavailable', 'audio-context-interrupted');
+      });
+      function sample() {
+        session.frame = 0;
+        if (session.disposed || current !== session) return;
+        if (document.hidden) { dispose(session, 'cancelled', 'hidden'); return; }
+        try {
+          session.analyser.getFloatTimeDomainData(samples);
+          let mean = 0, square = 0, peak = 0;
+          for (let i = 0; i < samples.length; i++) mean += finite(samples[i]);
+          mean /= samples.length;
+          for (let i = 0; i < samples.length; i++) { const amplitude = finite(samples[i]) - mean; square += amplitude * amplitude; peak = Math.max(peak, Math.abs(amplitude)); }
+          const rms = Math.sqrt(square / samples.length);
+          const level = Math.min(1, Math.max(0, rms - .006) * 5.5 + Math.max(0, peak - .02) * .45);
+          emit(session, level, { status: 'active', rms, peak });
+          if (!session.disposed && current === session) session.frame = requestAnimationFrame(sample);
+        } catch (_) { dispose(session, 'unavailable', 'analysis-failed'); }
+      }
+      emit(session, 0, { status: 'active', rms: 0, peak: 0 });
+      if (!session.disposed && current === session) session.frame = requestAnimationFrame(sample);
+      return { status: 'active' };
+    } catch (error) {
+      if (session.disposed || current !== session) return { status: 'cancelled', reason: 'stopped' };
+      const status = error?.name === 'NotAllowedError' || error?.name === 'PermissionDeniedError' ? 'denied' : 'unavailable';
+      const reason = status === 'denied' ? 'permission-denied' : 'capture-failed';
+      dispose(session, status, reason);
+      return { status, reason };
+    }
+  }
+  function visibility() { if (document.hidden) stop('hidden'); }
+  function pagehide() { stop('pagehide'); }
+  function destroy() {
+    destroyed = true; stop('destroyed');
+    document.removeEventListener('visibilitychange', visibility); window.removeEventListener('pagehide', pagehide);
+    if (window.MMVoiceMeter === api) delete window.MMVoiceMeter;
+  }
+  const api = Object.freeze({ start, stop, destroy });
+  window.MMVoiceMeter = api;
+  document.addEventListener('visibilitychange', visibility); window.addEventListener('pagehide', pagehide);
 })();
 </script>
 </body></html>
