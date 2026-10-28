@@ -415,12 +415,53 @@ dialog input:focus,dialog select:focus,dialog textarea:focus { background-color:
   dialog,.desktop-controls,.toast { background:oklch(20% .004 250); backdrop-filter:none; -webkit-backdrop-filter:none; }
   dialog { --line:oklch(85% .004 250 / .35); --muted:oklch(85% .004 250); }
 }
+
+/* The assistant lives in the scene. Only its controls use a glass surface. */
+html.assistant-open .wordmark { opacity:0; }
+#voice-sheet.assistant-sheet { position:fixed; inset:0; width:100%; max-width:none; height:100dvh; max-height:none; margin:0; padding:0; border:0; border-radius:0; background:transparent; box-shadow:none; backdrop-filter:none; -webkit-backdrop-filter:none; overflow-y:auto; overscroll-behavior:contain; }
+#voice-sheet.assistant-sheet::before,#voice-sheet.assistant-sheet::after { display:none; }
+#voice-sheet.assistant-sheet::backdrop { background:rgb(3 5 7 / .2); backdrop-filter:none; -webkit-backdrop-filter:none; }
+#voice-sheet .dialog-head { position:relative; padding:calc(env(safe-area-inset-top,0px) + 22px) 24px 0; background:none; border:0; max-width:780px; margin:auto; }
+#voice-sheet .dialog-head h2 { font-size:15px; letter-spacing:-.3px; color:var(--muted); font-weight:400; }
+#voice-sheet .dialog-head button { background:rgb(230 240 245 / .06); }
+.assistant-orb { position:absolute; top:33svh; left:50%; width:clamp(180px,23svh,240px); aspect-ratio:1; transform:translate(-50%,-50%); pointer-events:none; z-index:1; mix-blend-mode:screen; opacity:0; transition:opacity 650ms ease; }
+.assistant-orb img { width:100%; height:100%; object-fit:contain; display:block; }
+html.assistant-open[data-scene=listening] .assistant-orb img { animation:assistant-breathe 2.8s ease-in-out infinite; }
+#voice-sheet .assistant-content { position:relative; width:min(100%,476px); margin:calc(47svh - 62px) auto 0; padding:0 25px calc(env(safe-area-inset-bottom,0px) + 32px); }
+#voice-sheet .voice-status { text-align:center; min-height:20px; margin:0 0 15px; }
+#voice-sheet #natural { min-height:82px; height:88px; max-height:180px; font-size:24px; line-height:1.4; text-align:center; font-weight:400; }
+#voice-sheet #natural::placeholder { color:oklch(78% .01 240); }
+#voice-sheet #voice-compose:focus-within #natural { box-shadow:none; }
+#voice-sheet #natural:focus-visible { outline:1px solid var(--line); outline-offset:7px; border-radius:10px; }
+#voice-sheet .voice-actions { justify-content:center; margin-top:23px; }
+#voice-sheet .voice-actions>button { background:rgb(225 235 240 / .08); border:1px solid rgb(225 235 240 / .09); color:var(--text); backdrop-filter:blur(10px); -webkit-backdrop-filter:blur(10px); }
+#voice-sheet .voice-actions .mic-listening { color:var(--accent); border-color:rgb(157 220 241 / .3); animation:none; }
+#voice-sheet .assistant-privacy { max-width:300px; margin:20px auto 0; text-align:center; font-size:10px; opacity:.75; }
+.assistant-example { display:block; max-width:100%; margin:12px auto 0; padding:9px 13px; min-height:44px; border-radius:30px; font-size:11px; font-weight:400; color:var(--muted); background:rgb(230 240 245 / .04); border:1px solid var(--line); }
+#advisor-answer h3 { font-size:31px; font-weight:450; line-height:1.16; letter-spacing:-1px; margin:10px 0 14px; }
+#advisor-explanation { font-size:16px; line-height:1.6; color:var(--text); margin:0 0 16px; }
+.assistant-eyebrow { color:var(--muted); font-size:12px; margin:0; }
+#advisor-details { border-top:1px solid var(--line); }
+#advisor-details summary { font-size:12px; }
+#advisor-lines { padding-left:17px; color:var(--muted); font-size:12px; line-height:1.6; }
+#advisor-lines li { margin-bottom:10px; }
+#advisor-answer .preview-actions>button { font-size:12px; min-height:48px; }
+#voice-sheet #command-preview,#advisor-answer { padding:20px 22px; border:1px solid rgb(230 240 245 / .07); border-radius:26px; background:rgb(12 17 19 / .4); backdrop-filter:blur(10px); -webkit-backdrop-filter:blur(10px); }
+@keyframes assistant-breathe { 50% { transform:scale(1.035) rotate(2deg); opacity:.8; } }
+@media(max-height:600px) { .assistant-orb { top:25svh; width:130px; } #voice-sheet .assistant-content { margin-top:calc(38svh - 62px); } }
+@media(prefers-reduced-motion:reduce) { html.assistant-open[data-scene=listening] .assistant-orb img { animation:none; } }
+@media(prefers-reduced-transparency:reduce) { #voice-sheet #command-preview,#advisor-answer { background:#12191b; backdrop-filter:none; -webkit-backdrop-filter:none; } }
+
+html.assistant-open .assistant-orb { opacity:.9; }
+
+#advisor-title:focus,#command-title:focus { outline:none; }
 </style>
 </head>
 <body>
 <main id="experience" aria-label="MyMoney">
   <canvas id="orb-canvas" aria-hidden="true"></canvas>
   <div class="scene-shade" aria-hidden="true"></div>
+<div class="assistant-orb" aria-hidden="true"><img src="./assistant-symbol.png" width="512" height="512" alt=""></div>
   <button id="touch-surface" aria-label="Aggiungi una spesa" data-i18n-aria-label="Aggiungi una spesa" aria-describedby="gesture-instructions"></button>
   <h1 class="wordmark" aria-hidden="true">MyMoney<span class="wordmark-point">.</span></h1>
   <div id="gesture-hints" class="gesture-hints">
@@ -527,12 +568,19 @@ dialog input:focus,dialog select:focus,dialog textarea:focus { background-color:
   </div><div class="dialog-footer"><button type="submit" id="quick-save"><span data-i18n="Salva">Salva</span> <span data-icon="check"></span></button></div></form>
 </dialog>
 
-<dialog id="voice-sheet" class="dialog voice-sheet" aria-labelledby="voice-title">
-  <div class="dialog-head"><h2 id="voice-title" data-i18n="Dimmi pure.">Dimmi pure.</h2><button id="close-voice" class="icon-button" aria-label="Chiudi dettatura" data-i18n-aria-label="Chiudi dettatura"><span data-icon="close"></span></button></div>
-  <div class="dialog-body">
+<dialog id="voice-sheet" class="dialog voice-sheet assistant-sheet" aria-labelledby="voice-title">
+  <div class="dialog-head"><h2 id="voice-title" data-i18n="Sono qui.">Sono qui.</h2><button id="close-voice" class="icon-button" aria-label="Chiudi assistente" data-i18n-aria-label="Chiudi assistente"><span data-icon="close"></span></button></div>
+  <div class="dialog-body assistant-content">
     <section id="voice-consent" hidden><p data-i18n="La dettatura usa il servizio vocale del browser, che può elaborare l’audio online.">La dettatura usa il servizio vocale del browser, che può elaborare l’audio online.</p><button id="voice-enable" class="full-width"><span data-i18n="Attiva microfono">Attiva microfono</span> <span data-icon="mic"></span></button><button id="voice-write" class="quiet full-width" data-i18n="Preferisco scrivere">Preferisco scrivere</button></section>
-    <div id="voice-compose"><p class="voice-status" id="voice-status" role="status"></p><label class="sr-only" for="natural" data-i18n="Scrivi una spesa o una modifica">Scrivi una spesa o una modifica</label><textarea id="natural" rows="2" maxlength="4000" placeholder="Una spesa. O quello che vuoi cambiare." data-i18n-placeholder="Una spesa. O quello che vuoi cambiare."></textarea><div class="voice-actions"><button class="icon-button" id="mic" aria-label="Avvia dettatura" data-i18n-aria-label="Avvia dettatura"><span data-icon="mic"></span></button><button id="interpret"><span data-i18n="Continua">Continua</span> <span data-icon="arrow"></span></button></div><p class="tiny" data-i18n="La voce usa il servizio del browser, anche online. MyMoney non conserva audio.">La voce usa il servizio del browser, anche online. MyMoney non conserva audio.</p></div>
+    <div id="voice-compose"><p class="voice-status" id="voice-status" role="status"></p><label class="sr-only" for="natural" data-i18n="Scrivi una spesa, una modifica o una domanda">Scrivi una spesa, una modifica o una domanda</label><textarea id="natural" rows="2" maxlength="4000" placeholder="Una spesa. Una domanda. Ti ascolto." data-i18n-placeholder="Una spesa. Una domanda. Ti ascolto."></textarea><button id="assistant-example" class="assistant-example" data-i18n="Posso permettermi scarpe da 180 €?">Posso permettermi scarpe da 180 €?</button><div class="voice-actions"><button class="icon-button" id="mic" aria-label="Avvia dettatura" data-i18n-aria-label="Avvia dettatura"><span data-icon="mic"></span></button><button id="interpret"><span data-i18n="Continua">Continua</span> <span data-icon="arrow"></span></button></div><p class="tiny assistant-privacy" data-i18n="La voce usa il servizio del browser, anche online. MyMoney non conserva audio.">La voce usa il servizio del browser, anche online. MyMoney non conserva audio.</p></div>
     <section id="command-preview" hidden aria-label="Proposta da confermare" data-i18n-aria-label="Proposta da confermare" aria-live="polite"><h3 id="command-title"></h3><p id="command-description" class="tiny"></p><div id="command-lines"></div><div class="preview-actions"><button class="ghost" id="command-edit" data-i18n="Modifica">Modifica</button><button id="command-save" data-i18n="Conferma">Conferma</button></div><button class="quiet full-width" id="command-close" data-i18n="Riprova">Riprova</button><div id="command-error" class="notice error" role="alert" hidden></div></section>
+    <section id="advisor-answer" hidden aria-live="polite">
+      <p id="advisor-item" class="assistant-eyebrow"></p>
+      <h3 id="advisor-title"></h3><p id="advisor-explanation"></p>
+      <details id="advisor-details"><summary data-i18n="Come l’ho calcolato">Come l’ho calcolato</summary><ul id="advisor-lines"></ul></details>
+      <p class="tiny" data-i18n="Simulazione sui dati registrati. Nessuna spesa aggiunta.">Simulazione sui dati registrati. Nessuna spesa aggiunta.</p>
+      <div class="preview-actions"><button id="advisor-write" class="ghost" data-i18n="Modifica domanda">Modifica domanda</button><button id="advisor-voice"><span data-icon="mic"></span><span data-i18n="Chiedi ancora">Chiedi ancora</span></button></div>
+    </section>
   </div>
 </dialog>
 <input id="import-file" type="file" accept="application/json,.json" hidden>
@@ -544,6 +592,20 @@ dialog input:focus,dialog select:focus,dialog textarea:focus { background-color:
 (function(root){
   'use strict';
   const EN={
+  "Sono qui.":"I’m here.",
+  "Chiudi assistente":"Close assistant",
+  "Scrivi una spesa, una modifica o una domanda":"Type an expense, a change or a question",
+  "Una spesa. Una domanda. Ti ascolto.":"An expense. A question. I’m listening.",
+  "Posso permettermi scarpe da 180 €?":"Can I afford shoes for €180?",
+  "Come l’ho calcolato":"How I worked it out",
+  "Simulazione sui dati registrati. Nessuna spesa aggiunta.":"Estimate based on your records. No expense added.",
+  "Modifica domanda":"Edit question",
+  "Chiedi ancora":"Ask again",
+  "Facciamo due conti.":"Let’s work it out.",
+  "Il tuo acquisto":"Your purchase",
+  "Dimmi una spesa oppure chiedimi se puoi permetterti un acquisto.":"Tell me an expense, or ask whether you can afford a purchase.",
+  "Posso registrare spese, aggiornare il piano e valutare un acquisto. Prova: “Posso permettermi scarpe da 180 euro?”":"I can record expenses, update your plan and assess a purchase. Try: “Can I afford shoes for 180 euros?”",
+
   "Clicca per scrivere":"Click to type",
   "Tocca per scrivere":"Tap to type",
   "Tieni premuto e parla":"Hold to speak",
@@ -1009,6 +1071,8 @@ dialog input:focus,dialog select:focus,dialog textarea:focus { background-color:
     if(Object.hasOwn(EN,source))return t(source);
     if(language==='it')return source;
     // These are known engine messages, never user-entered names or notes.
+    let similarity=source.match(/^(.+): (Descrizione simile|Preferenza simile): (.+)\. Controlla la categoria\.$/);
+    if(similarity)return `${category(similarity[1])}: ${similarity[2]==='Preferenza simile'?'Similar saved preference':'Similar description'}: ${similarity[3]}. Check the category.`;
     let match=source.match(/^Importo non valido: (.+)\.$/);
     if(match){const fields={openingBalanceCents:'opening balance',salaryCents:'salary',budgetCents:'budget',savingsGoalCents:'savings goal','risparmi separati':'separate savings',ricorrenza:'recurring expense',movimento:'transaction'};return t('Importo non valido: {field}.',{field:fields[match[1]]||match[1]});}
     match=source.match(/^Categoria ambigua: (.+) oppure (.+)\. Scegli tu\.$/);
@@ -1365,20 +1429,99 @@ dialog input:focus,dialog select:focus,dialog textarea:focus { background-color:
     ['Assicurazioni',13,'insurance'],
     ['Utenze',12,'electricity|utility bill|phone bill'],
     ['Stipendio',20,'salary|paycheck|paycheque|wages'],
-    ['Rimborsi',16,'refund|reimbursement']
+    ['Rimborsi',16,'refund|reimbursement'],
+    ['Regali',15,'gift|gifts|birthday|donation'],
+    ['Pensione',15,'pension fund|retirement fund'],
+    ['Lavoro',12,'accountant|office supplies']
   ];
+
+  // Small, local example model. No transaction is used as training data: only
+  // categories explicitly remembered by this user are eligible to teach it.
+  // TF-IDF rewards distinctive words, while coverage and competing neighbours
+  // make unknown merchants and mixed descriptions abstain instead of guessing.
+  const CATEGORY_EXAMPLES = [
+    ['Casa', 'home furnishings furniture|arredo casa mobili|house rental housing rent'],
+    ['Spesa', 'weekly grocery groceries supermarket|grocery shopping|spesa settimanale alimentari'],
+    ['Mangiare fuori', 'takeaway takeout meal|cafe cafeteria espresso|dining out eating out|cena fuori ristorante|pranzo fuori trattoria'],
+    ['Trasporti', 'cab ride taxi fare|public transit transportation|bus ticket bus pass|carburante trasporto urbano'],
+    ['Auto', 'car repair mechanic servicing|tyres tires vehicle maintenance|riparazione veicolo officina'],
+    ['Viaggi', 'airfare airline travel accommodation|railway train ticket|prenotazione viaggio pernottamento'],
+    ['Salute', 'medical prescription healthcare|dental checkup treatment|visita sanitaria medicinali'],
+    ['Sport', 'fitness workout training|exercise sports membership|corso sportivo allenamento'],
+    ['Shopping', 'clothing clothing store|electronics purchase|abbigliamento accessori acquisti'],
+    ['Abbonamenti', 'streaming subscription membership|software subscription monthly|abbonamento digitale piattaforma'],
+    ['Assicurazioni', 'insurance policy premium|premio assicurativo polizza'],
+    ['Pensione', 'retirement pension contribution|contributo previdenziale pensionistico'],
+    ['Utenze', 'broadband internet bill|water electricity utilities|fornitura energia utenza'],
+    ['Regali', 'birthday present gift|charitable charity donation|regalo compleanno beneficenza'],
+    ['Lavoro', 'business professional expenses|office stationery accountant|materiale ufficio professione'],
+    ['Stipendio', 'monthly payroll salary|monthly earnings wages|retribuzione mensile stipendio'],
+    ['Rimborsi', 'purchase refund reimbursement|spese rimborsate rimborso']
+  ];
+  const CATEGORY_STOP_WORDS = new Set(('a al alla allo ai agli alle da dal dalla dallo dai dagli dalle di del della dello dei degli delle e il lo la i gli le un uno una in nel nella sul sulla con per che ho hai ha fatto fare speso pagato comprato acquistato preso ieri oggi domani euro euros eur the a an at on in of for to from with and my i me we you it this that was were have had paid spent bought yesterday today tomorrow payment pagamento costo cost please add record registra aggiungi segna favore').split(' '));
+  const categoryTokens = text => [...new Set(norm(text).match(/[a-z]+/g) || [])].filter(w => w.length >= 3 && !CATEGORY_STOP_WORDS.has(w));
+  let categoryModelCache;
+  function categoryModel(preferences) {
+    const key = JSON.stringify(preferences);
+    if (categoryModelCache?.key === key) return categoryModelCache.model;
+    const examples = CATEGORY_EXAMPLES.flatMap(([category, phrases]) => phrases.split('|').map(phrase => ({category, phrase})))
+      .concat(preferences.map(r => ({...r, remembered:true})))
+      .map(example => ({...example, tokens:categoryTokens(example.phrase)})).filter(example => example.tokens.length);
+    const frequency = new Map();
+    for (const example of examples) for (const token of example.tokens) frequency.set(token, (frequency.get(token)||0) + 1);
+    const idf = token => 1 + Math.log((examples.length + 1) / ((frequency.get(token)||0) + 1));
+    const vector = tokens => {
+      const weights = new Map(tokens.map(token => [token, idf(token)]));
+      const length = Math.hypot(...weights.values()) || 1;
+      return new Map([...weights].map(([token, weight]) => [token, weight / length]));
+    };
+    const model = {vector, examples:examples.map(example => ({...example, vector:vector(example.tokens)}))};
+    // Only one user's current preference set is retained, and removal invalidates
+    // the cache. Nothing is persisted, shared, or sent to a model provider.
+    categoryModelCache = {key, model};
+    return model;
+  }
+  function categoryByExample(text, preferences) {
+    const tokens = categoryTokens(text);
+    if (!tokens.length) return null;
+    const model = categoryModel(preferences), query = model.vector(tokens), best = new Map();
+    for (const example of model.examples) {
+      const matches = tokens.filter(token => example.vector.has(token));
+      if (matches.length / tokens.length < .5) continue;
+      const score = matches.reduce((sum, token) => sum + query.get(token) * example.vector.get(token), 0);
+      if (score > (best.get(example.category)?.score || 0)) best.set(example.category, {...example, score});
+    }
+    const [first, second] = [...best.values()].sort((a,b) => b.score - a.score);
+    if (!first || first.score < .5 || (second && first.score - second.score < .14)) return null;
+    return {category:first.category, confidence:'medium', reason:`${first.category}: ${first.remembered ? 'Preferenza simile' : 'Descrizione simile'}: ${first.phrase}. Controlla la categoria.`};
+  }
   function classify(text, learned = []) {
+    const preferences = (Array.isArray(learned) ? learned : []).filter(r => r && CATEGORIES.includes(r.category) && typeof r.phrase === 'string' && r.phrase.trim().length >= 3 && r.phrase.length <= 100).slice(0,300).map(({phrase,category}) => ({phrase,category}));
+    // Spoken self-corrections such as "non cena ma supermercato" use the
+    // corrected description, without attempting to infer arbitrary negations.
+    const context = norm(text).replace(/\b(?:non|not)\b[^.!?]*?\b(?:ma|but)\b\s*/g, ' ');
+    // An explicit correction is stronger than any automatic keyword score.
+    // The most specific matching phrase wins; equally specific conflicts abstain.
+    const remembered = preferences.filter(r => has(context,r.phrase)).map(r => ({...r, specificity:categoryTokens(r.phrase).length * 100 + norm(r.phrase).trim().length})).sort((a,b) => b.specificity - a.specificity);
+    if (remembered.length) {
+      const first = remembered[0], conflict = remembered.find(r => r.specificity === first.specificity && r.category !== first.category);
+      if (conflict) return {category:'', confidence:'low', reason:`Categoria ambigua: ${first.category} oppure ${conflict.category}. Scegli tu.`};
+      return {category:first.category, confidence:'high', reason:`${first.category}: Preferenza: ${first.phrase}`};
+    }
     const scores = new Map(), evidence = new Map();
     const add = (cat, score, why) => { scores.set(cat, (scores.get(cat)||0)+score); evidence.set(cat, [...(evidence.get(cat)||[]),why]); };
     for (const [cat,score,phrases] of RULES) {
-      const matches = phrases.split('|').filter(p=>has(text,p));
+      const matches = phrases.split('|').filter(p=>has(context,p));
       if (matches.length) add(cat, score + Math.min(3,matches.length-1), matches.join(', '));
     }
-    for (const r of learned) if (CATEGORIES.includes(r.category) && r.phrase.length >= 3 && has(text,r.phrase)) add(r.category,25,`Preferenza: ${r.phrase}`);
     const sorted = [...scores].sort((a,b)=>b[1]-a[1]);
-    if (!sorted.length) return {category:'', confidence:'low', reason:'Descrizione non riconosciuta: scegli la categoria, senza supposizioni.'};
+    if (!sorted.length) return categoryByExample(context, preferences) || {category:'', confidence:'low', reason:'Descrizione non riconosciuta: scegli la categoria, senza supposizioni.'};
     const [cat,score] = sorted[0], margin = score-(sorted[1]?.[1]||0);
     if (sorted[1] && margin < 3) return {category:'', confidence:'low', reason:`Categoria ambigua: ${cat} oppure ${sorted[1][0]}. Scegli tu.`};
+    if (score < 8) {
+      const example = categoryByExample(context, preferences);
+      if (example) return example;
+    }
     return {category:cat, confidence:score >= 8 ? 'high' : 'medium', reason:`${cat}: ${evidence.get(cat).join(' · ')}${score < 8 ? '. Negozio generico: controlla la categoria.' : ''}`};
   }
 
@@ -1592,6 +1735,178 @@ dialog input:focus,dialog select:focus,dialog textarea:focus { background-color:
   if(typeof module!=='undefined'&&module.exports)module.exports=api;
 })(typeof globalThis!=='undefined'?globalThis:this);
 </script>
+<script>/* MyMoney — explainable, local purchase simulation. Never writes a movement. */
+(function (root) {
+  'use strict';
+  const M = typeof module !== 'undefined' && module.exports ? require('./core.js') : root.MM;
+  const sum = values => values.reduce((a, b) => a + b, 0);
+  const days = (a, b) => Math.round((Date.parse(b + 'T12:00:00Z') - Date.parse(a + 'T12:00:00Z')) / 86400000);
+  const key = t => t.recurringId ? t.recurringId + ':' + (t.dueDate || t.date) : null;
+  const regularSalary = t => t.type === 'income' && t.category === 'Stipendio' && !/\b(bonus|tredicesima|quattordicesima|extra|13th|14th|thirteenth|fourteenth)\b/.test(M.norm(t.note || ''));
+
+  function isPurchaseQuestion(text) {
+    const s = M.norm(text);
+    return /\b(?:posso|potrei|possiamo|potremmo)\s+(?:ancora\s+)?(?:permetter(?:e|mi|ci|melo|celo|le|lo|la|mele|cele)|comprare|comprarmi|acquistare|acquistarmi|spendere|prendere|prendermi)\b/.test(s)
+      || /\b(?:me lo posso permettere|posso permettermelo|ho abbastanza|mi bastano|quanto posso spendere)\b/.test(s)
+      || /\b(?:vorrei|mi piacerebbe)\s+(?:comprare|comprarmi|acquistare|acquistarmi|prendere|prendermi)\b/.test(s)
+      || /\b(?:mi conviene|conviene|riesco a|riusciamo a)\s+(?:comprare|comprarmi|acquistare|acquistarmi|prendere|prendermi|spendere|permettermi|permetterci)\b/.test(s)
+      || /\b(?:can|could|should)\s+(?:i|we)\s+(?:still\s+)?(?:afford|buy|purchase|spend|get)\b/.test(s)
+      || /\b(?:do i have enough|how much can i spend|(?:i would|i'd|i want to)\s+(?:like to\s+)?(?:buy|purchase))\b/.test(s);
+  }
+
+  function isQuestion(text) {
+    const s = M.norm(text).trim();
+    return isPurchaseQuestion(s) || /[?？]/.test(s)
+      || /^(?:(?:ciao|ehi|senti|scusa|hey|hi|please|per favore)[,\s]+)*(?:quanto|quanta|quanti|quante|come|quando|perche|dove|chi|cosa|che cosa|e se|se invece|secondo te|dimmi se|mi dici se|what|how|when|why|where|who|and if|what if|do you think|tell me if)\b/.test(s);
+  }
+
+  function purchaseName(text, ref, dateInfo, amountInfo) {
+    let name = M.entryName(text, ref, dateInfo, amountInfo)
+      .replace(/^(?:(?:ciao|senti|scusa|ehi|hey|hi|please|per favore)[,\s]+)+/i, '')
+      .replace(/^(?:(?:secondo te|mi dici se|dimmi se|do you think|tell me if)\s+)?/i, '')
+      .replace(/^(?:mi conviene|conviene|riesco a|riusciamo a)\s+(?:comprare|comprarmi|acquistare|acquistarmi|prendere|prendermi|spendere|permettermi|permetterci)\s*/i, '')
+      .replace(/^(?:(?:(?:mi|ci)\s+)?(?:posso|potrei|possiamo|potremmo)\s+(?:ancora\s+)?(?:permettermi|permetterci|permettermelo|permettere|comprare|comprarmi|acquistare|acquistarmi|prendere|prendermi|spendere)|(?:vorrei|mi piacerebbe)\s+(?:comprare|comprarmi|acquistare|acquistarmi|prendere|prendermi)|(?:can|could|should)\s+(?:i|we)\s+(?:still\s+)?(?:afford|buy|purchase|spend|get)|(?:i would|i['’]d|i want to)\s+(?:like to\s+)?(?:buy|purchase)|do i have enough(?:\s+money)?\s+for|ho abbastanza(?:\s+soldi)?\s+per)\s*/i, '')
+      .replace(/\s*(?:me (?:lo|le) posso permettere|posso permetterm(?:elo|ele)|can i afford (?:it|this|that))\s*[?.!]*$/i, '')
+      .replace(/^(?:(?:un paio di|a pair of|di|per|for|on|to|buy|comprare|un|uno|una|il|lo|la|le|i|gli|questo|questa|queste|questi|a|an|the|these|those|this|that)\s+)+/i, '')
+      .replace(/\b(?:che costa|che costano|costing|costs?|worth)\s*$/i, '')
+      .replace(/[?!.,:;]+$/g, '').trim();
+    if (/^(?:spendere|spend|permettermelo|afford|it|this|that)$/i.test(name)) name = '';
+    return name && !/[A-ZÀ-Ý]/.test(name.split(/\s/)[0].slice(1)) ? name[0].toLocaleUpperCase() + name.slice(1) : name;
+  }
+
+  function interpret(text, state, ref = M.today(), language = 'it') {
+    if (!isQuestion(String(text || ''))) return null;
+    const en = String(language).startsWith('en');
+    const tr = (it, english) => en ? english : it;
+    const money = n => new Intl.NumberFormat(en ? 'en-IE' : 'it-IT', {style:'currency', currency:'EUR', maximumFractionDigits:n % 100 ? 2 : 0}).format(n / 100);
+    const date = value => new Intl.DateTimeFormat(en ? 'en-GB' : 'it-IT', {day:'numeric', month:'long'}).format(M.dateObj(value));
+    const result = {kind:'affordability', verdict:'unknown', amountCents:null, item:'', horizonEnd:null, daysRemaining:null,
+      remainingCents:null, remainingDailyCents:null, title:tr('Facciamo due conti.', 'Let’s work it out.'), explanation:'', details:[], reasons:[], model:{}, canRecord:false};
+    const unknown = (code, message) => {result.reasons.push(code); result.explanation = message; return result;};
+    if (!isPurchaseQuestion(text)) return unknown('unsupported-question', tr('Posso simulare un acquisto senza registrarlo. Dimmi la domanda completa, per esempio: «Posso comprare scarpe da 80 euro?»', 'I can check a purchase without recording it. Tell me the full question, for example: “Can I afford shoes for 80 euros?”'));
+    if (!M.validDate(ref)) return unknown('invalid-date', tr('Non riesco a verificare la data di oggi.', 'I can’t verify today’s date.'));
+    if (/[$£¥]|\b(?:dollars?|dollari|sterline|pounds?|usd|gbp|jpy|chf|franchi)\b/i.test(text)) return unknown('unsupported-currency', tr('Il tuo archivio è in euro: indicami il prezzo in euro, senza conversioni indovinate.', 'Your records use euros: tell me the price in euros so I do not guess an exchange rate.'));
+    const dateInfo = M.parseDate(text, ref), amountInfo = M.parseAmount(dateInfo.masked);
+    // Product model numbers (iPhone 17) are not prices. A price must carry a
+    // currency, or be introduced by an explicit price/spending expression.
+    const amountSpan = amountInfo.spans[0];
+    const currencyPrice = amountSpan && /€|\beur(?:os?)?\b/.test(dateInfo.masked.slice(...amountSpan));
+    const priceContext = amountSpan && /\b(?:da|per|a|for|costing|costs?|worth|spendere|spend)\s*$/.test(dateInfo.masked.slice(0, amountSpan[0]));
+    if (amountInfo.amountCents && !currencyPrice && !priceContext) return unknown('missing-price', tr('Quel numero potrebbe essere il modello del prodotto. Dimmi il prezzo in euro.', 'That number could be a product model. Tell me the price in euros.'));
+    if (amountSpan) {
+      const unused = Array.from(dateInfo.masked).map((char, i) => amountInfo.spans.some(([a,b]) => i >= a && i < b) ? ' ' : char).join('');
+      const competingNumber = [...unused.matchAll(/\b\d+(?:[.,]\d+)?\b/g)].some(m => /\b(?:o|oppure|or|e|and|vs|versus|anziche|invece|instead|da|per|a|for|costing|costs?|worth)\s*$/.test(unused.slice(0, m.index)));
+      const alternative = unused.match(/\b(?:o|oppure|or|versus|vs|anziche|instead)\s+(.+)$/);
+      const alternativePrice = alternative && (/[0-9]/.test(alternative[1]) || M.parseAmount(alternative[1].replace(/[?.!]+$/, '') + ' euro').amountCents);
+      if (competingNumber || alternativePrice) return unknown('ambiguous-price', tr('Ho sentito più prezzi. Dimmi un solo acquisto con il suo prezzo in euro.', 'I heard more than one price. Tell me one purchase and its price in euros.'));
+    }
+    result.amountCents = amountInfo.amountCents;
+    result.item = purchaseName(text, ref, dateInfo, amountInfo);
+    if (!Number.isSafeInteger(result.amountCents) || result.amountCents <= 0) return unknown('missing-price', tr('Dimmi un solo prezzo, per esempio: «Posso comprare scarpe da 180 euro?»', 'Tell me one price, for example: “Can I afford shoes for 180 euros?”'));
+    if (!dateInfo.date) return unknown('ambiguous-date', tr('Indica una sola data per l’acquisto.', 'Tell me one date for the purchase.'));
+    if (/\b(?:a rate|al mese|ogni mese|mensil[ei]|installments?|per month|every month|monthly|finanziamento|loan)\b/i.test(text)) return unknown('repeating-purchase', tr('Per ora simulo un acquisto singolo. Per rate o abbonamenti serve conoscere anche durata e costo totale.', 'For now I simulate a single purchase. Instalments or subscriptions also need a duration and total cost.'));
+    if (!state?.settings?.initialized || !M.validDate(state.settings.openingDate) || state.settings.openingDate > ref) return unknown('missing-balance', tr('Prima imposta saldo e data iniziali nelle Preferenze: mi servono per fare un conto attendibile.', 'First set your opening balance and date in Preferences so I can calculate reliably.'));
+    const s = state.settings, transactions = state.transactions || [], recurring = state.recurring || [];
+    const cycle = M.cycle(ref, s.payday), paid = transactions.filter(t => t.status === 'paid' && t.date <= ref);
+    const balance = s.openingBalanceCents + sum(paid.filter(t => !t.includedInOpening).map(t => t.type === 'income' ? t.amountCents : -t.amountCents));
+    const plannedSalaries = transactions.filter(t => t.status === 'planned' && regularSalary(t) && t.date > ref && t.amountCents > 0).sort((a,b) => a.date.localeCompare(b.date));
+    const nextSalary = plannedSalaries[0];
+    // A dated salary overrides the general payday. Bonuses never shorten the horizon.
+    const hasPayday = Boolean(nextSalary || s.salaryCents > 0);
+    const horizonEnd = nextSalary?.date || (hasPayday ? cycle.end : M.iso(new Date(M.dateObj(ref).getFullYear(), M.dateObj(ref).getMonth() + 1, 1, 12)));
+    Object.assign(result, {horizonEnd, daysRemaining:Math.max(1, days(ref, horizonEnd))});
+    if (dateInfo.explicit && dateInfo.date >= horizonEnd) return unknown('purchase-after-payday', tr('Quell’acquisto è nel prossimo periodo. Chiedimelo di nuovo quando l’entrata sarà registrata: non considero già disponibili soldi futuri.', 'That purchase is in the next period. Ask again once the income is recorded: future money is not available yet.'));
+    if (dateInfo.explicit && dateInfo.date < ref) return unknown('past-purchase', tr('Questo è un conto prima di comprare. Per una spesa già fatta, dimmi nome, data e importo.', 'This is a check before buying. For an expense already paid, tell me the name, date and amount.'));
+
+    const paidKeys = new Set(), duplicateKeys = new Set();
+    for (const t of paid.filter(t => t.type === 'expense')) {const k = key(t); if (k && paidKeys.has(k)) duplicateKeys.add(k); if (k) paidKeys.add(k);}
+    const planned = [], plannedKeys = new Set();
+    for (const t of transactions.filter(t => t.status === 'planned' && t.type === 'expense')) {
+      const k = key(t);
+      if (k && paidKeys.has(k)) continue;
+      if (k && plannedKeys.has(k)) {duplicateKeys.add(k); continue;}
+      if (k) plannedKeys.add(k);
+      planned.push(t);
+    }
+    const obligations = planned.filter(t => t.date < horizonEnd).map(t => ({id:t.id,date:t.date,amountCents:t.amountCents,recurring:Boolean(t.recurringId),countBudget:t.countBudget,source:'planned'}));
+    for (const r of recurring.filter(r => r.active && r.startDate)) {
+      for (const due of M.occurrences(r, s.openingDate, horizonEnd)) {
+        const k = r.id + ':' + due;
+        if (paidKeys.has(k) || plannedKeys.has(k)) continue;
+        obligations.push({id:r.id,date:due,amountCents:r.amountCents,recurring:true,countBudget:true,source:'recurring'});
+      }
+    }
+    const committedCents = sum(obligations.map(t => t.amountCents));
+    const overdueCents = sum(obligations.filter(t => t.date < ref).map(t => t.amountCents));
+    // Cash and a monthly budget are independent constraints: take their minimum,
+    // never subtract the same commitment twice from one combined balance.
+    const protectedSavingsCents = s.savingsGoalCents || 0;
+    const cashRemainingCents = balance - committedCents - protectedSavingsCents - result.amountCents;
+    const activeIds = new Set(recurring.filter(r => r.active && r.startDate && r.startDate < cycle.end).map(r => r.id));
+    const fixedProvisionCents = Math.round(sum(recurring.filter(r => activeIds.has(r.id)).map(r => r.amountCents / r.months)));
+    const paidVariableBudget = sum(paid.filter(t => t.type === 'expense' && t.countBudget && M.within(t.date, cycle) && !activeIds.has(t.recurringId)).map(t => t.amountCents));
+    const plannedVariableBudget = sum(planned.filter(t => t.countBudget && M.within(t.date, cycle) && !activeIds.has(t.recurringId)).map(t => t.amountCents));
+    const budgetRemainingCents = s.budgetCents > 0 ? s.budgetCents - fixedProvisionCents - paidVariableBudget - plannedVariableBudget - result.amountCents : null;
+    result.remainingCents = budgetRemainingCents === null ? cashRemainingCents : Math.min(cashRemainingCents, budgetRemainingCents);
+    result.remainingDailyCents = Math.floor(result.remainingCents / result.daysRemaining);
+
+    // One calendar month of recorded variable spending, excluding fixed costs
+    // already reserved above. Partial history is shown, but never earns a "yes".
+    const historyFrom = [s.openingDate, M.shiftMonths(ref, -1)].sort().at(-1);
+    const historyDays = Math.max(0, days(historyFrom, ref));
+    const history = paid.filter(t => t.type === 'expense' && !t.recurringId && t.date >= historyFrom && t.date < ref);
+    const historyCents = sum(history.map(t => t.amountCents));
+    const historyBudgetCents = sum(history.filter(t => t.countBudget).map(t => t.amountCents));
+    const fullHistory = historyFrom === M.shiftMonths(ref, -1) && historyCents > 0;
+    const dailyCents = historyDays ? historyCents / historyDays : 0;
+    const dailyBudgetCents = historyDays ? historyBudgetCents / historyDays : 0;
+    // Future variable plans are already reserved: only reserve the part of the
+    // historical forecast not covered by those plans. Overdue items are extra.
+    const futureVariable = obligations.filter(t => !t.recurring && t.date >= ref);
+    const forecastCents = Math.max(0, Math.ceil(dailyCents * result.daysRemaining) - sum(futureVariable.map(t => t.amountCents)));
+    const forecastBudgetCents = Math.max(0, Math.ceil(dailyBudgetCents * result.daysRemaining) - sum(futureVariable.filter(t => t.countBudget && M.within(t.date, cycle)).map(t => t.amountCents)));
+    const unknownFixedDates = recurring.some(r => r.active && !r.startDate);
+    const overdueSalary = transactions.some(t => t.status === 'planned' && regularSalary(t) && t.date <= ref);
+    const budgetCrossesCycle = budgetRemainingCents !== null && horizonEnd > cycle.end;
+    Object.assign(result.model, {asOf:ref, balanceCents:balance, cashRemainingCents, budgetRemainingCents, committedCents, overdueCents,
+      protectedSavingsCents, separateSavingsUsedCents:0, fixedProvisionCents, historyFrom, historyDays, historyCents,
+      dailyBaselineCents:Math.round(dailyCents), forecastCents, forecastBudgetCents, completeHistory:fullHistory,
+      horizonSource:nextSalary ? 'planned-salary' : hasPayday ? 'configured-payday' : 'calendar-month',
+      expectedSalaryCents:nextSalary?.amountCents ?? s.salaryCents, futureIncomeIncludedCents:0,
+      obligations, budgetCrossesCycle, duplicateRecurringPayments:duplicateKeys.size});
+    const period = hasPayday ? tr(`fino al ${date(horizonEnd)}`, `until ${date(horizonEnd)}`) : tr('fino a fine mese', 'until month end');
+    const remainder = tr(`Dopo l’acquisto resterebbero ${money(result.remainingCents)} per ${result.daysRemaining} giorni, ${period}.`, `After buying, you would have ${money(result.remainingCents)} for ${result.daysRemaining} days, ${period}.`);
+    result.details.push(tr('Calcolo locale sui movimenti registrati; nessuna spesa viene aggiunta.', 'Local calculation from recorded transactions; no expense is added.'));
+    result.details.push(tr(`Saldo: ${money(balance)}. Impegni: ${money(committedCents)}. Obiettivo risparmio protetto: ${money(protectedSavingsCents)}.`, `Balance: ${money(balance)}. Commitments: ${money(committedCents)}. Savings goal protected: ${money(protectedSavingsCents)}.`));
+    if (budgetRemainingCents !== null) result.details.push(tr(`Rispetto anche il budget del ciclo: ${money(budgetRemainingCents)} dopo l’acquisto.`, `The cycle budget also applies: ${money(budgetRemainingCents)} after the purchase.`));
+    if (historyCents > 0) result.details.push(tr(`Stima delle spese variabili: ${money(Math.round(dailyCents))} al giorno, dai ${historyDays} giorni registrati. Non è una garanzia.`, `Variable spending estimate: ${money(Math.round(dailyCents))} a day, from ${historyDays} recorded days. This is not a guarantee.`));
+    result.details.push(tr('Entrate future e risparmi separati non sono aggiunti al saldo spendibile.', 'Future income and separate savings are not added to spendable funds.'));
+    if (nextSalary) result.details.push(tr(`Uso la data dello stipendio previsto (${date(horizonEnd)}), senza anticiparne l’importo.`, `I use the planned salary date (${date(horizonEnd)}), without spending that income early.`));
+    if (overdueCents > 0) result.details.push(tr(`${money(overdueCents)} di impegni passati risultano ancora da confermare: li tengo da parte.`, `${money(overdueCents)} of earlier commitments are still unconfirmed, so I keep that money aside.`));
+    if (!hasPayday) result.details.push(tr('Non conosco la prossima entrata: la fine del mese è solo il limite della simulazione.', 'I do not know your next income date: month end is only the simulation boundary.'));
+    if (budgetCrossesCycle) result.details.push(tr('Il prossimo accredito supera il ciclo corrente: il budget del ciclo successivo non è ancora verificato.', 'The next payday is beyond this cycle: the following cycle’s budget has not been checked.'));
+    if (overdueSalary) result.details.push(tr('C’è uno stipendio previsto scaduto: verifica se è arrivato e registralo.', 'A planned salary is overdue: check whether it arrived and record it.'));
+    if (duplicateKeys.size || unknownFixedDates) return unknown('ambiguous-commitments', tr('Prima verifica gli impegni: alcuni hanno pagamenti duplicati o una data mancante. Non voglio dirti «sì» usando un conto incompleto.', 'Please check commitments first: some have duplicate payments or missing dates. I can’t give a reliable answer from incomplete records.'));
+    if (cashRemainingCents < 0 || (budgetRemainingCents !== null && budgetRemainingCents < 0)) {
+      result.verdict = 'no'; result.title = tr('Meglio di no, per ora.', 'Better not, for now.'); result.reasons.push(cashRemainingCents < 0 ? 'cash-shortfall' : 'budget-shortfall');
+      result.explanation = cashRemainingCents < 0 ? tr(`Mancherebbero ${money(-cashRemainingCents)} per coprire acquisto, impegni e obiettivo risparmio.`, `You would be ${money(-cashRemainingCents)} short after the purchase, commitments and savings goal.`) : tr(`Supereresti il budget del ciclo di ${money(-budgetRemainingCents)}. ${period[0].toLocaleUpperCase() + period.slice(1)} mancano ${result.daysRemaining} giorni.`, `You would exceed the cycle budget by ${money(-budgetRemainingCents)}. There are ${result.daysRemaining} days ${period}.`);
+    } else if (!fullHistory || !hasPayday || overdueSalary || budgetCrossesCycle) {
+      result.verdict = 'caution'; result.title = tr('Ci stai, con una riserva.', 'It fits, with a caveat.'); result.reasons.push(!fullHistory ? 'limited-history' : !hasPayday ? 'unknown-next-income' : overdueSalary ? 'unconfirmed-salary' : 'budget-horizon');
+      result.explanation = remainder + ' ' + (!fullHistory ? tr('Mi manca un mese completo di spese per stimare bene il quotidiano.', 'I need a full month of expenses to estimate everyday spending reliably.') : tr('La prossima entrata o il budget futuro richiedono conferma.', 'The next income or future budget needs confirmation.'));
+    } else if (cashRemainingCents < forecastCents || (budgetRemainingCents !== null && budgetRemainingCents < forecastBudgetCents)) {
+      result.verdict = 'caution'; result.title = tr('Io aspetterei.', 'I would wait.'); result.reasons.push('daily-spending-shortfall');
+      result.explanation = remainder + ' ' + tr('Al tuo ritmo recente, potrebbero non bastare per le altre spese.', 'At your recent spending pace, that may not cover the other expenses.');
+    } else {
+      result.verdict = 'yes'; result.title = tr('Sì, dai conti ci stai.', 'Yes, the numbers work.'); result.reasons.push('within-known-limits');
+      result.explanation = remainder + ' ' + tr('Impegni, risparmio e spese quotidiane stimate restano coperti, se hai registrato tutto.', 'Commitments, savings and estimated everyday spending remain covered, if your records are complete.');
+    }
+    return result;
+  }
+  const api = {interpret, isQuestion};
+  if (typeof module !== 'undefined' && module.exports) module.exports = api;
+  root.MyMoneyAdvisor = api;
+})(typeof globalThis !== 'undefined' ? globalThis : this);
+</script>
 <script>/* Direct manipulation, interruptible panels, and quiet keyboard/pointer focus. */
 (function(){
   'use strict';
@@ -1600,12 +1915,12 @@ dialog input:focus,dialog select:focus,dialog textarea:focus { background-color:
   const motions=new WeakMap(),returnFocus=new WeakMap();
   const surface=$('#touch-surface'),sheet=$('#data-sheet'),experience=$('#experience');
   const scrim=document.createElement('div');scrim.className='data-scrim';scrim.setAttribute('aria-hidden','true');document.body.append(scrim);
-  let callbacks={},gesture=null,drag=null,holdTimer=0,chargeFrame=0,paintFrame=0,voiceActive=false,heldPointerId=null,pendingTap=false,suppressClick=false,preview=false,origin=null,viewAnimation=null;
+  let callbacks={},gesture=null,drag=null,holdTimer=0,chargeFrame=0,paintFrame=0,voiceActive=false,assistantActive=false,heldPointerId=null,pendingTap=false,suppressClick=false,preview=false,origin=null,viewAnimation=null;
   const clamp=(v,min,max)=>Math.max(min,Math.min(max,v));
   const ease='cubic-bezier(.22,1,.36,1)';
   function dialogs(){return [...document.querySelectorAll('dialog[open]')].filter(d=>!d.classList.contains('is-closing'));}
   function scene(){
-    const active=dialogs();root.dataset.scene=voiceActive?'listening':active.some(d=>d!==sheet)?'modal':active.length?'data':gesture&&!gesture.moved?'pressing':'idle';
+    const active=dialogs();const assistant=active.some(d=>d.id==='voice-sheet');root.classList.toggle('assistant-open',assistant);if(assistant!==assistantActive){assistantActive=assistant;fluid('assistant',assistant);}root.dataset.scene=voiceActive?'listening':active.some(d=>d!==sheet)?'modal':active.length?'data':gesture&&!gesture.moved?'pressing':'idle';
   }
   function fluid(method,...args){window.MyMoneyOrbit?.[method]?.(...args);}
   function point(e){const b=experience.getBoundingClientRect();return {x:e.clientX-b.left,y:e.clientY-b.top};}
@@ -1649,6 +1964,7 @@ dialog input:focus,dialog select:focus,dialog textarea:focus { background-color:
       const dx=clamp((origin.x-b.left-b.width/2)*.2,-64,64),dy=clamp((origin.y-b.top-b.height/2)*.2,-76,76);
       start=`translate3d(${dx}px,${dy}px,0) scale(.94)`;origin=null;fluid('handoff');
     }
+    if(dialog.id==='voice-sheet')start='translate3d(0,0,0)';
     if(dialog===sheet)backdrop(1,true);
     animate(dialog,[previous||{transform:start,opacity:isDrawer?1:0},{transform:'translate3d(0,0,0) scale(1)',opacity:1}],isDrawer?300:260,()=>{dialog.style.transform='';dialog.style.opacity='';});
     if(focus)focus.focus({preventScroll:true});
@@ -1665,6 +1981,7 @@ dialog input:focus,dialog select:focus,dialog textarea:focus { background-color:
   function close(dialog,{immediate=false}={}){
     if(!dialog.open||dialog.classList.contains('is-closing'))return;
     const s=getComputedStyle(dialog),from={transform:s.transform==='none'?'translate3d(0,0,0)':s.transform,opacity:s.opacity};
+    const content=dialog.querySelector('.assistant-content');if(content)stopMotion(content);
     stopMotion(dialog);dialog.dispatchEvent(new CustomEvent('mm:closing',{bubbles:true}));dialog.classList.add('is-closing');
     if(dialog===sheet)backdrop(0,!immediate);
     const end=dialog===sheet&&!desktop.matches?`translate3d(0,${dialog.getBoundingClientRect().height+32}px,0)`:'translate3d(0,14px,0) scale(.975)';
@@ -1762,10 +2079,11 @@ dialog input:focus,dialog select:focus,dialog textarea:focus { background-color:
     }).catch(()=>{});
   }
   function swapContent(dialog,update){
-    if(!dialog.open||dialog.classList.contains('is-closing')||reduced.matches){update();return;}
+    const owner=dialog.closest('dialog')||dialog;
+    if(!owner.open||owner.classList.contains('is-closing')||reduced.matches){update();return;}
     const from=getComputedStyle(dialog).opacity;
     animate(dialog,[{opacity:from},{opacity:0}],70,()=>{
-      if(!dialog.open||dialog.classList.contains('is-closing'))return;
+      if(!owner.open||owner.classList.contains('is-closing'))return;
       update();
       animate(dialog,[{opacity:0,transform:'translate3d(0,4px,0) scale(.99)'},{opacity:1,transform:'translate3d(0,0,0) scale(1)'}],170,()=>{dialog.style.transform='';dialog.style.opacity='';});
     });
@@ -2240,7 +2558,7 @@ window.MM_FIREBASE_CONFIG = Object.freeze({
   const I=window.MyMoneyI18n,tr=I.t,money=I.money;
   const M=window.MM, UI=window.MMUI, KEY='mymoney-local-v2', PREVIOUS=KEY+'-previous', LEGACY='mymoney-ai-v1';
   const $=s=>document.querySelector(s), $$=s=>[...document.querySelectorAll(s)];
-  let state=M.blank(), storageOK=true, readOnly=false, currentView='home', historyFilter='all', reportMode='month', reportOffset=0, editingId=null, recEditingId=null, drafts=[], speech=null, toastTimer, proposal=null, proposalRevision=null, editingRevision=null, recRevision=null, settingsDirty=false, settingsRevision=null;
+  let state=M.blank(), storageOK=true, readOnly=false, currentView='home', historyFilter='all', reportMode='month', reportOffset=0, editingId=null, recEditingId=null, drafts=[], speech=null, toastTimer, proposal=null, proposalRevision=null, editingRevision=null, recRevision=null, settingsDirty=false, settingsRevision=null, advisorQuestion=null;
   const ICONS={
     check:'<path d="m5 12 4 4L19 6"/>',info:'<circle cx="12" cy="12" r="9"/><path d="M12 11v6M12 7h.01"/>',target:'<circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1"/>',
     wallet:'<path d="M4 6h14a2 2 0 0 1 2 2v10H4a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h13v2"/><path d="M20 10h-5v4h5"/>',
@@ -2410,6 +2728,7 @@ window.MM_FIREBASE_CONFIG = Object.freeze({
   function render(){
     renderHome();renderHistory();renderPlan();
     renderSettings();goQuiet(currentView);
+    if(advisorQuestion && $('#voice-sheet').open)showAdvice(advisorQuestion);
   }
   function goQuiet(view){
     for(const v of ['home','history','plan','settings'])$(`#view-${v}`).hidden=v!==view;
@@ -2466,13 +2785,35 @@ window.MM_FIREBASE_CONFIG = Object.freeze({
     if(existing){editTransaction(existing);return;}
     openDrafts([{id:M.id(),date:due>M.today()?due:M.today(),amountCents:r.amountCents,type:'expense',category:r.category,note:r.name,status:due>M.today()?'planned':'paid',includedInOpening:false,countBudget:true,recurringId:r.id,dueDate:due,reason:tr('Rata collegata: nel budget è già compresa nelle spese fisse equivalenti.')}]);
   }
+  function showAdvice(question){
+    const answer=window.MyMoneyAdvisor.interpret(question,state,M.today(),I.language);
+    if(!answer)return false;
+    advisorQuestion=question;
+    UI.swapContent($('#voice-sheet .assistant-content'),()=>{
+      $('#voice-compose').hidden=true;$('#command-preview').hidden=true;$('#advisor-answer').hidden=false;
+      $('#voice-title').textContent=tr('Facciamo due conti.');
+      $('#advisor-item').textContent=answer.amountCents?`${answer.item||tr('Il tuo acquisto')} · ${money(answer.amountCents)}`:tr('Il tuo acquisto');
+      $('#advisor-title').textContent=answer.title;$('#advisor-explanation').textContent=answer.explanation;
+      $('#advisor-answer').dataset.verdict=answer.verdict;
+      $('#advisor-lines').replaceChildren(...answer.details.map(line=>el('li',null,line)));
+      $('#advisor-details').open=false;$('#advisor-details').hidden=!answer.details.length;$('#advisor-title').tabIndex=-1;$('#advisor-title').focus({preventScroll:true});
+    });
+    return true;
+  }
   function analyze(){
     cancelVoice();closeProposal();
+    const text=$('#natural').value.trim();
+    if(!text){voiceStatus(tr('Dimmi una spesa oppure chiedimi se puoi permetterti un acquisto.'));return;}
     try{
-      proposal=M.command($('#natural').value,state);proposalRevision=state.revision;
+      if(showAdvice(text))return;
+      // Questions outside this assistant's scope must never become a transaction.
+      if(/[?？]/.test(text)||/^(come|perch[eé]|quanto|quanti|quando|dove|cosa|chi|how|why|what|when|where|can|could|should)\b/i.test(text)){
+        voiceStatus(tr('Posso registrare spese, aggiornare il piano e valutare un acquisto. Prova: “Posso permettermi scarpe da 180 euro?”'),true);return;
+      }
+      proposal=M.command(text,state);proposalRevision=state.revision;
       if(proposal.kind==='transactions'&&proposal.items.some(d=>!d.date||!d.amountCents||d.warnings.length)){const items=proposal.items;UI.close($('#voice-sheet'),{immediate:true});openDrafts(items);proposal=null;return;}
       showProposal();
-    }catch(e){say(e.message);$('#voice-status').textContent=I.text(e.message);$('#voice-status').classList.add('attention');}
+    }catch(e){voiceStatus(I.text(e.message),true);}
   }
   $('#editor-form').addEventListener('submit',event=>{
     event.preventDefault();errBox('#editor-error','');
@@ -2571,22 +2912,22 @@ window.MM_FIREBASE_CONFIG = Object.freeze({
   // Recognition stays optional. Each callback belongs to exactly one live session.
   let speechTimers=[];
   function voiceStatus(text,attention=false){$('#voice-status').textContent=I.text(text);$('#voice-status').classList.toggle('attention',attention);}
-  function voiceUI(active){UI.setVoice(active);$('#mic').classList.toggle('mic-listening',active);$('#mic').setAttribute('aria-pressed',String(active));$('#mic').setAttribute('aria-label',active?tr('Termina dettatura'):tr('Avvia dettatura'));}
+  function voiceUI(active){UI.setVoice(active);$('#voice-sheet').classList.toggle('is-listening',active);$('#mic').classList.toggle('mic-listening',active);$('#mic').setAttribute('aria-pressed',String(active));$('#mic').setAttribute('aria-label',active?tr('Termina dettatura'):tr('Avvia dettatura'));}
   function clearSpeechTimers(){speechTimers.forEach(clearTimeout);speechTimers=[];}
   function cancelVoice(){const previous=speech;speech=null;clearSpeechTimers();voiceUI(false);if(previous){try{previous.abort();}catch(_){}}}
   function beginRecognition(){
-    cancelVoice();closeProposal();$('#natural').value='';
+    cancelVoice();closeProposal();$('#natural').value='';$('#assistant-example').hidden=false;
     $('#voice-consent').hidden=true;$('#voice-compose').hidden=false;
     const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
     if(!SR){voiceStatus(tr('Scrivi qui o usa il microfono della tastiera.'),true);return;}
     try{
       const r=new SR();speech=r;r.lang=I.locale;r.interimResults=true;r.continuous=false;
       let finalText='',failed=false;
-      voiceUI(true);$('#voice-title').textContent=tr('Dimmi pure.');voiceStatus(tr('Attivo il microfono…'));
+      voiceUI(true);$('#voice-title').textContent=tr('Sono qui.');voiceStatus(tr('Attivo il microfono…'));
       const startup=setTimeout(()=>{if(speech!==r)return;cancelVoice();voiceStatus(tr('Tocca il microfono per riprovare, oppure scrivi.'),true);},9000);
       speechTimers.push(startup,setTimeout(()=>{if(speech!==r)return;cancelVoice();voiceStatus(tr('Dettatura terminata. Puoi continuare dal testo.'),true);},45000));
       r.onstart=()=>{if(speech!==r)return;clearTimeout(startup);voiceStatus(tr('Ti ascolto…'));};
-      r.onresult=e=>{if(speech!==r)return;let all='';finalText='';for(let i=0;i<e.results.length;i++){all+=e.results[i][0].transcript+' ';if(e.results[i].isFinal)finalText+=e.results[i][0].transcript+' ';}$('#natural').value=all.trim();};
+      r.onresult=e=>{if(speech!==r)return;let all='';finalText='';for(let i=0;i<e.results.length;i++){all+=e.results[i][0].transcript+' ';if(e.results[i].isFinal)finalText+=e.results[i][0].transcript+' ';}$('#natural').value=all.trim();$('#assistant-example').hidden=!!all.trim();const orb=$('.assistant-orb');if(!matchMedia('(prefers-reduced-motion: reduce)').matches){orb.getAnimations().forEach(a=>a.cancel());orb.animate([{transform:'translate(-50%,-50%) scale(1)'},{transform:'translate(-50%,-50%) scale(1.045)'},{transform:'translate(-50%,-50%) scale(1)'}],{duration:440,easing:'ease-out'});}};
       r.onerror=e=>{if(speech!==r)return;failed=true;const messages={'not-allowed':tr('Microfono non autorizzato. Puoi abilitarlo in Safari oppure scrivere qui.'),'audio-capture':tr('Microfono non disponibile. Puoi scrivere qui.'),'no-speech':tr('Non ho sentito una frase. Tocca il microfono per riprovare.'),'network':tr('Voce non disponibile. Controlla la connessione oppure scrivi.'),'aborted':tr('Dettatura interrotta. Puoi riprovare.')};cancelVoice();voiceStatus(messages[e.error]||tr('Puoi riprovare con il microfono oppure scrivere.'),true);};
       r.onend=()=>{if(speech!==r)return;speech=null;clearSpeechTimers();voiceUI(false);if(!failed&&finalText.trim()){$('#natural').value=finalText.trim();analyze();}else if(!failed)voiceStatus(tr('Puoi riprovare o continuare dal testo.'),true);};
       r.start();
@@ -2594,9 +2935,12 @@ window.MM_FIREBASE_CONFIG = Object.freeze({
   }
   function startVoice(){
     if(speech){try{speech.stop();}catch(_){cancelVoice();}return;}
-    closeProposal();UI.open($('#voice-sheet'));$('#voice-title').textContent=tr('Dimmi pure.');
+    closeProposal();UI.open($('#voice-sheet'));$('#voice-title').textContent=tr('Sono qui.');
     beginRecognition();
   }
+  $('#assistant-example').addEventListener('click',()=>{cancelVoice();$('#natural').value=tr('Posso permettermi scarpe da 180 €?');analyze();});
+  $('#advisor-voice').addEventListener('click',beginRecognition);
+  $('#advisor-write').addEventListener('click',()=>{closeProposal();$('#natural').focus();});
   $('#voice-enable').addEventListener('click',beginRecognition);
   $('#voice-write').addEventListener('click',()=>{$('#voice-consent').hidden=true;$('#voice-compose').hidden=false;voiceStatus(tr('Scrivi una spesa o una modifica.'));$('#natural').focus();});
   $('#close-voice').addEventListener('click',()=>UI.close($('#voice-sheet')));
@@ -2609,7 +2953,7 @@ window.MM_FIREBASE_CONFIG = Object.freeze({
   // Discard drafts after the exit animation, without collapsing the visible panel.
   document.addEventListener('close',e=>{
     if(e.target.tagName!=='DIALOG'||e.target.open)return;
-    if(e.target.id==='voice-sheet'){cancelVoice();closeProposal();$('#natural').value='';voiceStatus('');$('#command-lines').replaceChildren();}
+    if(e.target.id==='voice-sheet'){cancelVoice();closeProposal();$('#assistant-example').hidden=false;$('#natural').value='';voiceStatus('');$('#command-lines').replaceChildren();}
     if(e.target.id==='quick-sheet'){resetQuick();}
     if(e.target.id==='editor'){drafts=[];editingId=null;editingRevision=null;$('#drafts').replaceChildren();errBox('#editor-error','');}
     if(e.target.id==='rec-editor'){$('#rec-form').reset();recEditingId=null;recRevision=null;errBox('#rec-error','');}
@@ -2649,16 +2993,16 @@ window.MM_FIREBASE_CONFIG = Object.freeze({
     const category=$('#q-category').value||M.inferCategory(name,state.rules),future=$('#q-date').value>M.today();
     $('#quick-hint').textContent=name?`${I.category(category)} · ${type==='income'?tr('Entrata'):tr('Uscita')}${future?tr(' · Prevista'):''}${$('#q-date').value<state.settings.openingDate?tr(' · Già nel saldo iniziale'):''}`:'';
   }
-  function closeProposal(){proposal=null;proposalRevision=null;$('#command-preview').hidden=true;$('#voice-compose').hidden=false;$('#voice-title').textContent=tr('Dimmi pure.');errBox('#command-error','');}
+  function closeProposal(){proposal=null;proposalRevision=null;advisorQuestion=null;$('#advisor-answer').hidden=true;$('#command-preview').hidden=true;$('#voice-compose').hidden=false;$('#voice-title').textContent=tr('Sono qui.');errBox('#command-error','');}
   function showProposal(){
-    UI.swapContent($('#voice-sheet'),()=>{
+    UI.swapContent($('#voice-sheet .assistant-content'),()=>{
     if(!proposal)return;
     const copy=I.proposal(proposal,state);$('#command-title').textContent=copy.title;$('#command-description').textContent=copy.description;
     const list=$('#command-lines');list.replaceChildren();
     const items=proposal.kind==='transactions'?proposal.items:proposal.kind==='salary'?[proposal.transaction]:[];
     for(const d of items){const row=el('div','preview-line'),text=el('span',null,d.note);text.append(el('small',null,`${formatDate(d.date,true)} · ${I.category(d.category)} · ${d.status==='planned'?tr('Previsto'):tr('Confermato')}${d.includedInOpening?tr(' · Già nel saldo iniziale'):''}`));row.append(text,el('strong',null,(d.type==='income'?'+ ':'− ')+money(d.amountCents)));list.append(row);}
     $('#command-edit').hidden=!['transactions','salary','recurring'].includes(proposal.kind);
-    $('#command-preview').hidden=false;$('#voice-compose').hidden=true;$('#voice-consent').hidden=true;$('#voice-title').textContent=tr('Tutto giusto?');errBox('#command-error','');UI.open($('#voice-sheet'));
+    $('#command-preview').hidden=false;$('#voice-compose').hidden=true;$('#voice-consent').hidden=true;$('#voice-title').textContent=tr('Tutto giusto?');errBox('#command-error','');UI.open($('#voice-sheet'));$('#command-title').tabIndex=-1;$('#command-title').focus({preventScroll:true});
     });
   }
   function duplicateTransaction(items,existingId=null){return items.some(a=>state.transactions.some(t=>t.id!==existingId&&t.date===a.date&&t.amountCents===a.amountCents&&t.type===a.type&&M.norm(t.note)===M.norm(a.note)));}
@@ -2677,7 +3021,7 @@ window.MM_FIREBASE_CONFIG = Object.freeze({
     }catch(error){errBox('#quick-error',error.message);}});
     $('#top-add').addEventListener('click',quickFocus);
     $('#natural').addEventListener('keydown',e=>{if(e.key==='Enter'&&!e.shiftKey&&!e.isComposing){e.preventDefault();analyze();}});
-    $('#natural').addEventListener('input',closeProposal);
+    $('#natural').addEventListener('input',()=>{closeProposal();$('#assistant-example').hidden=!!$('#natural').value.trim();});
     $$('[data-example]').forEach(b=>b.addEventListener('click',()=>{$('#natural').value=b.dataset.example;closeProposal();$('#natural').focus();}));
     $('#command-close').addEventListener('click',beginRecognition);
     $('#command-edit').addEventListener('click',()=>{
@@ -2718,7 +3062,7 @@ window.MM_FIREBASE_CONFIG = Object.freeze({
       for(const node of box.querySelectorAll('.notice,.reason'))node.textContent=I.text(node.textContent);
     }
     if($('#editor').open){$('#editor-title').textContent=editingId?tr('Modifica movimento'):drafts.length>1?tr('Controlla {count} movimenti',{count:drafts.length}):tr('Tutto giusto?');$('#save-drafts').textContent=editingId?tr('Salva modifiche'):drafts.length>1?tr('Conferma e salva tutto'):tr('Conferma e salva');}
-    updateQuickHint();if(proposal)showProposal();
+    updateQuickHint();if(proposal)showProposal();if(advisorQuestion)showAdvice(advisorQuestion);
     if(wasSpeaking)voiceStatus(tr('Dettatura interrotta. Tocca il microfono per riprendere.'));
     for(const selector of ['#voice-status','#install-status','#persistent-status','#environment','#storage-warning','#quick-error','#editor-error','#rec-error','#command-error']){const node=$(selector);node.textContent=I.text(node.textContent);}
   });
@@ -2740,7 +3084,7 @@ window.MM_FIREBASE_CONFIG = Object.freeze({
     $('#natural').value='';$('#q-name').value='';$('#q-amount').value='';$('#q-category').value='';$('#q-type').value='auto';$('#q-date').value=M.today();
   }});
   // Refresh date-sensitive views when the user returns, never in the background.
-  document.addEventListener('visibilitychange',()=>{if(!document.hidden){renderHome();renderHistory();renderPlan();}});
+  document.addEventListener('visibilitychange',()=>{if(!document.hidden){renderHome();renderHistory();renderPlan();if(advisorQuestion&&$('#voice-sheet').open)showAdvice(advisorQuestion);}});
 })();
 </script>
 <script>/* MyMoney's living backdrop. Input feedback shares the existing low-power render loop. */
@@ -2758,6 +3102,7 @@ window.MM_FIREBASE_CONFIG = Object.freeze({
   let energy = 0, luminosity = 1, lost = false, renderer = null, destroyed = false;
   let touchX = .5, touchY = .5, contactX = .5, contactY = .5;
   let attraction = 0, attractionTarget = 0, attractionVelocity = 0;
+  let assistantAmount = 0, assistantTarget = 0, assistantVelocity = 0;
   let holding = false, releasing = false, quietUntil = 0;
   // This is a backing-pixel policy, not a frame-rate limit. UI remains full resolution.
   const saveData = !!navigator.connection?.saveData;
@@ -2786,6 +3131,7 @@ window.MM_FIREBASE_CONFIG = Object.freeze({
     uniform float u_energy;
     uniform float u_light;
     uniform vec3 u_touch;
+    uniform float u_assistant;
 
     float hash(vec2 p) {
       p = fract(p * vec2(123.34, 456.21));
@@ -2824,6 +3170,14 @@ window.MM_FIREBASE_CONFIG = Object.freeze({
       vec2 pickup = vec2((sourceAxis - touchPoint.x) * .64, 0.0);
       p += (contact * 1.65 + pickup) * gather;
       p += vec2(-contact.y, contact.x) * gather * .12;
+      // Gather the same silk around the assistant at 50% x / 33% y in CSS
+      // coordinates. Inverse mapping contracts the material, not the canvas;
+      // at zero this is exactly the original idle field.
+      vec2 assistantPoint = vec2(0.0, .17);
+      vec2 assistantContact = screenP - assistantPoint;
+      p = mix(p, (p - assistantPoint) * 2.6, u_assistant);
+      float assistantFocus = exp(-dot(assistantContact, assistantContact) * 16.0) * u_assistant;
+      p += vec2(-assistantContact.y, assistantContact.x) * assistantFocus * .18;
       // A slow domain warp makes light behave like folded silk, without a mesh.
       vec2 q = vec2(cloud(p * 2.7 + vec2(.13 * t, -.17 * t)),
                     cloud(p * 2.5 + vec2(5.4 - .12 * t, 2.1 + .14 * t)));
@@ -2861,7 +3215,7 @@ window.MM_FIREBASE_CONFIG = Object.freeze({
       float satin = pow(max(0.0, grainFold), 7.0) * exp(-abs(left - .022) * 24.0);
       color += cyan * satin * .045 * leftFlow;
       // Concentration brightens only the material already present in the folds.
-      color = ink + (color - ink) * (1.0 + gather * .48);
+      color = ink + (color - ink) * (1.0 + gather * .48 + assistantFocus * .22);
       float breath = 1.0 + sin(u_time * .37) * .055;
       float centreQuiet = 1.0 - exp(-dot(screenP * vec2(3.0, 5.0), screenP * vec2(3.0, 5.0))) * .17;
       float vignette = 1.0 - smoothstep(.29, .79, length(screenP * vec2(.9, .82))) * .56;
@@ -2909,6 +3263,7 @@ window.MM_FIREBASE_CONFIG = Object.freeze({
       const activity = gl.getUniformLocation(program, 'u_energy');
       const light = gl.getUniformLocation(program, 'u_light');
       const touch = gl.getUniformLocation(program, 'u_touch');
+      const assistant = gl.getUniformLocation(program, 'u_assistant');
       compiled.forEach(shader => gl.deleteShader(shader));
       compiled.length = 0;
       return {
@@ -2919,6 +3274,7 @@ window.MM_FIREBASE_CONFIG = Object.freeze({
           gl.uniform1f(activity, energy);
           gl.uniform1f(light, luminosity);
           gl.uniform3f(touch, touchX, 1 - touchY, attraction);
+          gl.uniform1f(assistant, assistantAmount);
           gl.drawArrays(gl.TRIANGLES, 0, 3);
         },
         dispose() {
@@ -2957,7 +3313,10 @@ window.MM_FIREBASE_CONFIG = Object.freeze({
           const dx = (touchX - x) * w / h, dy = touchY - y;
           const reach = .20 + .13 * attraction;
           const amount = attraction * .72 * Math.exp(-(dx * dx + dy * dy) / (reach * reach));
-          return [x + (touchX - x) * amount, y + (touchY - y) * amount];
+          x += (touchX - x) * amount;
+          y += (touchY - y) * amount;
+          const scale = 1 + assistantAmount * 1.6;
+          return [.5 + (x - .5) / scale, .5 + (y - .5 - .17 * 2.6 * assistantAmount) / scale];
         };
         const glows = [
           [.15 + Math.sin(t) * .09, .65 + Math.cos(t * .7) * .09, '50,139,140'],
@@ -2966,7 +3325,7 @@ window.MM_FIREBASE_CONFIG = Object.freeze({
         ];
         glows.forEach(([x, y, rgb]) => {
           [x, y] = pull(x, y);
-          const r = h * .55, gradient = ctx.createRadialGradient(x * w, y * h, 0, x * w, y * h, r);
+          const r = h * .55 / (1 + assistantAmount * 1.6), gradient = ctx.createRadialGradient(x * w, y * h, 0, x * w, y * h, r);
           gradient.addColorStop(0, `rgba(${rgb},${.19 * luminosity * (1 + energy * .4)})`);
           gradient.addColorStop(.45, `rgba(${rgb},${.055 * luminosity})`);
           gradient.addColorStop(1, `rgba(${rgb},0)`);
@@ -3014,7 +3373,7 @@ window.MM_FIREBASE_CONFIG = Object.freeze({
   function adaptResolution(interval, timestamp) {
     // Reallocating a WebGL drawing buffer clears it and may stall the GPU.
     // Learn/adjust quality only between gestures, never during the popup handoff.
-    if (holding || releasing || timestamp < quietUntil || scene !== 'idle') {
+    if (holding || releasing || assistantTarget || assistantAmount > .001 || timestamp < quietUntil || scene !== 'idle') {
       sampleTime = sampleCount = lateFrames = 0;
       return;
     }
@@ -3045,10 +3404,22 @@ window.MM_FIREBASE_CONFIG = Object.freeze({
     const delta = Math.min(interval / 1000, .06);
     lastPaint = timestamp;
     adaptResolution(interval, timestamp);
-    time += delta * (1 + energy * .9);
+    // Keep the clock continuous while the gathered material moves more calmly.
+    time += delta * (1 + energy * .9) * (1 - assistantAmount * .35);
     const ease = 1 - Math.exp(-delta * 4.5);
     energy += (target[0] - energy) * ease;
     luminosity += (target[1] - luminosity) * ease;
+    // Critically damped motion preserves velocity even if the assistant closes
+    // halfway through opening. About 95% settled after 680ms, 99% after 950ms.
+    const assistantSpeed = 7, assistantDecay = Math.exp(-assistantSpeed * delta);
+    const assistantOffset = assistantAmount - assistantTarget;
+    const assistantMotion = assistantVelocity + assistantSpeed * assistantOffset;
+    assistantAmount = assistantTarget + (assistantOffset + assistantMotion * delta) * assistantDecay;
+    assistantVelocity = (assistantVelocity - assistantSpeed * assistantMotion * delta) * assistantDecay;
+    if (Math.abs(assistantAmount - assistantTarget) < .0001 && Math.abs(assistantVelocity) < .001) {
+      assistantAmount = assistantTarget;
+      assistantVelocity = 0;
+    }
     const contactEase = 1 - Math.exp(-delta * 20);
     touchX += (contactX - touchX) * contactEase;
     touchY += (contactY - touchY) * contactEase;
@@ -3081,6 +3452,8 @@ window.MM_FIREBASE_CONFIG = Object.freeze({
       energy = target[0];
       luminosity = target[1];
       attraction = attractionTarget = attractionVelocity = 0;
+      assistantAmount = assistantTarget;
+      assistantVelocity = 0;
       releasing = false;
     }
     draw();
@@ -3126,9 +3499,19 @@ window.MM_FIREBASE_CONFIG = Object.freeze({
     releasing = true;
     quietUntil = performance.now() + 700;
   }
+  function assistant(active) {
+    if (destroyed) return;
+    assistantTarget = active ? 1 : 0;
+    quietUntil = performance.now() + 1000;
+    if (reducedMotion.matches) {
+      assistantAmount = assistantTarget;
+      assistantVelocity = 0;
+      draw();
+    }
+  }
   // All points are CSS pixels relative to #experience. Gestures own timing;
   // this renderer owns continuous interpolation and the brief popup handoff.
-  const api = Object.freeze({ begin, move, charge, release, handoff });
+  const api = Object.freeze({ begin, move, charge, release, handoff, assistant });
   window.MyMoneyOrbit = api;
   function sceneChanged() {
     const next = document.documentElement.dataset.scene || 'idle';
