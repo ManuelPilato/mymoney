@@ -3,3 +3,9 @@
 !.env.example
 data/
 node_modules/
+.wrangler/
+cloudflare/.wrangler/
+.dev.vars*
+!.dev.vars.example
+.secrets.json
+cloudflare/dist/
