@@ -28,6 +28,13 @@ jobs:
           python-version: '3.13'
       - run: npm ci
       - run: npm test
+      - name: Verify notification service
+        env:
+          WRANGLER_SEND_METRICS: 'false'
+        run: |
+          npm ci --prefix server/notifications
+          npm test --prefix server/notifications
+          npm run worker:check --prefix server/notifications
       - run: npm run build
       - name: Version offline cache
         run: |
