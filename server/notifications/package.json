@@ -1,0 +1,8 @@
+{
+  "name": "mymoney-notification-sender",
+  "private": true,
+  "type": "module",
+  "scripts": {"start": "node --env-file=.env server.mjs", "keys": "node -e \"console.log(JSON.stringify(require('web-push').generateVAPIDKeys(),null,2))\""},
+  "engines": {"node": ">=22"},
+  "dependencies": {"jose": "6.2.14", "web-push": "3.6.7"}
+}

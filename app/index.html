@@ -510,6 +510,24 @@ html.fluid-gathered .wordmark { opacity:0; }
 /* This invisible sphere surface keeps touch drags local, leaving the content scrollable. */
 #assistant-orb-hit { position:absolute; z-index:0; border-radius:50%; touch-action:none; cursor:grab; -webkit-tap-highlight-color:transparent; }
 #assistant-orb-hit:active { cursor:grabbing; }
+
+/* A single contextual action keeps the assistant as quiet as the home screen. */
+#command-save,#advisor-action,#advisor-voice { min-height:52px; margin-block:12px 4px; }
+#advisor-voice.quiet { display:flex; margin:6px auto; width:auto; min-height:44px; }
+#command-details,#advisor-details { margin-top:14px; border-top:1px solid var(--line); }
+#command-details summary,#advisor-details summary { font-size:12px; color:var(--muted); }
+#command-description { margin:12px; max-width:none; }
+#voice-sheet[aria-busy=true] #interpret { opacity:.65; pointer-events:none; }
+#voice-sheet #command-lines { margin-block:0 18px; }
+#voice-sheet .preview-line { gap:20px; align-items:center; }
+#voice-sheet .preview-line>span { min-width:0; overflow-wrap:anywhere; }
+#voice-sheet .preview-line>strong { flex-shrink:0; font-variant-numeric:tabular-nums; }
+
+.notification-options { margin-block:20px; }
+.notification-option { display:flex; align-items:center; justify-content:space-between; gap:24px; min-height:52px; font-size:14px; cursor:pointer; }
+.notification-option input { flex:0 0 auto; width:20px; height:20px; margin:0; accent-color:#a0d3d9; }
+#notification-status { color:var(--muted); line-height:1.6; }
+#notification-feedback:empty { display:none; }
 </style>
 </head>
 <body>
@@ -606,6 +624,7 @@ html.fluid-gathered .wordmark { opacity:0; }
           </div>
         </section>
       </details>
+      <details class="disclosure" id="notification-settings"><summary data-notification-copy="title">Notifiche</summary><div class="details-body"><p class="tiny" data-notification-copy="intro"></p><p id="notification-status" class="notice" role="status"></p><div class="actions"><button id="notification-enable" class="button" disabled data-notification-copy="enable">Attiva promemoria</button><button id="notification-test" class="button ghost" disabled data-notification-copy="test">Prova notifica</button></div><div class="notification-options"><label class="notification-option"><span data-notification-copy="due"></span><input id="notification-due" type="checkbox"></label><label class="notification-option"><span data-notification-copy="budget"></span><input id="notification-budget" type="checkbox"></label><label class="notification-option"><span data-notification-copy="weekly"></span><input id="notification-weekly" type="checkbox"></label><label class="notification-option"><span data-notification-copy="reminder"></span><input id="notification-reminder" type="checkbox"></label><label class="notification-option"><span data-notification-copy="details"></span><input id="notification-details" type="checkbox"></label></div><p class="tiny" data-notification-copy="privacy"></p><p id="notification-feedback" class="tiny" role="status"></p></div></details>
       <details class="disclosure" open><summary data-i18n="Budget e stipendio">Budget e stipendio</summary><form id="settings-form">
         <div class="fields"><div class="field-group"><label for="s-salary" data-i18n="Stipendio previsto €">Stipendio previsto €</label><input id="s-salary" inputmode="decimal" required></div><div class="field-group"><label for="s-day" data-i18n="Giorno di accredito">Giorno di accredito</label><input id="s-day" type="number" min="1" max="28" required></div></div>
         <div class="fields"><div class="field-group"><label for="s-budget" data-i18n="Budget €">Budget €</label><input id="s-budget" inputmode="decimal" required></div><div class="field-group"><label for="s-goal" data-i18n="Obiettivo risparmio €">Obiettivo risparmio €</label><input id="s-goal" inputmode="decimal" required></div></div>
@@ -642,14 +661,18 @@ html.fluid-gathered .wordmark { opacity:0; }
       <button type="button" id="assistant-type" class="button quiet" data-i18n="Oppure scrivi">Oppure scrivi</button>
       <p class="tiny assistant-privacy" data-i18n="Voce elaborata dal browser, anche online. Audio non salvato da MyMoney.">Voce elaborata dal browser, anche online. Audio non salvato da MyMoney.</p>
     </div>
-    <section id="command-preview" hidden aria-label="Proposta da confermare" data-i18n-aria-label="Proposta da confermare" aria-live="polite"><h3 id="command-title"></h3><p id="command-description" class="tiny"></p><div id="command-lines"></div><div class="preview-actions"><button class="button ghost" id="command-edit" data-i18n="Modifica">Modifica</button><button id="command-save" data-i18n="Conferma" class="button">Conferma</button></div><button class="button quiet full-width" id="command-close" data-i18n="Riprova">Riprova</button><div id="command-error" class="notice error" role="alert" hidden></div></section>
+    <section id="command-preview" hidden aria-label="Proposta da confermare" data-i18n-aria-label="Proposta da confermare" aria-live="polite">
+      <h3 id="command-title"></h3><div id="command-lines"></div>
+      <button id="command-save" data-i18n="Conferma" class="button full-width">Conferma</button>
+      <details id="command-details"><summary data-i18n="Dettagli e modifiche">Dettagli e modifiche</summary><p id="command-description" class="tiny"></p><button class="button quiet full-width" id="command-edit" data-i18n="Modifica">Modifica</button></details>
+      <button class="button quiet full-width" id="command-close" data-i18n="Nuova richiesta">Nuova richiesta</button><div id="command-error" class="notice error" role="alert" hidden></div>
+    </section>
     <section id="advisor-answer" hidden aria-live="polite">
       <p id="advisor-item" class="assistant-eyebrow"></p>
       <h3 id="advisor-title"></h3><p id="advisor-explanation"></p>
-      <details id="advisor-details"><summary data-i18n="Come l’ho calcolato">Come l’ho calcolato</summary><ul id="advisor-lines"></ul></details>
-      <p id="advisor-quality" class="tiny"></p><button id="advisor-action" class="button ghost full-width" hidden></button>
-      <p class="tiny" data-i18n="Simulazione sui dati registrati. Nessuna spesa aggiunta.">Simulazione sui dati registrati. Nessuna spesa aggiunta.</p>
-      <div class="preview-actions"><button id="advisor-write" class="button ghost" data-i18n="Modifica domanda">Modifica domanda</button><button id="advisor-voice" class="button"><span data-icon="mic"></span><span data-i18n="Chiedi ancora">Chiedi ancora</span></button></div>
+      <button id="advisor-action" class="button full-width" hidden></button>
+      <button id="advisor-voice" class="button full-width"><span data-icon="mic"></span><span data-i18n="Chiedi ancora">Chiedi ancora</span></button>
+      <details id="advisor-details"><summary data-i18n="Dettagli e alternative">Dettagli e alternative</summary><ul id="advisor-lines"></ul><p id="advisor-quality" class="tiny"></p><p class="tiny" data-i18n="Simulazione sui dati registrati. Nessuna spesa aggiunta.">Simulazione sui dati registrati. Nessuna spesa aggiunta.</p><button id="advisor-write" class="button quiet full-width" data-i18n="Modifica domanda">Modifica domanda</button></details>
     </section>
   </div>
 </dialog>
@@ -658,10 +681,16 @@ html.fluid-gathered .wordmark { opacity:0; }
 <dialog class="dialog" id="rec-editor" aria-labelledby="rec-title"><div class="dialog-head"><h2 id="rec-title" data-i18n="Spesa ricorrente">Spesa ricorrente</h2><button id="close-rec" aria-label="Chiudi" data-i18n-aria-label="Chiudi" class="button"><span data-icon="close"></span></button></div><form id="rec-form"><div class="dialog-body"><div class="field-group"><label for="r-name" data-i18n="Nome">Nome</label><input id="r-name" maxlength="150" required></div><div class="fields"><div class="field-group"><label for="r-amount" data-i18n="Importo rata (€)">Importo rata (€)</label><input id="r-amount" inputmode="decimal" required></div><div class="field-group"><label for="r-months" data-i18n="Ogni quanti mesi">Ogni quanti mesi</label><select id="r-months"><option value="1" data-i18n="1 · mensile">1 · mensile</option><option value="2" data-i18n="2 · bimestrale">2 · bimestrale</option><option value="3" data-i18n="3 · trimestrale">3 · trimestrale</option><option value="6" data-i18n="6 · semestrale">6 · semestrale</option><option value="12" data-i18n="12 · annuale">12 · annuale</option></select></div></div><div class="field-group"><label for="r-date" data-i18n="Prima scadenza nel piano">Prima scadenza nel piano</label><input id="r-date" type="date"></div><div class="field-group"><label for="r-category" data-i18n="Categoria">Categoria</label><select id="r-category"></select></div><label class="check-label"><input id="r-active" type="checkbox"><span data-i18n="Attiva nel budget (richiede una data)">Attiva nel budget (richiede una data)</span></label><label class="check-label"><input id="r-auto" type="checkbox"><span data-i18n="Addebito automatico sul conto">Addebito automatico sul conto</span></label><label class="check-label"><input id="r-estimated" type="checkbox"><span data-i18n="Importo o scadenza da verificare">Importo o scadenza da verificare</span></label><p class="tiny" data-i18n="“Automatico” è una nota: MyMoney non legge la banca e non segna la rata come pagata.">“Automatico” è una nota: MyMoney non legge la banca e non segna la rata come pagata.</p><div class="notice error" id="rec-error" hidden role="alert"></div></div><div class="dialog-footer"><button type="button" class="button danger" id="delete-recurring" hidden data-i18n="Elimina">Elimina</button><button type="submit" data-i18n="Salva ricorrenza" class="button">Salva ricorrenza</button></div></form></dialog>
 <div class="toast" id="toast" hidden role="status"></div>
 <noscript><p data-i18n="MyMoney richiede JavaScript.">MyMoney richiede JavaScript.</p></noscript>
+<script src="./native.js"></script>
 <script>/* Explicit Italian/English UI dictionary. Stored records keep their original IDs and text. */
 (function(root){
   'use strict';
   const EN={
+  "Controllo i tuoi dati…":"Checking your data…",
+  "Dettagli e modifiche":"Details and changes",
+  "Dettagli e alternative":"Details and alternatives",
+  "Nuova richiesta":"New request",
+  "Versione iPhone installata. Interfaccia disponibile anche offline.":"iPhone app installed. Interface also available offline.",
   "1 movimento":"1 transaction",
   "Filtri":"Filters",
   "Dal":"From",
@@ -2787,7 +2816,7 @@ window.MM_FIREBASE_CONFIG = Object.freeze({
   async function authChanged(account){
     const token=++generation;unlisten?.();unlisten=null;flushing=false;serverReady=false;issue='';user=account;
     try{
-      if((account?.uid||null)!==uid)bridge.resetDrafts?.();
+      if((account?.uid||null)!==uid){bridge.resetDrafts?.();root.dispatchEvent(new CustomEvent('mm:archivechange'));}
       if(!account){
         const wasOwner=uid;uid=null;env=null;localStorage.setItem(META,JSON.stringify({uid:null}));
         if(wasOwner)apply(guest());render();return;
@@ -2821,11 +2850,14 @@ window.MM_FIREBASE_CONFIG = Object.freeze({
     // SDK is preloaded. Keeping signInWithPopup in this user gesture also works
     // with Safari's stricter popup policy; no cross-origin redirect storage.
     if(!ready){try{await loadSDK();issue=tr('Pronto. Tocca di nuovo “Accedi con Google” per aprire l’accesso.');render();}catch(_){}return;}
-    try{const provider=new sdk.GoogleAuthProvider();provider.setCustomParameters({prompt:'select_account'});await sdk.signInWithPopup(auth,provider);}catch(error){report(error);}
+    try{
+      if(root.MMNative?.isNative){const tokens=await root.MMNative.signInGoogle();await sdk.signInWithCredential(auth,sdk.GoogleAuthProvider.credential(tokens.idToken,tokens.accessToken));}
+      else{const provider=new sdk.GoogleAuthProvider();provider.setCustomParameters({prompt:'select_account'});await sdk.signInWithPopup(auth,provider);}
+    }catch(error){report(error);}
   }
   async function disconnect(){
     if(!ready){issue=tr('Connettiti a Internet per completare l’uscita dall’account. Le modifiche locali sono conservate.');render();return;}
-    try{await sdk.signOut(auth);}catch(error){report(error);}
+    try{await sdk.signOut(auth);if(root.MMNative?.isNative)await root.MMNative.signOutGoogle();}catch(error){report(error);}
   }
   function acceptInitial(merge){
     if(!uid||!env||env.accepted||!serverReady)return;
@@ -2923,7 +2955,242 @@ window.MM_FIREBASE_CONFIG = Object.freeze({
     root.addEventListener('mm:languagechange',render);
     render();if(root.MM_FIREBASE_CONFIG)loadSDK().catch(()=>{});
   }
-  root.MMSync={archiveKey:()=>uid?accountKey(uid):GUEST,initialState,init,saveLocal,handlesStorage,ownsArchive:()=>!!uid||!!read(META)};
+  root.MMSync={getIdToken:async()=>user?.getIdToken()||null,archiveKey:()=>uid?accountKey(uid):GUEST,initialState,init,saveLocal,handlesStorage,ownsArchive:()=>!!uid||!!read(META)};
+})(window);
+</script>
+<script>/* Notification copy is shared by the PWA and the native container. */
+(function(root){
+  'use strict';
+  const CATALOG=Object.freeze({
+    test:{it:['Ci siamo.','Un piccolo promemoria, al momento giusto. MyMoney è qui.'],en:['All set.','A little reminder, at the right moment. MyMoney is here.']},
+    due:{it:['Domani, senza sorprese.','{name}: {amount} in scadenza domani. Tutto sotto controllo?'],en:['Tomorrow, no surprises.','{name}: {amount} is due tomorrow. All set?'],privateIt:'Hai una scadenza domani. Dai un’occhiata al tuo piano.',privateEn:'Something is due tomorrow. Take a look at your plan.'},
+    dueMany:{it:['Domani si gioca d’anticipo.','{count} scadenze domani, per {amount}. Un’occhiata ora, un pensiero in meno.'],en:['A little head start.','{count} payments due tomorrow, totalling {amount}. One quick look, one less thing to think about.'],privateIt:'Hai alcune scadenze domani. Il tuo piano ti aspetta.',privateEn:'A few payments are due tomorrow. Your plan is ready.'},
+    budgetLow:{it:['Un piccolo check al budget?','Ultimo aggiornamento: {amount} di budget libero, {days} alla fine del ciclo. Facciamo il punto?'],en:['A quick budget check?','Last update: {amount} of uncommitted budget, {days} until this cycle ends. Shall we check in?'],privateIt:'Il budget libero si sta assottigliando. Facciamo il punto?',privateEn:'Your uncommitted budget is getting low. Shall we check in?'},
+    budgetExceeded:{it:['Facciamo il punto, senza stress.','Il budget pianificato risulta superato di {amount}. Apri MyMoney e rivediamo il piano.'],en:['Let’s reset, no stress.','Your planned budget is over by {amount}. Open MyMoney to review the plan.'],privateIt:'Il piano segnala un budget superato. Puoi rivederlo con calma.',privateEn:'Your plan shows an exceeded budget. Take a moment to review it.'},
+    weekly:{it:['La settimana, in un colpo d’occhio.','Due minuti per ritrovare il filo: apri MyMoney e guarda i tuoi movimenti.'],en:['Your week at a glance.','Two minutes to catch up: open MyMoney and review your transactions.']},
+    reminder:{it:['Manca solo un piccolo check.','Qualche spesa da aggiungere? Un tocco o una frase, e hai finito.'],en:['Just one small check.','Any spending to add? One tap or one sentence, and you’re done.']}
+  });
+  const replace=(text,values)=>text.replace(/\{(\w+)\}/g,(_,key)=>String(values[key]??''));
+  function message(kind,values={},language='it',details=false){
+    const entry=CATALOG[kind];if(!entry)throw new RangeError('Unknown notification kind');
+    const en=language==='en',pair=entry[en?'en':'it'];
+    return {title:replace(pair[0],values),body:replace(!details&&(en?entry.privateEn:entry.privateIt)||pair[1],values)};
+  }
+  const api={CATALOG,message};if(typeof module!=='undefined'&&module.exports)module.exports=api;root.MMNotificationMessages=api;
+})(typeof globalThis!=='undefined'?globalThis:this);
+</script>
+<script>/* Opt-in only. No background delivery is claimed without a real native or push transport. */
+(function(root){
+  'use strict';
+  const node=typeof module!=='undefined'&&module.exports;
+  const M=node?require('./core.js'):root.MM,Copy=node?require('./notification-messages.js'):root.MMNotificationMessages;
+  const DEFAULTS=Object.freeze({due:true,budget:true,weekly:false,reminder:false,details:false});
+  const KEY='mymoney-notifications-v1',ICON='./icon-192-v2.png';
+  function preferences(value={}){return Object.fromEntries(Object.entries(DEFAULTS).map(([key,fallback])=>[key,typeof value[key]==='boolean'?value[key]:fallback]));}
+  function hash(text){let h=2166136261;for(const c of text){h^=c.charCodeAt(0);h=Math.imul(h,16777619);}return 10000+(h>>>0)%2000000000;}
+  function packet(kind,values,language,details,tag){
+    return {...Copy.message(kind,values,language,details),kind,language:language==='en'?'en':'it',tag,id:hash(tag),icon:ICON,badge:ICON,data:{url:kind==='due'||kind==='dueMany'?'./?notification=plan':'./?notification=history',kind}};
+  }
+  function upcomingExpenses(state,date){
+    const transactions=state.transactions||[],paid=new Set(transactions.filter(t=>t.type==='expense'&&t.status==='paid'&&t.recurringId).map(t=>`${t.recurringId}:${t.dueDate||t.date}`));
+    const plannedKeys=new Set(),items=[];
+    for(const t of transactions.filter(t=>t.type==='expense'&&t.status==='planned')){
+      const key=t.recurringId?`${t.recurringId}:${t.dueDate||t.date}`:null;
+      if(key&&(paid.has(key)||plannedKeys.has(key)))continue;
+      if(key)plannedKeys.add(key);
+      if(t.date===date)items.push({name:t.note||'',amountCents:t.amountCents});
+    }
+    for(const r of state.recurring||[])for(const due of M.occurrences(r,date,M.shiftDays(date,1))){
+      const key=`${r.id}:${due}`;if(paid.has(key)||plannedKeys.has(key))continue;
+      items.push({name:r.name||'',amountCents:r.amountCents});
+    }
+    return items;
+  }
+  // One scheduled reminder a day, 10:00–20:00 local time. Due dates take priority.
+  // Future budget figures are never forecast; only today's known budget is used.
+  function schedule(state,input={},options={}){
+    const prefs=preferences(input),now=options.now?new Date(options.now):new Date(),language=options.language==='en'?'en':'it';
+    if(!Number.isFinite(+now)||!state?.settings?.initialized)return [];
+    const today=M.iso(now),days=Math.max(1,Math.min(14,options.days||14));
+    const money=n=>new Intl.NumberFormat(language==='en'?'en-IE':'it-IT',{style:'currency',currency:'EUR'}).format(n/100);
+    const daily=new Map(),put=(date,hour,priority,kind,values={})=>{
+      const at=new Date(`${date}T${String(hour).padStart(2,'0')}:00:00`);if(+at<=+now)return;
+      const tag=`mymoney-${kind}-${date}`,item={...packet(kind,values,language,prefs.details,tag),at:at.toISOString(),priority};
+      if(!daily.has(date)||priority>daily.get(date).priority)daily.set(date,item);
+    };
+    for(let i=0;i<days;i++){
+      const date=M.shiftDays(today,i),due=upcomingExpenses(state,M.shiftDays(date,1));
+      if(prefs.due&&due.length){
+        const amount=money(due.reduce((sum,item)=>sum+item.amountCents,0));
+        put(date,10,100,due.length===1?'due':'dueMany',{name:due[0].name.slice(0,70),amount,count:due.length});
+      }
+      if(prefs.weekly&&M.dateObj(date).getDay()===1)put(date,18,40,'weekly');
+      if(prefs.reminder)put(date,20,20,'reminder');
+    }
+    if(prefs.budget&&state.settings.budgetCents>0){
+      const t=M.totals(state,today),daysLeft=Math.round((Date.UTC(...t.end.split('-').map((n,i)=>+n-(i===1?1:0)))-Date.UTC(...today.split('-').map((n,i)=>+n-(i===1?1:0))))/86400000);
+      const periodDays=Math.round((+M.dateObj(t.end)-+M.dateObj(t.start))/86400000),remainingFraction=Math.max(0,daysLeft)/Math.max(1,periodDays);
+      // No "low" warning just because the cycle is almost over: compare with time left.
+      if(t.available<0)put(today,18,80,'budgetExceeded',{amount:money(-t.available)});
+      else if(daysLeft>2&&t.available/state.settings.budgetCents<Math.min(.2,remainingFraction*.5))put(today,18,80,'budgetLow',{amount:money(t.available),days:`${daysLeft} ${language==='en'?'days':'giorni'}`});
+    }
+    return [...daily.values()].sort((a,b)=>a.at.localeCompare(b.at)).map(({priority,...item})=>item);
+  }
+  function configValid(config){
+    if(!config||typeof config.publicVapidKey!=='string'||!/^[A-Za-z0-9_-]{87}$/.test(config.publicVapidKey))return false;
+    try{const url=new URL(config.endpoint);return url.protocol==='https:'&&!url.username&&!url.password;}catch(_){return false;}
+  }
+  function createClient(options={}){
+    const env=options.env||root,storage=options.storage||env.localStorage,getConfig=options.getConfig||(()=>env.MM_PUSH_CONFIG),getLanguage=options.getLanguage||(()=>env.MyMoneyI18n?.language||'it'),getOwner=options.getOwner||(()=>'local');
+    let record={enabled:false,owner:null,preferences:{...DEFAULTS},ids:[]},revision=0,queue=Promise.resolve();
+    try{const saved=JSON.parse(storage?.getItem(KEY)||'null');if(saved)record={enabled:!!saved.enabled,owner:typeof saved.owner==='string'?saved.owner:null,preferences:preferences(saved.preferences),ids:Array.isArray(saved.ids)?saved.ids.filter(Number.isInteger):[]};}catch(_){}
+    const native=()=>env.MMNative?.isNative===true;
+    function persist(){storage?.setItem(KEY,JSON.stringify(record));}
+    function capabilities(){
+      const ios=/iP(hone|ad|od)/.test(env.navigator?.userAgent||'')||env.navigator?.platform==='MacIntel'&&env.navigator?.maxTouchPoints>1;
+      const standalone=!!env.navigator?.standalone||!!env.matchMedia?.('(display-mode: standalone)').matches;
+      const web=!!env.isSecureContext&&!!env.navigator?.serviceWorker&&!!env.Notification&&!!env.PushManager;
+      return {native:native(),supported:native()||web,needsHomeScreen:!native()&&ios&&!standalone,configured:native()||configValid(getConfig())};
+    }
+    async function status(){
+      const caps=capabilities(),permission=caps.native?await env.MMNative.notificationPermission():env.Notification?.permission||'unsupported';
+      return {...caps,permission,enabled:record.enabled&&record.owner===getOwner()&&permission==='granted'&&caps.configured,preferences:{...record.preferences}};
+    }
+    function fail(code){const error=new Error(code);error.code=code;throw error;}
+    function check({requireBackend=false}={}){const caps=capabilities();if(caps.needsHomeScreen)fail('home-screen-required');if(!caps.supported)fail('unsupported');if(requireBackend&&!caps.configured)fail('backend-required');return caps;}
+    function permissionRequest(caps){
+      // Invoked synchronously from the button handler, before awaiting worker readiness.
+      return caps.native?env.MMNative.requestNotificationPermission():env.Notification.requestPermission();
+    }
+    async function registration(){return env.navigator.serviceWorker.ready;}
+    function applicationServerKey(key){const base=key.replace(/-/g,'+').replace(/_/g,'/'),raw=env.atob(base+'='.repeat((4-base.length%4)%4));return Uint8Array.from(raw,c=>c.charCodeAt(0));}
+    function guard(ticket,owner){if(ticket!==revision||owner!==getOwner())fail('operation-cancelled');}
+    async function backend(method,body,validate=()=>{}){
+      const config=getConfig();if(!configValid(config))fail('backend-required');
+      validate();const token=await options.getToken?.();validate();if(!token)fail('sign-in-required');
+      const response=await env.fetch(config.endpoint,{method,headers:{'Content-Type':'application/json',Authorization:`Bearer ${token}`},body:JSON.stringify(body),credentials:'omit',cache:'no-store'});
+      if(!response.ok)fail('delivery-unavailable');
+    }
+    async function enable(){
+      const caps=check({requireBackend:true}),ticket=++revision,owner=getOwner(),request=permissionRequest(caps),permission=await request;
+      guard(ticket,owner);
+      if(permission!=='granted')fail('permission-denied');
+      await queue.catch(()=>{});guard(ticket,owner);
+      if(!caps.native){
+        const worker=await registration();guard(ticket,owner);const existing=await worker.pushManager.getSubscription();guard(ticket,owner);
+        let subscription;
+        try{subscription=existing||await worker.pushManager.subscribe({userVisibleOnly:true,applicationServerKey:applicationServerKey(getConfig().publicVapidKey)});guard(ticket,owner);
+          await backend('PUT',{subscription:subscription.toJSON(),language:getLanguage(),preferences:record.preferences,notifications:[]},()=>guard(ticket,owner));guard(ticket,owner);
+        }catch(error){if(!existing&&subscription)await subscription.unsubscribe().catch(()=>{});throw error;}
+      }
+      guard(ticket,owner);record.enabled=true;record.owner=owner;persist();return status();
+    }
+    function disable({resetPreferences=false}={}){
+      ++revision;
+      // Change ownership/opt-in synchronously; queued work cannot show old data as active.
+      record.enabled=false;if(resetPreferences)record.preferences={...DEFAULTS};persist();
+      // A late native scheduling promise must finish before cancellation.
+      const task=queue.catch(()=>{}).then(async()=>{
+        if(native())await env.MMNative.cancelNotifications(record.ids);
+        else if(env.navigator?.serviceWorker){const worker=await registration(),subscription=await worker.pushManager.getSubscription();if(subscription){
+          if(configValid(getConfig()))await backend('DELETE',{subscription:subscription.toJSON(),notifications:[]}).catch(()=>{});
+          await subscription.unsubscribe();
+        }}
+        record.enabled=false;record.owner=null;record.ids=[];persist();return status();
+      });queue=task;return task;
+    }
+    async function test(){
+      const caps=check(),request=permissionRequest(caps),permission=await request;if(permission!=='granted')fail('permission-denied');
+      const notification=packet('test',{},getLanguage(),false,'mymoney-test');
+      if(caps.native){
+        // Native bridge has a separate test path so testing never replaces scheduled reminders.
+        if(!env.MMNative.testNotification)fail('test-unavailable');await env.MMNative.testNotification(notification);
+      }else{const worker=await registration();await worker.showNotification(notification.title,{body:notification.body,icon:notification.icon,badge:notification.badge,tag:notification.tag,data:notification.data});}
+      return {shown:true,automatic:record.enabled&&caps.configured};
+    }
+    function setPreferences(next){record.preferences=preferences({...record.preferences,...next});persist();return {...record.preferences};}
+    function sync(state){
+      const ticket=++revision,owner=getOwner();
+      const task=queue.catch(()=>{}).then(async()=>{
+        if(ticket!==revision||owner!==getOwner())return {scheduled:0,stale:true};
+        const current=await status();if(!current.enabled)return {scheduled:0,enabled:false};
+        const notifications=schedule(state,record.preferences,{language:getLanguage()});if(ticket!==revision||owner!==getOwner())return {scheduled:0,stale:true};
+        if(current.native)await env.MMNative.scheduleNotifications(notifications);
+        else{const worker=await registration();guard(ticket,owner);const subscription=await worker.pushManager.getSubscription();guard(ticket,owner);if(!subscription){record.enabled=false;persist();return {scheduled:0,enabled:false};}await backend('PUT',{subscription:subscription.toJSON(),language:getLanguage(),timeZone:Intl.DateTimeFormat().resolvedOptions().timeZone,preferences:record.preferences,notifications},()=>guard(ticket,owner));}
+        // Preserve actual scheduled IDs even if disable() arrived during the await.
+        record.ids=notifications.map(n=>n.id);persist();return {scheduled:notifications.length,enabled:true};
+      });queue=task;return task;
+    }
+    // A different account may have become active while the application was closed.
+    if((record.enabled||record.ids.length)&&record.owner!==getOwner())void disable({resetPreferences:true}).catch(()=>{});
+    return {capabilities,status,enable,disable,test,setPreferences,sync,get preferences(){return {...record.preferences};}};
+  }
+  const api={DEFAULTS,ICON,preferences,packet,schedule,upcomingExpenses,configValid,createClient,CATALOG:Copy.CATALOG};if(node)module.exports=api;root.MMNotifications=api;
+})(typeof globalThis!=='undefined'?globalThis:this);
+</script>
+<script>/* Device-local opt-in; no permission prompt during launch or account changes. */
+(function(root){
+  'use strict';
+  const $=id=>document.getElementById(id);
+  let client=null,getState=null,openView=null,archive=null,timer=0,busy=false,version=0;
+  const copy={
+    title:['Notifiche','Notifications'],intro:['Solo quando serve. Massimo un promemoria al giorno, tra le 10 e le 20.','Only when useful. At most one reminder a day, between 10 am and 8 pm.'],
+    off:['Disattivate','Off'],on:['Promemoria attivi su questo dispositivo.','Reminders active on this device.'],
+    unsupported:['Notifiche non disponibili in questo browser.','Notifications are unavailable in this browser.'],
+    home:['Su iPhone, aggiungi MyMoney alla Home e aprila dall’icona per usare le notifiche.','On iPhone, add MyMoney to your Home Screen and open its icon to use notifications.'],
+    backend:['Invio automatico da collegare. Puoi già provare una notifica su questo dispositivo.','Automatic delivery still needs to be connected. You can already test a notification on this device.'],
+    denied:['Permesso disattivato. Puoi cambiarlo nelle impostazioni del dispositivo.','Permission is off. You can change it in your device settings.'],
+    enable:['Attiva promemoria','Enable reminders'],disable:['Disattiva','Turn off'],test:['Prova notifica','Test notification'],
+    tested:['Notifica di prova inviata. I promemoria automatici hanno un’attivazione separata.','Test notification sent. Automatic reminders are enabled separately.'],
+    signin:['Accedi con Google per collegare le notifiche al tuo archivio.','Sign in with Google to connect notifications to your records.'],
+    failed:['Invio non riuscito. Controlla la connessione e riprova.','Delivery failed. Check your connection and try again.'],
+    due:['Scadenze di domani','Tomorrow’s payments'],budget:['Budget da rivedere','Budget check-ins'],weekly:['Un check il lunedì','A Monday check-in'],reminder:['Promemoria spese serale','Evening expense reminder'],details:['Mostra nomi e importi nelle notifiche','Show names and amounts in notifications'],
+    privacy:['Nomi e importi restano nascosti per impostazione predefinita. Scadenze e stime si aggiornano quando apri MyMoney.','Names and amounts stay hidden by default. Dates and estimates update when you open MyMoney.']
+  };
+  const text=key=>copy[key]?.[root.MyMoneyI18n.language==='en'?1:0]||key;
+  function error(error){const key={'home-screen-required':'home','unsupported':'unsupported','backend-required':'backend','permission-denied':'denied','sign-in-required':'signin'}[error?.code]||'failed';$('notification-feedback').textContent=text(key);}
+  async function render(){
+    if(!client)return;const ticket=++version,status=await client.status();if(ticket!==version)return;
+    document.querySelectorAll('[data-notification-copy]').forEach(el=>el.textContent=text(el.dataset.notificationCopy));
+    const key=status.needsHomeScreen?'home':!status.supported?'unsupported':status.permission==='denied'?'denied':!status.configured?'backend':status.enabled?'on':'off';
+    $('notification-status').textContent=text(key);
+    $('notification-enable').textContent=text(status.enabled?'disable':'enable');
+    $('notification-enable').disabled=busy||!status.configured||!status.supported||status.needsHomeScreen||status.permission==='denied';
+    $('notification-enable').dataset.enabled=String(status.enabled);
+    $('notification-test').disabled=busy||!status.supported||status.needsHomeScreen||status.permission==='denied';
+    for(const key of Object.keys(client.preferences))$(`notification-${key}`).checked=client.preferences[key];
+  }
+  async function act(callback){if(busy)return;busy=true;$('notification-feedback').textContent='';render();try{await callback();}catch(e){error(e);}finally{busy=false;render();refresh();}}
+  function refresh(){
+    if(!client||busy)return;clearTimeout(timer);timer=setTimeout(async()=>{
+      if(busy)return;
+      const current=root.MMSync?.archiveKey()||'local';
+      try{
+        if(current!==archive){archive=current;await client.disable({resetPreferences:true});}
+        await client.sync(getState());await render();
+      }catch(e){error(e);render();}
+    },180);
+  }
+  function route(value){if(value==='plan'||value==='history')openView?.(value);}
+  function init(options){
+    if(client)return;getState=options.getState;openView=options.openView;archive=root.MMSync?.archiveKey()||'local';
+    client=root.MMNotifications.createClient({getToken:()=>root.MMSync?.getIdToken(),getOwner:()=>root.MMSync?.archiveKey()||'local'});
+    $('notification-enable').addEventListener('click',()=>act(async()=>{
+      // enable() must run before the first await to preserve Safari's user gesture.
+      if($('notification-enable').dataset.enabled==='true')await client.disable();
+      else{await client.enable();await client.sync(getState());}
+    }));
+    $('notification-test').addEventListener('click',()=>act(async()=>{await client.test();$('notification-feedback').textContent=text('tested');}));
+    Object.keys(client.preferences).forEach(key=>$(`notification-${key}`).addEventListener('change',event=>{client.setPreferences({[key]:event.target.checked});refresh();}));
+    root.addEventListener('mm:languagechange',()=>{$('notification-feedback').textContent='';refresh();});
+    root.addEventListener('mm:archivechange',()=>{clearTimeout(timer);client.disable({resetPreferences:true}).then(()=>{archive=root.MMSync?.archiveKey()||'local';render();}).catch(error);});
+    root.addEventListener('focus',refresh);root.document.addEventListener('visibilitychange',()=>{if(!document.hidden)refresh();});
+    root.navigator.serviceWorker?.addEventListener('message',event=>{if(event.data?.type==='MM_NOTIFICATION_OPEN')route(event.data.route);});
+    root.addEventListener('mm:notificationopen',event=>route(event.detail?.route));
+    const url=new URL(location.href),target=url.searchParams.get('notification');if(target){route(target);url.searchParams.delete('notification');history.replaceState(null,'',url);}
+    refresh();
+  }
+  root.MMNotificationUI={init,refresh};
 })(window);
 </script>
 <script>/* Local-first UI. Optional, explicitly connected accounts sync through MMSync. */
@@ -3125,7 +3392,7 @@ window.MM_FIREBASE_CONFIG = Object.freeze({
   }
   function render(){
     renderHome();renderHistory();renderPlan();
-    renderSettings();goQuiet(currentView);
+    renderSettings();goQuiet(currentView);window.MMNotificationUI?.refresh();
     if(advisorQuestion && $('#voice-sheet').open)showAdvice(advisorQuestion);
   }
   function goQuiet(view){
@@ -3183,11 +3450,15 @@ window.MM_FIREBASE_CONFIG = Object.freeze({
     if(existing){editTransaction(existing);return;}
     openDrafts([{id:M.id(),date:due>M.today()?due:M.today(),amountCents:r.amountCents,type:'expense',category:r.category,note:r.name,status:due>M.today()?'planned':'paid',includedInOpening:false,countBudget:true,recurringId:r.id,dueDate:due,reason:tr('Rata collegata: nel budget è già compresa nelle spese fisse equivalenti.')}]);
   }
+  let analysisVersion=0,analysisBusy=false;
+  function assistantPhase(phase){window.MyMoneyOrbit?.setAssistantPhase(phase);$('#voice-sheet').dataset.phase=phase;}
+  function cancelAnalysis(){analysisVersion++;analysisBusy=false;$('#voice-sheet').removeAttribute('aria-busy');}
+  function savedFeedback(){window.MyMoneyOrbit?.confirm();window.MMNative?.haptic('success');}
   function showAdvice(question){
     const answer=window.MyMoneyAdvisor.interpret(question,state,M.today(),I.language,{previousAnswer:lastAnswer,balanceConfirmed:balanceConfirmed()});
     if(!answer)return false;
     // Keep the resolved question for state/language refreshes, not a recursive follow-up.
-    advisorQuestion=answer.context?.question||question;lastAnswer=answer;advisorAction=answer.action;
+    advisorQuestion=answer.context?.question||question;lastAnswer=answer;advisorAction=answer.action;assistantPhase('ready');
     UI.swapContent($('#voice-sheet .assistant-content'),()=>{
       $('#voice-compose').hidden=true;$('#command-preview').hidden=true;$('#advisor-answer').hidden=false;
       $('#voice-title').textContent=tr('Facciamo due conti.');
@@ -3196,8 +3467,10 @@ window.MM_FIREBASE_CONFIG = Object.freeze({
       $('#advisor-answer').dataset.verdict=answer.verdict;
       $('#advisor-lines').replaceChildren(...answer.details.map(line=>el('li',null,line)));
       $('#advisor-quality').textContent=answer.dataQuality?.label||'';
-      $('#advisor-action').hidden=!answer.action?.label||answer.action.type==='none';$('#advisor-action').textContent=answer.action?.label||'';
-      $('#advisor-details').open=false;$('#advisor-details').hidden=!answer.details.length;$('#advisor-title').tabIndex=-1;$('#advisor-title').focus({preventScroll:true});
+      const hasAction=!!answer.action?.label&&answer.action.type!=='none';
+      $('#advisor-action').hidden=!hasAction;$('#advisor-action').textContent=answer.action?.label||'';
+      $('#advisor-voice').classList.toggle('quiet',hasAction);$('#advisor-voice').classList.toggle('full-width',!hasAction);
+      $('#advisor-details').open=false;$('#advisor-details').hidden=false;$('#advisor-title').tabIndex=-1;$('#advisor-title').focus({preventScroll:true});
     });
     return true;
   }
@@ -3228,11 +3501,17 @@ window.MM_FIREBASE_CONFIG = Object.freeze({
     if($('#voice-text').hidden){$('#natural').style.height='';$('#natural').style.overflowY='hidden';}
     resizeAssistantText();
   }
-  function typeToAssistant(){cancelVoice();closeProposal();voiceStatus('');$('#voice-sheet').classList.add('is-typing');composeState();$('#natural').focus();}
-  function analyze(){
+  function typeToAssistant(){cancelAnalysis();cancelVoice();assistantPhase('idle');closeProposal();voiceStatus('');$('#voice-sheet').classList.add('is-typing');composeState();$('#natural').focus();}
+  async function analyze(){
+    if(analysisBusy)return;
     cancelVoice();closeProposal();
     const text=$('#natural').value.trim();
     if(!text){voiceStatus(tr('Dimmi una spesa oppure chiedimi se puoi permetterti un acquisto.'));return;}
+    const version=++analysisVersion;analysisBusy=true;assistantPhase('processing');
+    $('#voice-sheet').setAttribute('aria-busy','true');voiceStatus(tr('Controllo i tuoi dati…'));
+    // Let the pending state paint once; never pad real work with a fake loading delay.
+    await new Promise(resolve=>requestAnimationFrame(()=>setTimeout(resolve,0)));
+    if(version!==analysisVersion)return;
     try{
       if(showAdvice(text))return;
       // Questions outside this assistant's scope must never become a transaction.
@@ -3243,6 +3522,7 @@ window.MM_FIREBASE_CONFIG = Object.freeze({
       if(proposal.kind==='transactions'&&proposal.items.some(d=>!d.date||!d.amountCents||d.warnings.length)){const items=proposal.items;UI.close($('#voice-sheet'),{immediate:true});openDrafts(items);proposal=null;return;}
       showProposal();
     }catch(e){voiceStatus(I.text(e.message),true);}
+    finally{if(version===analysisVersion){analysisBusy=false;$('#voice-sheet').removeAttribute('aria-busy');assistantPhase('ready');}}
   }
   $('#editor-form').addEventListener('submit',event=>{
     event.preventDefault();errBox('#editor-error','');
@@ -3270,7 +3550,7 @@ window.MM_FIREBASE_CONFIG = Object.freeze({
       next.transactions.push(...additions);
       for(const r of rules){next.rules=next.rules.filter(x=>x.phrase!==r.phrase);next.rules.push(r);}
       const message=editingId?tr('Movimento aggiornato.'):tr('Movimento salvato.');
-      commit(next);UI.close($('#editor'));$('#natural').value='';closeProposal();sayUndo(message,before);
+      commit(next);savedFeedback();UI.close($('#editor'));$('#natural').value='';closeProposal();sayUndo(message,before);
     }catch(e){errBox('#editor-error',e.message);}
   });
   $('#delete-transaction').addEventListener('click',()=>{if(!editingId||!confirm(tr('Eliminare questo movimento? Il saldo e il budget saranno ricalcolati.')))return;try{if(editingRevision!==state.revision)throw Error(tr('I dati sono cambiati. Chiudi e riapri il movimento.'));const before=M.clone(state),next=M.clone(state);next.transactions=next.transactions.filter(t=>t.id!==editingId);commit(next);UI.close($('#editor'));sayUndo(tr('Movimento eliminato.'),before);}catch(e){errBox('#editor-error',e.message);}});
@@ -3347,9 +3627,9 @@ window.MM_FIREBASE_CONFIG = Object.freeze({
   function clearSpeechTimers(){speechTimers.forEach(clearTimeout);speechTimers=[];}
   function cancelVoice(){const previous=speech;speech=null;window.MMVoiceMeter?.stop();clearSpeechTimers();voiceUI(false);composeState();if(previous){try{previous.abort();}catch(_){}}}
   function beginRecognition(){
-    cancelVoice();closeProposal();$('#natural').value='';$('#voice-sheet').classList.remove('is-typing');composeState();
+    cancelAnalysis();cancelVoice();closeProposal();$('#natural').value='';$('#voice-sheet').classList.remove('is-typing');composeState();
     $('#voice-consent').hidden=true;$('#voice-compose').hidden=false;
-    const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
+    const SR=window.MMNative?.isNative?window.MMNative.SpeechRecognition:(window.SpeechRecognition||window.webkitSpeechRecognition);
     if(!SR){$('#voice-sheet').classList.add('is-typing');composeState();voiceStatus(tr('Scrivi qui o usa il microfono della tastiera.'),true);return;}
     try{
       const r=new SR();speech=r;r.lang=I.locale;r.interimResults=true;r.continuous=false;
@@ -3357,12 +3637,12 @@ window.MM_FIREBASE_CONFIG = Object.freeze({
       voiceUI(true);$('#voice-title').textContent=tr('Sono qui.');voiceStatus(tr('Attivo il microfono…'));
       const startup=setTimeout(()=>{if(speech!==r)return;cancelVoice();voiceStatus(tr('Tocca il microfono per riprovare, oppure scrivi.'),true);},9000);
       speechTimers.push(startup,setTimeout(()=>{if(speech!==r)return;cancelVoice();voiceStatus(tr('Dettatura terminata. Puoi continuare dal testo.'),true);},45000));
-      r.onstart=()=>{if(speech!==r)return;clearTimeout(startup);voiceStatus(tr('Ti ascolto…'));};
+      r.onstart=()=>{if(speech!==r)return;clearTimeout(startup);voiceStatus(tr('Ti ascolto…'));window.MMNative?.haptic('listening');};
       r.onresult=e=>{if(speech!==r)return;let all='';finalText='';for(let i=0;i<e.results.length;i++){all+=e.results[i][0].transcript+' ';if(e.results[i].isFinal)finalText+=e.results[i][0].transcript+' ';}$('#natural').value=all.trim();composeState();};
       r.onerror=e=>{if(speech!==r)return;failed=true;const messages={'not-allowed':tr('Microfono non autorizzato. Puoi abilitarlo in Safari oppure scrivere qui.'),'audio-capture':tr('Microfono non disponibile. Puoi scrivere qui.'),'no-speech':tr('Non ho sentito una frase. Tocca il microfono per riprovare.'),'network':tr('Voce non disponibile. Controlla la connessione oppure scrivi.'),'aborted':tr('Dettatura interrotta. Puoi riprovare.')};cancelVoice();voiceStatus(messages[e.error]||tr('Puoi riprovare con il microfono oppure scrivere.'),true);};
       r.onend=()=>{if(speech!==r)return;speech=null;window.MMVoiceMeter?.stop();clearSpeechTimers();voiceUI(false);composeState();if(!failed&&finalText.trim()){$('#natural').value=finalText.trim();analyze();}else if(!failed)voiceStatus(tr('Puoi riprovare o continuare dal testo.'),true);};
       r.start();composeState();
-      window.MMVoiceMeter?.start((level,details)=>{if(speech===r)window.MMParticles?.setAudioLevel(level,details);},{recognitionActive:true,allowConcurrent:true}).catch(()=>{});
+      if(!window.MMNative?.isNative)window.MMVoiceMeter?.start((level,details)=>{if(speech===r)window.MMParticles?.setAudioLevel(level,details);},{recognitionActive:true,allowConcurrent:true}).catch(()=>{});
     }catch(_){cancelVoice();voiceStatus(tr('Tocca il microfono per riprovare, oppure scrivi.'),true);}
   }
   function startVoice(){
@@ -3380,7 +3660,7 @@ window.MM_FIREBASE_CONFIG = Object.freeze({
   $('#close-quick').addEventListener('click',()=>UI.close($('#quick-sheet')));
   $('#settings-voice').addEventListener('click',startVoice);
   document.addEventListener('mm:closing',e=>{
-    if(e.target.id==='voice-sheet'){cancelVoice();resetAssistantSession();}
+    if(e.target.id==='voice-sheet'){cancelAnalysis();cancelVoice();resetAssistantSession();}
     const toast=$('#toast');if(e.target.contains(toast))(UI.dialogs().filter(d=>d!==e.target).at(-1)||document.body).append(toast);
   });
   // Discard drafts after the exit animation, without collapsing the visible panel.
@@ -3398,6 +3678,7 @@ window.MM_FIREBASE_CONFIG = Object.freeze({
     e.target.querySelectorAll('details').forEach(d=>{d.open=d.dataset.initialOpen==='true';});
   },true);
   async function setupOffline(){
+    if(window.MMNative?.isNative){$('#install-status').textContent=tr('Versione iPhone installata. Interfaccia disponibile anche offline.');return;}
     const local=location.protocol==='file:';
     if(local){errBox('#environment',tr('Anteprima da file: funziona per la prova su computer. Su iPhone usa la versione HTTPS installata dalla Home. Fai sempre un backup.'));$('#install-status').textContent=tr('File locale: nessuna installazione offline PWA attiva.');return;}
     if(!('serviceWorker' in navigator)||!window.isSecureContext){$('#install-status').textContent=tr('Offline non disponibile in questo contesto: serve HTTPS per installare questa PWA.');return;}
@@ -3420,7 +3701,7 @@ window.MM_FIREBASE_CONFIG = Object.freeze({
     $('#quick-form').reset();$('#q-date').value=M.today();$('#q-date').dataset.chosen='false';
     $('#quick-details').hidden=true;$('#quick-options').setAttribute('aria-expanded','false');errBox('#quick-error','');updateQuickHint();
   }
-  function quickFocus(){if(!$('#quick-sheet').open||$('#quick-sheet').classList.contains('is-closing'))resetQuick();UI.open($('#quick-sheet'));}
+  function quickFocus(){window.MMNative?.haptic('selection');if(!$('#quick-sheet').open||$('#quick-sheet').classList.contains('is-closing'))resetQuick();UI.open($('#quick-sheet'));}
   function updateQuickHint(){
     const name=$('#q-name').value.trim(),type=$('#q-type').value==='auto'?M.inferType(name):$('#q-type').value;
     const category=$('#q-category').value||M.inferCategory(name,state.rules),future=$('#q-date').value>M.today();
@@ -3429,7 +3710,7 @@ window.MM_FIREBASE_CONFIG = Object.freeze({
   function closeProposal(){proposal=null;proposalRevision=null;advisorQuestion=null;$('#advisor-answer').hidden=true;$('#command-preview').hidden=true;$('#voice-compose').hidden=false;$('#voice-title').textContent=tr('Sono qui.');errBox('#command-error','');}
   function showProposal(){
     UI.swapContent($('#voice-sheet .assistant-content'),()=>{
-    if(!proposal)return;
+    if(!proposal)return;assistantPhase('ready');$('#command-details').open=false;
     const copy=I.proposal(proposal,state);$('#command-title').textContent=copy.title;$('#command-description').textContent=copy.description;
     const list=$('#command-lines');list.replaceChildren();
     const items=proposal.kind==='transactions'?proposal.items:proposal.kind==='salary'?[proposal.transaction]:[];
@@ -3449,12 +3730,12 @@ window.MM_FIREBASE_CONFIG = Object.freeze({
       if(duplicateTransaction([t])&&!confirm(tr('Un movimento uguale esiste già. Vuoi aggiungerne un altro?')))return;
       const next=M.applyCommand(state,{kind:'transactions',items:[t]});
       if($('#q-category').value&&$('#q-learn').checked&&t.note.length>=3){next.rules=next.rules.filter(r=>r.phrase!==M.norm(t.note));next.rules.push({phrase:M.norm(t.note).slice(0,100),category:t.category});}
-      commit(next);$('#q-name').value='';$('#q-amount').value='';$('#q-category').value='';$('#q-type').value='auto';$('#q-date').value=M.today();$('#q-date').dataset.chosen='false';updateQuickHint();closeProposal();$('#quick-details').hidden=true;$('#quick-options').setAttribute('aria-expanded','false');UI.close($('#quick-sheet'));
+      commit(next);savedFeedback();$('#q-name').value='';$('#q-amount').value='';$('#q-category').value='';$('#q-type').value='auto';$('#q-date').value=M.today();$('#q-date').dataset.chosen='false';updateQuickHint();closeProposal();$('#quick-details').hidden=true;$('#quick-options').setAttribute('aria-expanded','false');UI.close($('#quick-sheet'));
       sayUndo(tr('{type} {status} · {amount}',{type:t.type==='income'?tr('Entrata'):tr('Spesa'),status:t.status==='planned'?tr('prevista'):tr('salvata'),amount:money(t.amountCents)}),before);
     }catch(error){errBox('#quick-error',error.message);}});
     $('#top-add').addEventListener('click',quickFocus);
     $('#natural').addEventListener('keydown',e=>{if(e.key==='Enter'&&!e.shiftKey&&!e.isComposing){e.preventDefault();analyze();}});
-    $('#natural').addEventListener('input',()=>{closeProposal();composeState();});
+    $('#natural').addEventListener('input',()=>{cancelAnalysis();assistantPhase('idle');closeProposal();composeState();});
     window.addEventListener('resize',resizeAssistantText);
     window.visualViewport?.addEventListener('resize',resizeAssistantText);
     $$('[data-example]').forEach(b=>b.addEventListener('click',()=>{$('#natural').value=b.dataset.example;closeProposal();$('#natural').focus();}));
@@ -3468,7 +3749,7 @@ window.MM_FIREBASE_CONFIG = Object.freeze({
       const items=proposal.kind==='transactions'?proposal.items:proposal.kind==='salary'?[proposal.transaction]:[];
       if(duplicateTransaction(items,proposal.existingId)&&!confirm(tr('Un movimento uguale esiste già. Aggiungerlo comunque?')))return;
       const before=M.clone(state),next=M.applyCommand(state,proposal),message=proposal.kind==='setting'?tr('Preferenza aggiornata.'):proposal.kind==='recurring'?tr('Piano aggiornato.'):tr('Movimento salvato.');
-      commit(next);closeProposal();$('#natural').value='';UI.close($('#voice-sheet'));sayUndo(message,before);
+      commit(next);savedFeedback();closeProposal();$('#natural').value='';UI.close($('#voice-sheet'));sayUndo(message,before);
     }catch(e){errBox('#command-error',e.message);}});
     $('#delete-recurring').addEventListener('click',()=>{
       if(!recEditingId||!confirm(tr('Eliminare questa spesa fissa? I movimenti già registrati saranno conservati come movimenti indipendenti.')))return;
@@ -3514,7 +3795,7 @@ window.MM_FIREBASE_CONFIG = Object.freeze({
   $('#report-prev').addEventListener('click',()=>{reportOffset--;renderReport();});$('#report-next').addEventListener('click',()=>{reportOffset++;renderReport();});
   $('#export-json').addEventListener('click',exportJSON);$('#export-csv').addEventListener('click',()=>exportCSV().catch(e=>say(e.message)));$('#export-calendar').addEventListener('click',()=>exportCalendar().catch(e=>say(e.message)));$('#mic').addEventListener('click',startVoice);
   $$('dialog details').forEach(d=>d.dataset.initialOpen=String(d.open));
-  load();render();setupQuick();UI.init({manual:quickFocus,voice:startVoice,data:()=>go('home'),suspend:()=>{if(speech){cancelVoice();voiceStatus(tr('Dettatura interrotta. Tocca il microfono per riprendere.'));}}});setupOffline();
+  load();render();setupQuick();window.MMNotificationUI?.init({getState:()=>state,openView:go});UI.init({manual:quickFocus,voice:startVoice,data:()=>go('home'),suspend:()=>{if(speech){cancelVoice();voiceStatus(tr('Dettatura interrotta. Tocca il microfono per riprendere.'));}}});setupOffline();
   window.MMSync?.init({getState:()=>M.clone(state),replaceState:next=>{state=M.validate(next);readOnly=false;render();},notify:say,resetDrafts:()=>{
     cancelVoice();closeProposal();resetAssistantSession();settingsDirty=false;editingId=null;recEditingId=null;drafts=[];editingRevision=null;recRevision=null;proposalRevision=null;
     clearTimeout(toastTimer);$('#toast').replaceChildren();$('#toast').hidden=true;$('#drafts').replaceChildren();
@@ -3569,8 +3850,11 @@ window.MM_FIREBASE_CONFIG = Object.freeze({
     grabbed=false;stretchX.target=stretchY.target=0;
   }
   let assistantActive = false, assistantListening = false, audioLevel = 0, audioTarget = 0, audioAt = 0;
+  // Meaningful states share the material clock and renderer, never an overlay.
+  let assistantPhase='idle',listenSignal=0,processSignal=0,expressionTime=0;
+  let confirmation=0,confirmationAge=4;
   let holding = false, releasing = false, quietUntil = 0;
-  // This is a backing-pixel policy, not a frame-rate limit. UI remains full resolution.
+  // Only the soft fluid trades pixels for cadence; particle detail stays native.
   const saveData = !!navigator.connection?.saveData;
   let quality = saveData ? .78 : 1, bufferScale = quality, cadence = 1000 / 60;
   let sampleTime = 0, sampleCount = 0, lateFrames = 0;
@@ -3585,6 +3869,12 @@ window.MM_FIREBASE_CONFIG = Object.freeze({
   const vertexSource = `
     attribute vec2 a_position;
     void main() { gl_Position = vec4(a_position, 0.0, 1.0); }
+  `;
+  const compositeFragmentSource = `
+    precision mediump float;
+    uniform sampler2D u_fluid;
+    uniform vec2 u_resolution;
+    void main() { gl_FragColor = texture2D(u_fluid, gl_FragCoord.xy / u_resolution); }
   `;
   const fieldFunctions = `
     float hash(vec2 p) {
@@ -3794,9 +4084,10 @@ window.MM_FIREBASE_CONFIG = Object.freeze({
     uniform vec3 u_focus;
     uniform float u_time,u_morph,u_voice,u_pixel;
     uniform vec3 u_bands;
-    uniform vec4 u_probe,u_grab,u_ripple;
+    uniform vec4 u_probe,u_grab,u_ripple,u_state;
+    uniform float u_expressionTime;
     varying vec3 v_color;
-    varying float v_alpha;
+    varying float v_alpha,v_pointSize;
     ${fieldFunctions}
     float volumeNoise(vec3 p) {
       float plane=floor(p.z),f=fract(p.z);f=f*f*(3.0-2.0*f);
@@ -3831,7 +4122,11 @@ window.MM_FIREBASE_CONFIG = Object.freeze({
                  +lifted*u_voice*.065*(.5+.5*sin(phase*40.0+u_time*9.0));
       float jitter=u_bands.z*.016*sin(u_time*22.0+phase*75.0);
       float dust=mote*(.025+.14*pow(phase,3.0))*(.35+detail);
-      float shell=1.0+folds+(seed-.5)*mix(.012,.07,mote)+dust+audio+jitter;
+      // Listening breathes; processing gently concentrates the same surface.
+      // A saved action releases one restrained material pulse, not a second orb.
+      float breath=u_state.x*.008*sin(u_expressionTime*1.65);
+      float shell=1.0+folds+(seed-.5)*mix(.012,.07,mote)+dust+audio+jitter
+                 +breath-u_state.y*.018+u_state.z*.038;
       vec2 projected=n.xy*shell/(1.0-n.z*.10);
       // Front/back sheets form travelling creases inside the silhouette as well.
       float face=pow(abs(n.z),.65);
@@ -3881,29 +4176,46 @@ window.MM_FIREBASE_CONFIG = Object.freeze({
       float depth=mix(.42,1.0,smoothstep(-.7,.5,n.z));
       float light=(.18+.62*filaments+limb*.72+corona*.06)*depth;
       light*=mix(1.0,.48*smoothstep(.18,.65,detail)*(.25+limb),mote);
-      v_alpha=light*smoothstep(.32,.88,m)*(1.0+local*.9+u_voice*lifted*.6);
+      // Lighting belongs to the deformed shell. Cursor/touch carries the light,
+      // so it keeps travelling with the elastic patch after the finger lets go.
+      vec3 surfaceNormal=normalize(vec3(projected,n.z));
+      vec3 lightDirection=normalize(vec3(-.38+u_probe.x*.82,.48+u_probe.y*.82,1.15));
+      float diffuse=max(0.0,dot(surfaceNormal,lightDirection));
+      vec3 halfVector=normalize(lightDirection+vec3(0.0,0.0,1.0));
+      float specular=pow(max(0.0,dot(surfaceNormal,halfVector)),18.0);
+      float illumination=diffuse*(.11+u_probe.z*.32)+specular*(.12+u_probe.z*.48);
+      float releasedLight=envelope*u_ripple.z*.32;
+      // Processing is a low-contrast light travelling along existing grains.
+      float scan=pow(.5+.5*cos(theta-u_expressionTime*1.75+n.z*.55),12.0)*u_state.y;
+      float confirmedFront=exp(-pow((n.y-(.9-u_state.w*2.2))/.30,2.0))*u_state.z;
+      float expression=u_state.x*.055+scan*.38+u_state.z*.28+confirmedFront*.44;
+      v_alpha=light*smoothstep(.32,.88,m)*(1.0+local*.55+u_voice*lifted*.6+illumination+releasedLight+expression);
       vec3 teal=vec3(.21,.58,.55),cyan=vec3(.43,.76,.81),blue=vec3(.22,.37,.65);
       vec3 pigment=mix(teal,blue,.40+.32*sin(theta+.7+macro));
       v_color=mix(pigment*.95,cyan,clamp(smoothstep(.30,1.0,limb)*(.40+.45*seed)+filaments*.18,0.0,1.0));
       v_color=mix(v_color,vec3(.59,.84,.86),smoothstep(.97,1.0,seed)*.65);
-      float speck=mix(1.05,2.15,seed)+filaments*.2+lifted*u_bands.z*.35;
-      gl_PointSize=max(1.0,speck*u_pixel);
+      v_color=mix(v_color,vec3(.52,.82,.83),clamp(specular*u_probe.z*.45+scan*.18+confirmedFront*.28,0.0,.55));
+      float speck=mix(1.25,2.40,seed)+filaments*.2+lifted*u_bands.z*.35;
+      v_pointSize=max(1.0,speck*u_pixel);
+      gl_PointSize=v_pointSize;
     }
   `;
   const particleFragmentSource = `
     precision mediump float;
     varying vec3 v_color;
-    varying float v_alpha;
+    varying float v_alpha,v_pointSize;
     void main() {
       float d=length(gl_PointCoord-.5)*2.0;
       if(d>1.0)discard;
-      float core=(1.0-smoothstep(.55,1.0,d))*.8+(1.0-smoothstep(0.0,.38,d))*.2;
+      // One physical pixel of edge coverage, with a defined core instead of haze.
+      float edge=min(.65,2.0/v_pointSize);
+      float core=1.0-smoothstep(1.0-edge,1.0,d);
       gl_FragColor=vec4(v_color,v_alpha*core);
     }
   `;
   // Curved rows form the fine woven surface; sparse motes lift beyond its silhouette.
   // Fixed seeds keep the grain stable between frames instead of temporal sparkle.
-  const seedData=[],rows=saveData?68:104,equator=saveData?112:184;
+  const seedData=[],rows=saveData?62:88,equator=saveData?104:160;
   let seedIndex=0;
   const appendSeed=(longitude,z,mote=false)=>{
     const i=++seedIndex,seed=(i*.7548776662466927)%1,phase=.01+.98*((i*.5698402909980532)%1);
@@ -3916,7 +4228,7 @@ window.MM_FIREBASE_CONFIG = Object.freeze({
       appendSeed(longitude,Math.cos(latitude));
     }
   }
-  const moteCount=saveData?900:2200;
+  const moteCount=saveData?700:1600;
   for(let i=0;i<moteCount;i++)appendSeed((i*2.399963229728653)%(Math.PI*2),.76*(1-2*(i+.5)/moteCount),true);
   const particleSeeds=new Float32Array(seedData),particleCount=particleSeeds.length/4;
   seedData.length=0;
@@ -3940,6 +4252,7 @@ window.MM_FIREBASE_CONFIG = Object.freeze({
     if (!gl) return null;
     const compiled = [];
     let program = null, buffer = null, pointsProgram=null, pointsBuffer=null;
+    let compositeProgram=null,fluidTexture=null,fluidFramebuffer=null,fluidWidth=0,fluidHeight=0;
     try {
       const compile = (type, source) => {
         const shader = gl.createShader(type);
@@ -3980,34 +4293,77 @@ window.MM_FIREBASE_CONFIG = Object.freeze({
       gl.bindBuffer(gl.ARRAY_BUFFER,pointsBuffer);
       gl.bufferData(gl.ARRAY_BUFFER,particleSeeds,gl.STATIC_DRAW);
       const particlePosition=gl.getAttribLocation(pointsProgram,'a_particle');
-      const pu={};for(const name of ['resolution','time','morph','voice','focus','bands','probe','grab','ripple','pixel'])pu[name]=gl.getUniformLocation(pointsProgram,'u_'+name);
+      const pu={};for(const name of ['resolution','time','morph','voice','focus','bands','probe','grab','ripple','pixel','state','expressionTime'])pu[name]=gl.getUniformLocation(pointsProgram,'u_'+name);
+      compositeProgram=gl.createProgram();if(!compositeProgram)throw Error('Composite shader unavailable');
+      gl.attachShader(compositeProgram,compile(gl.VERTEX_SHADER,vertexSource));
+      gl.attachShader(compositeProgram,compile(gl.FRAGMENT_SHADER,compositeFragmentSource));
+      gl.linkProgram(compositeProgram);
+      if(!gl.getProgramParameter(compositeProgram,gl.LINK_STATUS))throw Error('Composite shader unsupported');
+      const compositePosition=gl.getAttribLocation(compositeProgram,'a_position');
+      const compositeResolution=gl.getUniformLocation(compositeProgram,'u_resolution');
+      const compositeSampler=gl.getUniformLocation(compositeProgram,'u_fluid');
+      fluidTexture=gl.createTexture();fluidFramebuffer=gl.createFramebuffer();
+      if(!fluidTexture||!fluidFramebuffer)throw Error('Fluid surface unavailable');
+      gl.activeTexture(gl.TEXTURE0);gl.bindTexture(gl.TEXTURE_2D,fluidTexture);
+      gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_MIN_FILTER,gl.LINEAR);
+      gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_MAG_FILTER,gl.LINEAR);
+      gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_WRAP_S,gl.CLAMP_TO_EDGE);
+      gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_WRAP_T,gl.CLAMP_TO_EDGE);
+      gl.bindFramebuffer(gl.FRAMEBUFFER,fluidFramebuffer);
+      gl.framebufferTexture2D(gl.FRAMEBUFFER,gl.COLOR_ATTACHMENT0,gl.TEXTURE_2D,fluidTexture,0);
+      gl.bindFramebuffer(gl.FRAMEBUFFER,null);
+      // Read limits once, never synchronise with the GPU in the animation loop.
+      const viewportLimit=gl.getParameter(gl.MAX_VIEWPORT_DIMS);
+      const maxDimension=Math.min(gl.getParameter(gl.MAX_RENDERBUFFER_SIZE),gl.getParameter(gl.MAX_TEXTURE_SIZE),viewportLimit[0],viewportLimit[1]);
+      const useAttribute=(attribute,size,data)=>{
+        for(const other of [position,particlePosition,compositePosition])if(other!==attribute)gl.disableVertexAttribArray(other);
+        gl.bindBuffer(gl.ARRAY_BUFFER,data);gl.enableVertexAttribArray(attribute);
+        gl.vertexAttribPointer(attribute,size,gl.FLOAT,false,0,0);
+      };
       compiled.forEach(shader => gl.deleteShader(shader));
       compiled.length = 0;
       return {
+        maxDimension,
+        resize(w,h) {
+          if(w===fluidWidth&&h===fluidHeight)return;
+          gl.activeTexture(gl.TEXTURE0);gl.bindTexture(gl.TEXTURE_2D,fluidTexture);
+          gl.texImage2D(gl.TEXTURE_2D,0,gl.RGBA,w,h,0,gl.RGBA,gl.UNSIGNED_BYTE,null);
+          gl.bindFramebuffer(gl.FRAMEBUFFER,fluidFramebuffer);
+          const complete=gl.checkFramebufferStatus(gl.FRAMEBUFFER)===gl.FRAMEBUFFER_COMPLETE;
+          gl.bindFramebuffer(gl.FRAMEBUFFER,null);
+          if(!complete)throw Error('Fluid surface incomplete');
+          fluidWidth=w;fluidHeight=h;
+        },
         draw() {
           const g=orbGeometry(),fx=(g.x/width-.5)*width/height,fy=.5-g.y/height,fr=g.radius/height;
-          gl.viewport(0, 0, canvas.width, canvas.height);
-          gl.useProgram(program);gl.bindBuffer(gl.ARRAY_BUFFER,buffer);
-          if(position!==particlePosition)gl.disableVertexAttribArray(particlePosition);
-          gl.enableVertexAttribArray(position);gl.vertexAttribPointer(position,2,gl.FLOAT,false,0,0);
+          gl.bindFramebuffer(gl.FRAMEBUFFER,fluidFramebuffer);
+          gl.viewport(0,0,fluidWidth,fluidHeight);
+          gl.useProgram(program);useAttribute(position,2,buffer);
           gl.disable(gl.BLEND);
-          gl.uniform2f(resolution, canvas.width, canvas.height);
+          gl.uniform2f(resolution,fluidWidth,fluidHeight);
           gl.uniform1f(clock, time);gl.uniform1f(activity, energy);gl.uniform1f(light, luminosity);
           gl.uniform3f(touch, touchX, 1 - touchY, attraction);
           gl.uniform1f(morph, assistantMix);gl.uniform1f(voice, audioLevel);
           gl.uniform3f(focus,fx,fy,fr);
           gl.drawArrays(gl.TRIANGLES, 0, 3);
+          // Only the fluid is enlarged; the particles are drawn AFTER this copy.
+          gl.bindFramebuffer(gl.FRAMEBUFFER,null);
+          gl.viewport(0,0,canvas.width,canvas.height);
+          gl.useProgram(compositeProgram);useAttribute(compositePosition,2,buffer);
+          gl.activeTexture(gl.TEXTURE0);gl.bindTexture(gl.TEXTURE_2D,fluidTexture);
+          gl.uniform1i(compositeSampler,0);gl.uniform2f(compositeResolution,canvas.width,canvas.height);
+          gl.drawArrays(gl.TRIANGLES,0,3);
           if(assistantMix>.2){
-            gl.useProgram(pointsProgram);gl.bindBuffer(gl.ARRAY_BUFFER,pointsBuffer);
-            if(position!==particlePosition)gl.disableVertexAttribArray(position);
-            gl.enableVertexAttribArray(particlePosition);gl.vertexAttribPointer(particlePosition,4,gl.FLOAT,false,0,0);
+            gl.useProgram(pointsProgram);useAttribute(particlePosition,4,pointsBuffer);
             gl.uniform2f(pu.resolution,canvas.width,canvas.height);gl.uniform1f(pu.time,time);
             gl.uniform1f(pu.morph,assistantMix);gl.uniform1f(pu.voice,audioLevel);
             gl.uniform3f(pu.focus,fx,fy,fr);gl.uniform3f(pu.bands,bass,mid,treble);
             gl.uniform4f(pu.probe,probeX,probeY,probe,probePress);
             gl.uniform4f(pu.grab,grabAnchorX,grabAnchorY,stretchX.value,stretchY.value);
             gl.uniform4f(pu.ripple,rippleX,rippleY,rippleAmplitude,rippleAge);
-            gl.uniform1f(pu.pixel,Math.max(.9,canvas.height/height));
+            gl.uniform1f(pu.pixel,canvas.height/height);
+            gl.uniform4f(pu.state,listenSignal,processSignal,confirmation,confirmationAge);
+            gl.uniform1f(pu.expressionTime,expressionTime);
             gl.enable(gl.BLEND);gl.blendFunc(gl.SRC_ALPHA,gl.ONE);
             gl.drawArrays(gl.POINTS,0,particleCount);gl.disable(gl.BLEND);
           }
@@ -4016,6 +4372,7 @@ window.MM_FIREBASE_CONFIG = Object.freeze({
           gl.deleteBuffer(buffer);
           gl.deleteProgram(program);
           gl.deleteBuffer(pointsBuffer);gl.deleteProgram(pointsProgram);
+          gl.deleteProgram(compositeProgram);gl.deleteTexture(fluidTexture);gl.deleteFramebuffer(fluidFramebuffer);
         }
       };
     } catch (_) {
@@ -4023,6 +4380,8 @@ window.MM_FIREBASE_CONFIG = Object.freeze({
       if (buffer) gl.deleteBuffer(buffer);
       if (program) gl.deleteProgram(program);
       if(pointsBuffer)gl.deleteBuffer(pointsBuffer);if(pointsProgram)gl.deleteProgram(pointsProgram);
+      if(compositeProgram)gl.deleteProgram(compositeProgram);
+      if(fluidTexture)gl.deleteTexture(fluidTexture);if(fluidFramebuffer)gl.deleteFramebuffer(fluidFramebuffer);
       return null;
     }
   }
@@ -4092,7 +4451,7 @@ window.MM_FIREBASE_CONFIG = Object.freeze({
             else ctx.lineTo(px * w, py * h);
           }
           ctx.strokeStyle = `rgba(131,208,217,${(i === 2 ? .17 : .035) * luminosity * (1 + energy * .5)})`;
-          ctx.lineWidth = i === 2 ? 1.2 : 3;
+          ctx.lineWidth = (i === 2 ? 1.2 : 3) * h / height;
           ctx.stroke();
         }
         // Context-loss fallback: the same seeds and quiet centre, at a lower density.
@@ -4106,7 +4465,7 @@ window.MM_FIREBASE_CONFIG = Object.freeze({
             const wave=Math.sin(nx*6.8+ny*4+z*4.5-time*.24),crossWave=Math.sin(ny*9-nx*3+z*6.4+time*.18);
             const fold=.060*Math.sin(theta*5+z*7-time*.10)+.035*Math.sin(theta*9-z*5+time*.065)+wave*.04+crossWave*.026;
             const lift=(audioLevel*.045+bass*.14)*Math.pow(.5+.5*Math.sin(theta*3+z*5-time*1.6),3);
-            const shell=1+fold+(seed-.5)*.052+lift;
+            const shell=1+fold+(seed-.5)*.052+lift+listenSignal*.008*Math.sin(expressionTime*1.65)-processSignal*.018+confirmation*.038;
             let ox=nx*shell/(1-z*.1),oy=ny*shell/(1-z*.1);
             const face=Math.pow(Math.abs(z),.65);
             ox+=(wave*.115+crossWave*.035)*face;oy+=(crossWave*.095-wave*.035)*face;
@@ -4122,8 +4481,14 @@ window.MM_FIREBASE_CONFIG = Object.freeze({
             const px=mix(homeX,cx+ox*r),py=mix(homeY,centreY-oy*r);
             const limb=Math.pow(1-Math.abs(z),2.7);
             const filament=Math.pow(.5+.5*Math.sin(z*14+ny*4-time*.20),3);
-            ctx.globalAlpha=(.08+filament*.25+limb*.64)*fade;
-            const size=1+seed*.4;ctx.fillRect(px,py,size,size);
+            const lightX=-.38+probeX*.82,lightY=.48+probeY*.82;
+            const normalLength=Math.hypot(ox,oy,z)||1,lightLength=Math.hypot(lightX,lightY,1.15);
+            const diffuse=Math.max(0,(ox*lightX+oy*lightY+z*1.15)/(normalLength*lightLength));
+            const scan=Math.pow(.5+.5*Math.cos(Math.atan2(oy,ox)-expressionTime*1.75+z*.55),12)*processSignal;
+            const confirmedFront=Math.exp(-Math.pow((ny-(.9-confirmationAge*2.2))/.30,2))*confirmation;
+            ctx.globalAlpha=Math.min(1,(.08+filament*.25+limb*.64)*fade*(1+diffuse*(.11+probe*.32)+listenSignal*.055+scan*.38+confirmation*.28+confirmedFront*.44));
+            const size=(1.25+seed*.7)*h/height;
+            ctx.beginPath();ctx.arc(px,py,size*.5,0,Math.PI*2);ctx.fill();
           }
         }
         ctx.globalAlpha=1;
@@ -4139,13 +4504,17 @@ window.MM_FIREBASE_CONFIG = Object.freeze({
     if (renderer && !lost) renderer.draw();
   }
   function sizeBuffer() {
-    // A soft background can trade pixels for cadence without softening text.
-    const ratio = Math.min(window.devicePixelRatio || 1, 1.25, 900 / Math.max(width, height),
-      Math.sqrt(420000 / (width * height))) * bufferScale;
+    // Native Retina/4K dots, independent of adaptive fluid quality. Bound only
+    // extreme display sizes/GPU limits (the pixel budget also fits native 5K).
+    const limit=renderer?.maxDimension||4096;
+    const ratio=Math.min(window.devicePixelRatio||1,limit/width,limit/height,Math.sqrt(16777216/(width*height)));
     const nextWidth = Math.max(1, Math.round(width * ratio));
     const nextHeight = Math.max(1, Math.round(height * ratio));
     if (canvas.width !== nextWidth) canvas.width = nextWidth;
     if (canvas.height !== nextHeight) canvas.height = nextHeight;
+    const fluidRatio=Math.min(window.devicePixelRatio||1,1.25,900/Math.max(width,height),Math.sqrt(420000/(width*height)))*bufferScale;
+    try { renderer?.resize?.(Math.max(1,Math.round(width*fluidRatio)),Math.max(1,Math.round(height*fluidRatio))); }
+    catch (_) { renderer?.dispose();renderer=canvasRenderer(); }
   }
   function resize() {
     const rect = stage.getBoundingClientRect();
@@ -4156,8 +4525,7 @@ window.MM_FIREBASE_CONFIG = Object.freeze({
     draw();
   }
   function adaptResolution(interval, timestamp) {
-    // Reallocating a WebGL drawing buffer clears it and may stall the GPU.
-    // Learn/adjust quality only between gestures, never during the popup handoff.
+    // Reallocate only the fluid texture between gestures, never during handoff.
     if (holding || releasing || assistantMix > 0 || timestamp < quietUntil || scene !== 'idle') {
       sampleTime = sampleCount = lateFrames = 0;
       return;
@@ -4197,6 +4565,12 @@ window.MM_FIREBASE_CONFIG = Object.freeze({
     if(Math.abs(assistantMix-assistantTarget)<.00002&&Math.abs(assistantVelocity)<.0002){assistantMix=assistantTarget;assistantVelocity=0;}
     const fresh=assistantListening&&performance.now()-audioAt<220?audioTarget:0;
     audioLevel+=(fresh-audioLevel)*(1-Math.exp(-delta*(fresh>audioLevel?12:4)));
+    expressionTime+=delta;
+    const expressionEase=1-Math.exp(-delta*7.5);
+    listenSignal+=((assistantActive&&assistantPhase==='listening'?1:0)-listenSignal)*expressionEase;
+    processSignal+=((assistantActive&&assistantPhase==='processing'?1:0)-processSignal)*expressionEase;
+    confirmationAge=Math.min(4,confirmationAge+delta);
+    confirmation=confirmationAge<1.15?Math.sin(confirmationAge/1.15*Math.PI)*Math.exp(-confirmationAge*1.8):0;
     const spectralFresh=assistantListening&&performance.now()-audioAt<220;
     const spectralEase=1-Math.exp(-delta*10);
     bass+=((spectralFresh?bassTarget:0)-bass)*spectralEase;
@@ -4245,7 +4619,7 @@ window.MM_FIREBASE_CONFIG = Object.freeze({
     sampleTime = sampleCount = lateFrames = 0;
     if (reducedMotion.matches) {
       resetElastic();
-      assistantMix=assistantTarget;assistantVelocity=0;audioLevel=bass=mid=treble=probe=probePress=0;
+      assistantMix=assistantTarget;assistantVelocity=0;audioLevel=bass=mid=treble=probe=probePress=listenSignal=processSignal=confirmation=0;confirmationAge=4;
       energy = target[0];
       luminosity = target[1];
       attraction = attractionTarget = attractionVelocity = 0;
@@ -4304,11 +4678,32 @@ window.MM_FIREBASE_CONFIG = Object.freeze({
     assistantActive=!!active;assistantTarget=assistantActive?1:0;
     // The gesture hands over to the same renderer; releasing the finger does
     // not dismiss the listening form. Only the assistant close opens it again.
-    if(!assistantActive){releaseElastic();assistantListening=false;audioTarget=bassTarget=midTarget=trebleTarget=probeTarget=probePressTarget=0;}
+    if(!assistantActive){releaseElastic();assistantListening=false;assistantPhase='idle';audioTarget=bassTarget=midTarget=trebleTarget=probeTarget=probePressTarget=0;}
     quietUntil=performance.now()+1800;
     if(reducedMotion.matches){assistantMix=assistantTarget;assistantVelocity=0;draw();}
   }
-  function setListening(active){assistantListening=!!active;if(!assistantListening)audioTarget=bassTarget=midTarget=trebleTarget=0;}
+  function setListening(active){
+    assistantListening=!!active;
+    if(assistantListening)setAssistantPhase('listening');
+    else {if(assistantPhase==='listening')setAssistantPhase('idle');audioTarget=bassTarget=midTarget=trebleTarget=0;}
+  }
+  function setAssistantPhase(phase){
+    const next=({ready:'idle',thinking:'processing',confirming:'confirmed',success:'confirmed'})[phase]||phase;
+    if(!['idle','listening','processing','confirmed'].includes(next)||destroyed)return false;
+    if(next==='confirmed')return confirm();
+    assistantPhase=next;
+    if(reducedMotion.matches){listenSignal=processSignal=0;draw();}
+    return true;
+  }
+  function confirm(){
+    if(!assistantActive||destroyed)return false;
+    // Repeated confirmation callbacks cannot retrigger the same success pulse.
+    if(assistantPhase==='confirmed'&&confirmationAge<1.15)return false;
+    assistantPhase='confirmed';
+    confirmationAge=reducedMotion.matches?4:0;confirmation=0;
+    if(reducedMotion.matches)draw();
+    return true;
+  }
   function setAudioLevel(level,details={}){
     const active=assistantActive&&assistantListening;
     audioTarget=active&&Number.isFinite(level)?clamp(level):0;
@@ -4346,7 +4741,7 @@ window.MM_FIREBASE_CONFIG = Object.freeze({
   }
   // All points are CSS pixels relative to #experience. Gestures own timing;
   // this renderer owns continuous interpolation and the brief popup handoff.
-  const api = Object.freeze({ begin, move, charge, release, handoff, assistant, setAssistantMix, setListening, setAudioLevel, orbHitTest, orbPointer });
+  const api = Object.freeze({ begin, move, charge, release, handoff, assistant, setAssistantMix, setListening, setAudioLevel, setAssistantPhase, confirm, orbHitTest, orbPointer });
   window.MyMoneyOrbit = api;
   function sceneChanged() {
     const next = document.documentElement.dataset.scene || 'idle';
@@ -4361,11 +4756,13 @@ window.MM_FIREBASE_CONFIG = Object.freeze({
   sceneObserver.observe(document.documentElement, { attributes: true, attributeFilter: ['data-scene'] });
   const resizeObserver = typeof ResizeObserver === 'function' ? new ResizeObserver(resize) : null;
   if (resizeObserver) resizeObserver.observe(stage);
-  else on(window, 'resize', resize, { passive: true });
+  // A monitor/DPR change may leave the observed CSS size unchanged.
+  on(window, 'resize', resize, { passive: true });
   if(window.visualViewport)on(window.visualViewport,'resize',()=>{syncOrbHitArea();draw();},{passive:true});
   on(document, 'visibilitychange', () => {
     if (document.hidden) {
       release();resetElastic();
+      confirmation=listenSignal=processSignal=0;confirmationAge=4;
       attraction = attractionVelocity = 0;audioLevel=audioTarget=bass=mid=treble=bassTarget=midTarget=trebleTarget=probe=probeTarget=probePress=probePressTarget=0;
     }
     resume();

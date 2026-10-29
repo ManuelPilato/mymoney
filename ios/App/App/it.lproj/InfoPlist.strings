@@ -1,0 +1,2 @@
+"NSMicrophoneUsageDescription" = "MyMoney ascolta solo quando attivi l’assistente. L’audio non viene salvato.";
+"NSSpeechRecognitionUsageDescription" = "MyMoney usa il riconoscimento vocale per capire spese e domande sul tuo budget.";

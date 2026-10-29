@@ -1,0 +1,197 @@
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#030507">
+<meta name="description" content="Le tue spese, in un istante. Su iPhone, Mac e web.">
+<meta property="og:title" content="MyMoney">
+<meta property="og:description" content="Le tue spese, in un istante. Su iPhone, Mac e web.">
+<meta property="og:image" content="https://manuelpilato.github.io/mymoney/preview-wordmark-v2.png">
+<meta property="og:image:width" content="1024">
+<meta property="og:image:height" content="1024">
+<meta property="og:image:type" content="image/png">
+<meta property="og:image:alt" content="MyMoney. — fluid cyan and blue on a dark background">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://manuelpilato.github.io/mymoney/preview-wordmark-v2.png">
+<meta name="color-scheme" content="dark">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="MyMoney">
+<meta name="referrer" content="no-referrer">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self' data: blob:; script-src 'self' 'unsafe-inline' https://www.gstatic.com https://apis.google.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; connect-src 'self' https://identitytoolkit.googleapis.com https://securetoken.googleapis.com https://firestore.googleapis.com https://accounts.google.com https://*.firebaseapp.com; frame-src https://*.firebaseapp.com https://accounts.google.com; object-src 'none'; base-uri 'self'; form-action 'none'">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="icon-180-v2.png">
+<link rel="icon" href="icon-192-v2.png" type="image/png">
+<title>MyMoney</title>
+<style>/*__CSS__*/</style>
+</head>
+<body>
+<main id="experience" aria-label="MyMoney">
+  <canvas id="orb-canvas" aria-hidden="true"></canvas>
+  <div class="scene-shade" aria-hidden="true"></div>
+  <button id="touch-surface" aria-label="Aggiungi una spesa" data-i18n-aria-label="Aggiungi una spesa" aria-describedby="gesture-instructions" class="button"></button>
+  <h1 class="wordmark" aria-hidden="true">MyMoney<span class="wordmark-point">.</span></h1>
+  <div id="gesture-hints" class="gesture-hints">
+    <div class="hint-pair">
+      <div class="gesture-hint" data-hint="manual"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 5h14v11H9l-4 4z"/></svg><span>Tocca per scrivere</span></div>
+      <div class="gesture-hint" data-hint="voice"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="9" y="3" width="6" height="12" rx="3"/><path d="M5 11v1a7 7 0 0 0 14 0v-1M12 19v3"/></svg><span>Tieni premuto e parla</span></div>
+    </div>
+    <div class="gesture-hint hint-swipe" data-hint="data"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m6 14 6-6 6 6M12 8v12"/></svg><span>Scorri per i tuoi dati</span></div>
+    <button id="dismiss-hints" class="button quiet" type="button" data-i18n="Ho capito">Ho capito</button>
+  </div>
+  <p id="gesture-instructions" class="sr-only" data-i18n="Tocca per inserire una spesa. Tieni premuto per parlare. Scorri verso l’alto per vedere i dati.">Tocca per inserire una spesa. Tieni premuto per parlare. Scorri verso l’alto per vedere i dati.</p>
+  <button id="open-data" class="button data-handle" aria-label="Mostra i tuoi dati" data-i18n-aria-label="Mostra i tuoi dati"><span></span></button>
+  <button id="accessible-voice" class="button focus-action" data-i18n="Detta una spesa">Detta una spesa</button>
+</main>
+<nav class="desktop-controls" aria-label="Azioni rapide" data-i18n-aria-label="Azioni rapide">
+  <button id="desktop-add" title="Nuova spesa (⌘K)" data-i18n-title="Nuova spesa (⌘K)" class="button"><span data-icon="plus"></span><span data-i18n="Nuova spesa">Nuova spesa</span><kbd>⌘K</kbd></button>
+  <button id="desktop-voice" title="Dettatura (V)" data-i18n-title="Dettatura (V)" class="button"><span data-icon="mic"></span><span data-i18n="Voce">Voce</span></button>
+  <button id="desktop-data" title="I tuoi dati (D)" data-i18n-title="I tuoi dati (D)" class="button"><span data-icon="list"></span><span data-i18n="I tuoi dati">I tuoi dati</span></button>
+</nav>
+
+<dialog id="data-sheet" class="data-sheet" aria-labelledby="data-title">
+  <header class="data-header" id="data-drag-handle">
+    <span class="sheet-grip" aria-hidden="true"></span>
+    <div class="data-heading"><button id="data-settings" class="button icon-button" data-go="settings" aria-label="Preferenze" data-i18n-aria-label="Preferenze"><span data-icon="settings"></span></button><h2 id="data-title" data-i18n="I tuoi dati">I tuoi dati</h2><button id="close-data" class="button icon-button" aria-label="Nascondi i dati" data-i18n-aria-label="Nascondi i dati"><span data-icon="close"></span></button></div>
+  </header>
+  <nav class="nav" aria-label="I tuoi dati" data-i18n-aria-label="I tuoi dati"><button data-go="home" class="button active" data-i18n="Sintesi">Sintesi</button><button data-go="history" data-i18n="Movimenti" class="button">Movimenti</button><button data-go="plan" data-i18n="Piano" class="button">Piano</button></nav>
+  <div id="data-scroll" class="data-scroll">
+    <div id="storage-warning" class="notice error" hidden role="alert"></div>
+    <section id="view-home">
+      <div id="welcome" class="welcome" hidden><p data-i18n="Hai già un archivio?">Hai già un archivio?</p><button class="button ghost" data-import><span data-i18n="Importa dati">Importa dati</span> <span data-icon="download"></span></button><button id="setup-new" class="button quiet" data-i18n="Parti da zero">Parti da zero</button></div>
+      <div class="balance-panel"><span class="label" data-i18n="Saldo">Saldo</span><div id="balance" class="balance">—</div></div>
+      <div class="budget-panel"><div class="split"><span data-i18n="Nel budget">Nel budget</span><strong id="available">—</strong></div><div class="track"><div id="budget-progress"></div></div><span id="cycle-label" class="tiny"></span><div id="budget-warning" class="notice" hidden></div></div>
+      <div class="section-heading"><h3 data-i18n="Ultimi movimenti">Ultimi movimenti</h3><button id="top-add" class="button icon-button" aria-label="Nuova spesa" data-i18n-aria-label="Nuova spesa"><span data-icon="plus"></span></button></div>
+      <div id="recent"></div>
+      <button class="button quiet full-width" data-go="history"><span data-i18n="Vedi tutti">Vedi tutti</span> <span data-icon="arrow"></span></button>
+      <details class="disclosure"><summary data-i18n="Il piano in breve">Il piano in breve</summary><div class="line-item"><span data-i18n="Spese fisse / mese">Spese fisse / mese</span><strong id="fixed"></strong></div><div class="line-item"><span data-i18n="Obiettivo risparmio">Obiettivo risparmio</span><strong id="goal"></strong></div><div class="line-item"><span data-i18n="Budget">Budget</span><strong id="budget-cap"></strong></div><p id="budget-caption" class="tiny"></p><p id="balance-caption" class="tiny"></p><div id="home-alerts"></div></details>
+      <details class="disclosure"><summary data-i18n="Prossime scadenze">Prossime scadenze</summary><div id="home-upcoming"></div></details>
+    </section>
+    <section id="view-history" hidden>
+      <div class="toolbar"><input id="search" type="search" placeholder="Cerca" data-i18n-placeholder="Cerca" aria-label="Cerca movimenti" data-i18n-aria-label="Cerca movimenti"><button id="history-add" class="button icon-button" aria-label="Nuovo movimento" data-i18n-aria-label="Nuovo movimento"><span data-icon="plus"></span></button></div>
+      <div class="segmented" id="history-filters"><button data-filter="all" class="button active" data-i18n="Tutti">Tutti</button><button data-filter="paid" data-i18n="Pagati" class="button">Pagati</button><button data-filter="planned" data-i18n="Previsti" class="button">Previsti</button></div>
+      <details id="search-options" class="disclosure search-options"><summary><span data-i18n="Filtri">Filtri</span><span id="filter-count" class="filter-count"></span></summary>
+        <div class="filter-grid">
+          <div class="field-group"><label for="filter-from" data-i18n="Dal">Dal</label><input type="date" id="filter-from"></div>
+          <div class="field-group"><label for="filter-to" data-i18n="Al">Al</label><input type="date" id="filter-to"></div>
+          <div class="field-group filter-category"><label for="filter-category" data-i18n="Categoria">Categoria</label><select id="filter-category"></select></div>
+          <div class="field-group"><label for="filter-min" data-i18n="Minimo €">Minimo €</label><input id="filter-min" inputmode="decimal" placeholder="0"></div>
+          <div class="field-group"><label for="filter-max" data-i18n="Massimo €">Massimo €</label><input id="filter-max" inputmode="decimal" placeholder="Nessun limite" data-i18n-placeholder="Nessun limite"></div>
+        </div><div id="filter-error" class="notice error" role="alert" hidden></div><button id="clear-filters" class="button quiet" type="button" data-i18n="Azzera filtri">Azzera filtri</button>
+      </details><p id="filter-results" class="tiny" aria-live="polite" hidden></p><div id="all-transactions"></div>
+      <details class="disclosure"><summary data-i18n="Resoconto">Resoconto</summary><div class="segmented" id="report-modes"><button data-report="week" data-i18n="Settimana" class="button">Settimana</button><button data-report="month" class="button active" data-i18n="Mese">Mese</button><button data-report="cycle" data-i18n="Ciclo" class="button">Ciclo</button></div><div class="toolbar"><button class="button icon-button" id="report-prev" aria-label="Periodo precedente" data-i18n-aria-label="Periodo precedente"><span data-icon="left"></span></button><strong class="tiny grow" id="report-title"></strong><button class="button icon-button" id="report-next" aria-label="Periodo successivo" data-i18n-aria-label="Periodo successivo"><span data-icon="arrow"></span></button></div><div id="report"></div></details>
+    </section>
+    <section id="view-plan" hidden>
+      <div class="section-heading"><h3 data-i18n="Spese fisse">Spese fisse</h3><button class="button icon-button" id="new-recurring" aria-label="Aggiungi spesa fissa" data-i18n-aria-label="Aggiungi spesa fissa"><span data-icon="plus"></span></button></div><div id="recurring-list"></div>
+      <section id="planned-section" hidden><div class="section-heading"><h3 data-i18n="Altri movimenti previsti">Altri movimenti previsti</h3></div><div id="planned-list"></div></section><button class="button quiet full-width" id="export-calendar" data-i18n="Esporta nel Calendario">Esporta nel Calendario</button>
+      <details class="disclosure"><summary data-i18n="Calcolo del budget">Calcolo del budget</summary><div id="plan-budget"></div></details>
+      <details class="disclosure"><summary data-i18n="Note del piano">Note del piano</summary><div id="plan-notes"></div></details>
+    </section>
+    <section id="view-settings" hidden>
+      <div class="field-group language-setting"><label for="s-language" data-i18n="Lingua dell’app">Lingua dell’app</label><select id="s-language"><option value="it" lang="it" data-i18n="Italiano">Italiano</option><option value="en" lang="en" data-i18n="English">English</option></select><p class="tiny" data-i18n="La lingua cambia solo su questo dispositivo.">La lingua cambia solo su questo dispositivo.</p></div>
+      <details class="disclosure sync-settings" open>
+        <summary data-i18n="Account e sincronizzazione">Account e sincronizzazione</summary>
+        <p class="sync-intro" data-i18n="Le stesse spese e impostazioni, su iPhone e Mac. Accedi con lo stesso account Google su entrambi.">Le stesse spese e impostazioni, su iPhone e Mac. Accedi con lo stesso account Google su entrambi.</p>
+        <div class="sync-identity">
+          <p id="sync-status" class="sync-status" data-state="local" role="status" aria-live="polite" aria-atomic="true" data-i18n="Solo su questo dispositivo">Solo su questo dispositivo</p>
+          <p id="sync-account" class="sync-account" hidden></p>
+        </div>
+        <p id="sync-detail" class="tiny" data-i18n="Puoi usare MyMoney anche senza accesso. Con la sincronizzazione, i dati vengono salvati su Firebase e sono accessibili solo al tuo account.">Puoi usare MyMoney anche senza accesso. Con la sincronizzazione, i dati vengono salvati su Firebase e sono accessibili solo al tuo account.</p>
+        <div class="sync-actions">
+          <button type="button" id="sync-connect" class="button"><span data-i18n="Accedi con Google">Accedi con Google</span> <span data-icon="arrow" aria-hidden="true"></span></button>
+          <button type="button" id="sync-retry" class="button ghost" hidden data-i18n="Riprova">Riprova</button>
+          <button type="button" id="sync-disconnect" class="button quiet" hidden data-i18n="Esci">Esci</button>
+        </div>
+        <section id="sync-import" class="sync-choice" aria-labelledby="sync-import-title" hidden>
+          <h3 id="sync-import-title" data-i18n="Collega i tuoi dati">Collega i tuoi dati</h3>
+          <p data-i18n="Unisci i dati di questo dispositivo all’account, oppure apri quelli già online. Per i dati già presenti prevale la versione online; la copia locale resta salvata separatamente.">Unisci i dati di questo dispositivo all’account, oppure apri quelli già online. Per i dati già presenti prevale la versione online; la copia locale resta salvata separatamente.</p>
+          <div class="sync-choice-actions">
+            <button type="button" id="sync-import-merge" data-i18n="Unisci e sincronizza" class="button">Unisci e sincronizza</button>
+            <button type="button" id="sync-import-cloud" class="button ghost" data-i18n="Usa dati dell’account">Usa dati dell’account</button>
+          </div>
+        </section>
+        <section id="sync-conflicts" class="sync-choice" aria-labelledby="sync-conflict-title" hidden>
+          <h3 id="sync-conflict-title" data-i18n="Scegli la versione da tenere">Scegli la versione da tenere</h3>
+          <p id="sync-conflict-detail" aria-live="polite" data-i18n="Lo stesso dato è stato modificato su due dispositivi.">Lo stesso dato è stato modificato su due dispositivi.</p>
+          <div class="sync-choice-actions">
+            <button type="button" id="sync-use-cloud" data-i18n="Usa la versione online" class="button">Usa la versione online</button>
+            <button type="button" id="sync-use-local" class="button ghost" data-i18n="Usa la mia modifica">Usa la mia modifica</button>
+          </div>
+        </section>
+      </details>
+      <details class="disclosure" id="notification-settings"><summary data-notification-copy="title">Notifiche</summary><div class="details-body"><p class="tiny" data-notification-copy="intro"></p><p id="notification-status" class="notice" role="status"></p><div class="actions"><button id="notification-enable" class="button" disabled data-notification-copy="enable">Attiva promemoria</button><button id="notification-test" class="button ghost" disabled data-notification-copy="test">Prova notifica</button></div><div class="notification-options"><label class="notification-option"><span data-notification-copy="due"></span><input id="notification-due" type="checkbox"></label><label class="notification-option"><span data-notification-copy="budget"></span><input id="notification-budget" type="checkbox"></label><label class="notification-option"><span data-notification-copy="weekly"></span><input id="notification-weekly" type="checkbox"></label><label class="notification-option"><span data-notification-copy="reminder"></span><input id="notification-reminder" type="checkbox"></label><label class="notification-option"><span data-notification-copy="details"></span><input id="notification-details" type="checkbox"></label></div><p class="tiny" data-notification-copy="privacy"></p><p id="notification-feedback" class="tiny" role="status"></p></div></details>
+      <details class="disclosure" open><summary data-i18n="Budget e stipendio">Budget e stipendio</summary><form id="settings-form">
+        <div class="fields"><div class="field-group"><label for="s-salary" data-i18n="Stipendio previsto €">Stipendio previsto €</label><input id="s-salary" inputmode="decimal" required></div><div class="field-group"><label for="s-day" data-i18n="Giorno di accredito">Giorno di accredito</label><input id="s-day" type="number" min="1" max="28" required></div></div>
+        <div class="fields"><div class="field-group"><label for="s-budget" data-i18n="Budget €">Budget €</label><input id="s-budget" inputmode="decimal" required></div><div class="field-group"><label for="s-goal" data-i18n="Obiettivo risparmio €">Obiettivo risparmio €</label><input id="s-goal" inputmode="decimal" required></div></div>
+        <details><summary data-i18n="Situazione iniziale">Situazione iniziale</summary><div class="field-group"><label for="s-opening" data-i18n="Saldo iniziale €">Saldo iniziale €</label><input id="s-opening" inputmode="decimal" required></div><div class="field-group"><label for="s-date" data-i18n="Data iniziale">Data iniziale</label><input id="s-date" type="date" required></div><label class="check-label"><input id="s-opening-confirm" type="checkbox"><span data-i18n="Confermo saldo e data iniziali">Confermo saldo e data iniziali</span></label><div class="field-group"><label for="s-savings" data-i18n="Risparmi separati €">Risparmi separati €</label><input id="s-savings" inputmode="decimal" placeholder="Facoltativo" data-i18n-placeholder="Facoltativo"></div><p class="tiny" data-i18n="Il saldo iniziale è il punto di partenza. Registra gli stipendi successivi come entrate.">Il saldo iniziale è il punto di partenza. Registra gli stipendi successivi come entrate.</p></details><button type="submit" class="button full-width" data-i18n="Salva">Salva</button>
+      </form></details>
+      <details class="disclosure"><summary data-i18n="Backup e importazione">Backup e importazione</summary><div class="actions"><button id="export-json" data-i18n="Salva backup" class="button">Salva backup</button><button class="button ghost" data-import data-i18n="Importa">Importa</button><button class="button ghost" id="export-csv">CSV</button></div><p class="tiny" id="backup-status"></p><p class="tiny" data-i18n="Un backup conserva una copia privata del tuo archivio. Se hai attivato la sincronizzazione, non serve per passare da un dispositivo all’altro.">Un backup conserva una copia privata del tuo archivio. Se hai attivato la sincronizzazione, non serve per passare da un dispositivo all’altro.</p></details>
+      <details class="disclosure"><summary data-i18n="Categorie imparate">Categorie imparate</summary><div id="learned-rules"></div></details>
+      <details class="disclosure"><summary data-i18n="App e dispositivi">App e dispositivi</summary><p class="tiny"><span data-i18n="Tocco: nuova spesa.">Tocco: nuova spesa.</span><br><span data-i18n="Pressione prolungata: voce.">Pressione prolungata: voce.</span><br><span data-i18n="Scorri in alto: i tuoi dati.">Scorri in alto: i tuoi dati.</span></p><button id="settings-voice" class="button ghost full-width"><span data-i18n="Detta una modifica">Detta una modifica</span> <span data-icon="mic"></span></button><div id="environment" class="notice" hidden></div><p class="tiny" id="install-status"></p><p class="tiny"><span data-i18n="Su iPhone: Safari → Condividi → Aggiungi alla schermata Home.">Su iPhone: Safari → Condividi → Aggiungi alla schermata Home.</span><br><span data-i18n="Su Mac: Safari → File → Aggiungi al Dock, oppure installa dal menu di Chrome.">Su Mac: Safari → File → Aggiungi al Dock, oppure installa dal menu di Chrome.</span></p><p class="tiny" data-i18n="App e sito si sincronizzano con lo stesso account Google. Le modifiche fatte offline vengono inviate quando torna la connessione; un’app chiusa si aggiorna alla riapertura.">App e sito si sincronizzano con lo stesso account Google. Le modifiche fatte offline vengono inviate quando torna la connessione; un’app chiusa si aggiorna alla riapertura.</p><button class="button quiet full-width" id="replay-hints" type="button" data-i18n="Rivedi i gesti rapidi">Rivedi i gesti rapidi</button><button class="button ghost full-width" id="request-storage" data-i18n="Conserva i dati sul dispositivo">Conserva i dati sul dispositivo</button><p class="tiny" id="persistent-status"></p><p class="tiny" data-i18n="La voce usa il servizio del browser e può richiedere internet. MyMoney non conserva audio. I comandi vengono interpretati localmente e proposti prima del salvataggio.">La voce usa il servizio del browser e può richiedere internet. MyMoney non conserva audio. I comandi vengono interpretati localmente e proposti prima del salvataggio.</p></details>
+    </section>
+  </div>
+</dialog>
+
+<dialog id="quick-sheet" class="dialog quick-sheet" aria-labelledby="quick-title">
+  <div class="dialog-head"><h2 id="quick-title" data-i18n="Nuova spesa">Nuova spesa</h2><button id="close-quick" class="button icon-button" aria-label="Chiudi inserimento" data-i18n-aria-label="Chiudi inserimento"><span data-icon="close"></span></button></div>
+  <form id="quick-form" autocomplete="off"><div class="dialog-body">
+    <div class="field-group"><label for="q-name" data-i18n="Nome">Nome</label><input id="q-name" placeholder="Per cosa?" data-i18n-placeholder="Per cosa?" maxlength="150" enterkeyhint="next" required></div>
+    <div class="amount-entry"><label for="q-amount" data-i18n="Importo">Importo</label><div class="amount-input"><span>€</span><input id="q-amount" inputmode="decimal" placeholder="0,00" data-i18n-placeholder="0,00" enterkeyhint="done" required aria-label="Importo in euro" data-i18n-aria-label="Importo in euro"></div></div>
+    <div class="quick-date-row"><div><label for="q-date" data-i18n="Data">Data</label><input id="q-date" type="date" required></div><button class="button icon-button" type="button" id="quick-options" aria-label="Personalizza categoria e tipo" data-i18n-aria-label="Personalizza categoria e tipo" aria-expanded="false"><span data-icon="settings"></span></button></div>
+    <p id="quick-hint" class="tiny"></p>
+    <div id="quick-details" class="quick-details" hidden><div class="fields"><div><label for="q-category" data-i18n="Categoria">Categoria</label><select id="q-category"></select></div><div><label for="q-type" data-i18n="Tipo">Tipo</label><select id="q-type"><option value="auto" data-i18n="Automatico">Automatico</option><option value="expense" data-i18n="Uscita">Uscita</option><option value="income" data-i18n="Entrata">Entrata</option></select></div></div><label class="check-label"><input id="q-learn" type="checkbox" checked><span data-i18n="Ricorda la categoria">Ricorda la categoria</span></label></div>
+    <div id="quick-error" class="notice error" role="alert" hidden></div>
+  </div><div class="dialog-footer"><button type="submit" id="quick-save" class="button"><span data-i18n="Salva">Salva</span> <span data-icon="check"></span></button></div></form>
+</dialog>
+
+<dialog id="voice-sheet" class="dialog voice-sheet assistant-sheet" aria-labelledby="voice-title">
+  <div id="assistant-orb-hit" aria-hidden="true"></div>
+  <div class="dialog-head"><h2 id="voice-title" class="sr-only" data-i18n="Assistente MyMoney">Assistente MyMoney</h2><button id="close-voice" class="button icon-button" aria-label="Chiudi assistente" data-i18n-aria-label="Chiudi assistente"><span data-icon="close"></span></button></div>
+  <div class="dialog-body assistant-content">
+    <section id="voice-consent" hidden><p data-i18n="La dettatura usa il servizio vocale del browser, che può elaborare l’audio online.">La dettatura usa il servizio vocale del browser, che può elaborare l’audio online.</p><button id="voice-enable" class="button full-width"><span data-i18n="Attiva microfono">Attiva microfono</span> <span data-icon="mic"></span></button><button id="voice-write" class="button quiet full-width" data-i18n="Preferisco scrivere">Preferisco scrivere</button></section>
+    <div id="voice-compose">
+      <p class="voice-status" id="voice-status" role="status"></p>
+      <div id="voice-text" hidden><label class="composer-label" for="natural" data-i18n="Scrivi una spesa, una modifica o una domanda">Scrivi una spesa, una modifica o una domanda</label><textarea id="natural" rows="1" maxlength="4000" enterkeyhint="send"></textarea><div class="dialog-footer"><button id="interpret" class="button" hidden><span data-i18n="Invia">Invia</span><span data-icon="arrow"></span></button></div></div>
+      <div class="voice-actions"><button class="button icon-button" id="mic" aria-label="Avvia dettatura" data-i18n-aria-label="Avvia dettatura"><span data-icon="mic"></span></button></div>
+      <button type="button" id="assistant-type" class="button quiet" data-i18n="Oppure scrivi">Oppure scrivi</button>
+      <p class="tiny assistant-privacy" data-i18n="Voce elaborata dal browser, anche online. Audio non salvato da MyMoney.">Voce elaborata dal browser, anche online. Audio non salvato da MyMoney.</p>
+    </div>
+    <section id="command-preview" hidden aria-label="Proposta da confermare" data-i18n-aria-label="Proposta da confermare" aria-live="polite">
+      <h3 id="command-title"></h3><div id="command-lines"></div>
+      <button id="command-save" data-i18n="Conferma" class="button full-width">Conferma</button>
+      <details id="command-details"><summary data-i18n="Dettagli e modifiche">Dettagli e modifiche</summary><p id="command-description" class="tiny"></p><button class="button quiet full-width" id="command-edit" data-i18n="Modifica">Modifica</button></details>
+      <button class="button quiet full-width" id="command-close" data-i18n="Nuova richiesta">Nuova richiesta</button><div id="command-error" class="notice error" role="alert" hidden></div>
+    </section>
+    <section id="advisor-answer" hidden aria-live="polite">
+      <p id="advisor-item" class="assistant-eyebrow"></p>
+      <h3 id="advisor-title"></h3><p id="advisor-explanation"></p>
+      <button id="advisor-action" class="button full-width" hidden></button>
+      <button id="advisor-voice" class="button full-width"><span data-icon="mic"></span><span data-i18n="Chiedi ancora">Chiedi ancora</span></button>
+      <details id="advisor-details"><summary data-i18n="Dettagli e alternative">Dettagli e alternative</summary><ul id="advisor-lines"></ul><p id="advisor-quality" class="tiny"></p><p class="tiny" data-i18n="Simulazione sui dati registrati. Nessuna spesa aggiunta.">Simulazione sui dati registrati. Nessuna spesa aggiunta.</p><button id="advisor-write" class="button quiet full-width" data-i18n="Modifica domanda">Modifica domanda</button></details>
+    </section>
+  </div>
+</dialog>
+<input id="import-file" type="file" accept="application/json,.json" hidden>
+<dialog class="dialog" id="editor" aria-labelledby="editor-title"><div class="dialog-head"><h2 id="editor-title" data-i18n="Controlla prima di salvare">Controlla prima di salvare</h2><button id="close-editor" aria-label="Chiudi" data-i18n-aria-label="Chiudi" class="button"><span data-icon="close"></span></button></div><form id="editor-form"><div class="dialog-body"><div id="drafts"></div><div class="notice error" id="editor-error" hidden role="alert"></div></div><div class="dialog-footer"><button type="button" class="button danger" id="delete-transaction" hidden data-i18n="Elimina">Elimina</button><button type="submit" id="save-drafts" data-i18n="Conferma e salva" class="button">Conferma e salva</button></div></form></dialog>
+<dialog class="dialog" id="rec-editor" aria-labelledby="rec-title"><div class="dialog-head"><h2 id="rec-title" data-i18n="Spesa ricorrente">Spesa ricorrente</h2><button id="close-rec" aria-label="Chiudi" data-i18n-aria-label="Chiudi" class="button"><span data-icon="close"></span></button></div><form id="rec-form"><div class="dialog-body"><div class="field-group"><label for="r-name" data-i18n="Nome">Nome</label><input id="r-name" maxlength="150" required></div><div class="fields"><div class="field-group"><label for="r-amount" data-i18n="Importo rata (€)">Importo rata (€)</label><input id="r-amount" inputmode="decimal" required></div><div class="field-group"><label for="r-months" data-i18n="Ogni quanti mesi">Ogni quanti mesi</label><select id="r-months"><option value="1" data-i18n="1 · mensile">1 · mensile</option><option value="2" data-i18n="2 · bimestrale">2 · bimestrale</option><option value="3" data-i18n="3 · trimestrale">3 · trimestrale</option><option value="6" data-i18n="6 · semestrale">6 · semestrale</option><option value="12" data-i18n="12 · annuale">12 · annuale</option></select></div></div><div class="field-group"><label for="r-date" data-i18n="Prima scadenza nel piano">Prima scadenza nel piano</label><input id="r-date" type="date"></div><div class="field-group"><label for="r-category" data-i18n="Categoria">Categoria</label><select id="r-category"></select></div><label class="check-label"><input id="r-active" type="checkbox"><span data-i18n="Attiva nel budget (richiede una data)">Attiva nel budget (richiede una data)</span></label><label class="check-label"><input id="r-auto" type="checkbox"><span data-i18n="Addebito automatico sul conto">Addebito automatico sul conto</span></label><label class="check-label"><input id="r-estimated" type="checkbox"><span data-i18n="Importo o scadenza da verificare">Importo o scadenza da verificare</span></label><p class="tiny" data-i18n="“Automatico” è una nota: MyMoney non legge la banca e non segna la rata come pagata.">“Automatico” è una nota: MyMoney non legge la banca e non segna la rata come pagata.</p><div class="notice error" id="rec-error" hidden role="alert"></div></div><div class="dialog-footer"><button type="button" class="button danger" id="delete-recurring" hidden data-i18n="Elimina">Elimina</button><button type="submit" data-i18n="Salva ricorrenza" class="button">Salva ricorrenza</button></div></form></dialog>
+<div class="toast" id="toast" hidden role="status"></div>
+<noscript><p data-i18n="MyMoney richiede JavaScript.">MyMoney richiede JavaScript.</p></noscript>
+<script src="./native.js"></script>
+<script>/*__I18N__*/</script>
+<script>/*__CORE__*/</script>
+<script>/*__INTELLIGENCE__*/</script>
+<script>/*__ADVISOR__*/</script>
+<script>/*__VIEWS_MODEL__*/</script>
+<script>/*__INTERACTION__*/</script>
+<script>/*__FIREBASE_CONFIG__*/</script>
+<script>/*__SYNC_CORE__*/</script>
+<script>/*__SYNC__*/</script>
+<script>/*__NOTIFICATION_MESSAGES__*/</script>
+<script>/*__NOTIFICATIONS__*/</script>
+<script>/*__NOTIFICATION_UI__*/</script>
+<script>/*__APP__*/</script>
+<script>/*__ORBIT__*/</script>
+<script>/*__ASSISTANT_PARTICLES__*/</script>
+<script>/*__VOICE_METER__*/</script>
+</body></html>

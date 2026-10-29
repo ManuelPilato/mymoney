@@ -1,5 +1,14 @@
 {
   "firestore": {
-    "rules": "firestore.rules"
+    "rules": "firebase/firestore.rules"
+  },
+  "emulators": {
+    "firestore": {
+      "host": "127.0.0.1",
+      "port": 8088
+    },
+    "ui": {
+      "enabled": false
+    }
   }
 }

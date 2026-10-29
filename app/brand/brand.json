@@ -1,0 +1,70 @@
+{
+  "brand": "MyMoney",
+  "approved_variant": "Versioni chiare del primo passaggio di revisione",
+  "primary": "01-primary-m",
+  "assets": [
+    {
+      "folder": "01-primary-m",
+      "role": "Icona principale: m minuscola",
+      "source": "exec-74cba1d3-ce5c-4bd6-8b37-75cd2ebdbda5.png",
+      "original_size": [
+        1254,
+        1254
+      ],
+      "sha256": "0f8d1a81268f8c84b4fc6af02ebcbbd251c0facb7065c2744fd1150751e02600",
+      "background": "opaque",
+      "formats": [
+        "png",
+        "webp",
+        "ico",
+        "icns",
+        "appiconset"
+      ]
+    },
+    {
+      "folder": "02-full-wordmark",
+      "role": "Versione intera: MyMoney.",
+      "source": "exec-40906b13-f59f-4db2-9b7f-0a0616693e5e.png",
+      "original_size": [
+        1254,
+        1254
+      ],
+      "sha256": "cd0327b9743d4e5a946417ed0db8dc1aacad31e6964f1f82481200de10f8f326",
+      "background": "opaque",
+      "formats": [
+        "png",
+        "webp"
+      ]
+    },
+    {
+      "folder": "03-symbol",
+      "role": "Versione ridotta senza testo",
+      "source": "exec-dc4073aa-d929-4664-9029-4016eee234cb.png",
+      "original_size": [
+        1254,
+        1254
+      ],
+      "sha256": "a09966909fd35aca12cde855f57b2bbadaeb13050d3c93a663c36eefc997f5e8",
+      "background": "opaque",
+      "formats": [
+        "png",
+        "webp"
+      ]
+    },
+    {
+      "folder": "04-support-M",
+      "role": "Supporto: M maiuscola",
+      "source": "exec-c3775b28-bbf0-44f8-b094-9faa3c458fc1.png",
+      "original_size": [
+        1254,
+        1254
+      ],
+      "sha256": "a4e0dbebf4b330a59c56b13bfe3a1eb9f6d06c09043997ae3567b397bbce32be",
+      "background": "opaque",
+      "formats": [
+        "png",
+        "webp"
+      ]
+    }
+  ]
+}

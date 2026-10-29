@@ -1,0 +1,30 @@
+{
+  "name": "mymoney",
+  "private": true,
+  "version": "6.6.0",
+  "scripts": {
+    "test": "node scripts/test.cjs",
+    "test:retina": "python3 tests/retina_browser_test.py",
+    "start": "python3 serve.py",
+    "build:firebase": "esbuild src/firebase-sdk-entry.js --bundle --format=esm --target=safari16 --minify --legal-comments=eof --outfile=app/firebase-sdk.js",
+    "build": "npm run build:firebase && npm run build:nativebridge && python3 build.py",
+    "build:nativebridge": "node scripts/build-native-bridge.cjs",
+    "ios:sync": "npm run build && cap sync ios",
+    "ios:open": "cap open ios",
+    "ios:run": "cap run ios"
+  },
+  "engines": {
+    "node": ">=24.12.0"
+  },
+  "dependencies": {
+    "@capacitor/core": "8.6.0",
+    "@capacitor/haptics": "8.0.2",
+    "@capacitor/ios": "8.6.0",
+    "@capacitor/local-notifications": "8.3.1",
+    "firebase": "13.1.0"
+  },
+  "devDependencies": {
+    "@capacitor/cli": "8.6.0",
+    "esbuild": "0.25.12"
+  }
+}

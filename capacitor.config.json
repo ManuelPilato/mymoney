@@ -1,0 +1,13 @@
+{
+  "appId": "it.manuelpilato.mymoney",
+  "appName": "MyMoney",
+  "webDir": "app",
+  "loggingBehavior": "none",
+  "backgroundColor": "#030708",
+  "ios": {
+    "contentInset": "never",
+    "preferredContentMode": "mobile",
+    "backgroundColor": "#030708",
+    "scrollEnabled": false
+  }
+}
