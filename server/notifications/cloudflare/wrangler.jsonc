@@ -1,0 +1,20 @@
+{
+  "$schema": "../node_modules/wrangler/config-schema.json",
+  "name": "mymoney-notifications",
+  "main": "worker.mjs",
+  "compatibility_date": "2026-10-29",
+  "workers_dev": true,
+  "triggers": {"crons": ["* * * * *"]},
+  "d1_databases": [{
+    "binding": "DB",
+    "database_name": "mymoney-notifications",
+    "database_id": "00000000-0000-0000-0000-000000000000"
+  }],
+  "vars": {
+    "FIREBASE_PROJECT_ID": "mymoney-d7a43",
+    "ALLOWED_ORIGIN": "https://manuelpilato.github.io",
+    "VAPID_PUBLIC_KEY": "REPLACE_WITH_GENERATED_PUBLIC_KEY",
+    "VAPID_SUBJECT": "mailto:REPLACE_WITH_YOUR_CONTACT_EMAIL"
+  },
+  "observability": {"enabled": false}
+}

@@ -2,7 +2,22 @@
   "name": "mymoney-notification-sender",
   "private": true,
   "type": "module",
-  "scripts": {"start": "node --env-file=.env server.mjs", "keys": "node -e \"console.log(JSON.stringify(require('web-push').generateVAPIDKeys(),null,2))\""},
-  "engines": {"node": ">=22"},
-  "dependencies": {"jose": "6.2.14", "web-push": "3.6.7"}
+  "scripts": {
+    "start": "node --env-file=.env server.mjs",
+    "keys": "node -e \"console.log(JSON.stringify(require('web-push').generateVAPIDKeys(),null,2))\"",
+    "test:worker": "node --test cloudflare/worker.test.mjs",
+    "worker:check": "wrangler deploy --dry-run --config cloudflare/wrangler.jsonc",
+    "test": "node --test ../../tests/notifications.test.cjs cloudflare/worker.test.mjs"
+  },
+  "engines": {
+    "node": ">=22"
+  },
+  "dependencies": {
+    "jose": "6.2.14",
+    "web-push": "3.6.7",
+    "@block65/webcrypto-web-push": "2.0.0"
+  },
+  "devDependencies": {
+    "wrangler": "4.156.0"
+  }
 }
