@@ -1,0 +1,44 @@
+name: Import verified project sources
+on: workflow_dispatch
+permissions:
+  contents: write
+jobs:
+  import:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          ref: main
+      - uses: actions/setup-node@v7
+        with:
+          node-version: '24'
+      - name: Verify and expand public sources
+        run: |
+          python3 - <<'PY'
+          import hashlib,zipfile,stat
+          from pathlib import Path,PurePosixPath
+          archive=Path('mymoney-release.zip')
+          assert hashlib.sha256(archive.read_bytes()).hexdigest()=='a10b921e8cbc62717a712b5ec825c8e1682e92fcf4d310913483b8e3b691c3ce'
+          allowed={'app','src','tests','firebase','scripts','ios','server','README.md','.gitignore','package.json','package-lock.json','build.py','serve.py','requirements-test.txt','capacitor.config.json','.firebaserc','firebase.json','Avvia MyMoney.command'}
+          with zipfile.ZipFile(archive) as z:
+              assert sum(i.file_size for i in z.infolist())<50000000
+              for info in z.infolist():
+                  p=PurePosixPath(info.filename)
+                  assert not p.is_absolute() and '..' not in p.parts and p.parts[0] in allowed,info.filename
+                  assert not stat.S_ISLNK(info.external_attr>>16),info.filename
+              z.extractall('.')
+          for name in ['assistant-symbol.png','firebase-sdk.js','firestore.rules','icon-180-v2.png','icon-180.png','icon-192-v2.png','icon-192.png','icon-512-v2.png','icon-512.png','index.html','manifest.webmanifest','preview-wordmark-v2.png','preview.png','sw.js']:
+              Path(name).unlink(missing_ok=True)
+          archive.unlink()
+          PY
+      - run: npm ci
+      - run: npm test
+      - run: npm run build
+      - name: Commit the complete project tree
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add -A
+          git commit -m 'Publish complete MyMoney sources, notifications and iOS prototype'
+          git push origin HEAD:main
