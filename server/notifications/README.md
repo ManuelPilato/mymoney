@@ -1,8 +1,19 @@
-# Optional Web Push sender
+# Web Push senders
 
-This service is **not deployed** and does not run on GitHub Pages. Firebase Spark
-cannot host Cloud Functions. A free host that supports a persistent Node process,
-HTTPS and private persistent storage is needed; no paid service is enabled here.
+Neither sender is activated or deployed. For the concrete free hosted option, use
+[Cloudflare Workers Free + D1](cloudflare/README.md): it includes the Worker,
+database schema, scheduled delivery, setup commands and tests. It needs no Mac
+left awake and no Firebase paid plan. Account creation/terms, database creation
+and VAPID secrets must still be completed before connecting the website.
+
+`npm ci && npm test` runs client/policy tests and the Cloudflare Worker tests.
+`npm run worker:check` bundles the Worker locally without deploying it.
+
+## Alternative: existing Node server
+
+`server.mjs` does not run on GitHub Pages or directly on Cloudflare Workers.
+Firebase Spark cannot host Cloud Functions. This alternative requires a host
+with a persistent Node process, HTTPS and private persistent storage.
 On a Mac it only sends while this process is running and the Mac is awake.
 
 1. Run `npm ci` here, copy `.env.example` to `.env`, then run `npm run keys`.
