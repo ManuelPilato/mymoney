@@ -95,9 +95,22 @@ def main():
                 page.evaluate("async()=>{await document.fonts.ready}")
 
                 def capture(view, selector=None):
-                    # Remove hover filters; wait until transition scale/layers clear.
+                    # Tab changes chain exit and entry animations. A fixed sleep can
+                    # catch the second phase on a slower software-rendered CI runner.
                     page.mouse.move(2, 2)
-                    page.wait_for_timeout(400)
+                    page.evaluate("""async selector => {
+                      const root=selector?document.querySelector(selector):document.body;
+                      const pending=()=>root.getAnimations({subtree:true}).filter(a=>
+                        a.playState!=='finished' && a.playState!=='idle' &&
+                        Number.isFinite(a.effect?.getComputedTiming().endTime));
+                      for(let pass=0;pass<12;pass++){
+                        await Promise.all(pending().map(a=>a.finished.catch(()=>{})));
+                        // Finished callbacks can start a new animation in the chain.
+                        await new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(resolve)));
+                        if(!pending().length)return;
+                      }
+                      throw new Error('Panel motion did not settle before visual audit');
+                    }""", selector)
                     report = page.evaluate("""selector => {
                       const root=selector?document.querySelector(selector):document.body;
                       const visible=e=>e.getClientRects().length && getComputedStyle(e).visibility!=='hidden';
@@ -111,11 +124,19 @@ def main():
                         rasterImages:root.querySelectorAll('img').length,iconCount:icons.length,
                         pageOverflow:document.documentElement.scrollWidth>innerWidth+1,
                         panelOverflow:selector?root.scrollWidth>root.clientWidth+1:false,
+                        panelWidths:selector?{client:root.clientWidth,scroll:root.scrollWidth}:null,
+                        contentTransform:root.querySelector('#data-scroll')?getComputedStyle(root.querySelector('#data-scroll')).transform:null,
                         panelOutside:selector?(rect.x < -1 || rect.right>innerWidth+1):false,
                         transform:panel?.transform||'none',willChange:panel?.willChange||'auto',
                         filter:panel?.filter||'none',backdrop:panel?.backdropFilter||'none',
                         canvas:[canvas.width,canvas.height],dpr:devicePixelRatio};
                     }""", selector)
+                    # Preserve the failing frame and its measurements in CI artifacts.
+                    path = OUT / f"{name}-{view}.png"
+                    page.screenshot(path=str(path), scale="device")
+                    report.update(profile=name,view=view,screenshot=str(path.relative_to(ROOT)),syntheticData=True)
+                    records.append(report)
+                    (OUT / "audit.json").write_text(json.dumps(records, indent=2), encoding="utf-8")
                     assert report["fonts"] == "loaded", report
                     assert report["zoom"] == "1", report
                     assert not report["blurred"] and not report["missingSVG"], report
@@ -123,10 +144,6 @@ def main():
                     assert report["transform"] == "none" and report["willChange"] == "auto" and report["filter"] == "none", report
                     assert report["canvas"] == [width*dpr, height*dpr], report
                     assert not errors, errors
-                    path = OUT / f"{name}-{view}.png"
-                    page.screenshot(path=str(path), scale="device")
-                    report.update(profile=name,view=view,screenshot=str(path.relative_to(ROOT)),syntheticData=True)
-                    records.append(report)
                     print(f"PASS {name}: {view}", flush=True)
 
                 def close(selector):
