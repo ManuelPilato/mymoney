@@ -2503,7 +2503,7 @@ html.fluid-gathered .wordmark { opacity:0; }
       if(dialog.id==='voice-sheet'){
         dialog.addEventListener('pointerdown',assistantDown);dialog.addEventListener('pointermove',assistantMove);dialog.addEventListener('pointerup',assistantUp);
         dialog.addEventListener('pointercancel',e=>{if(assistantTap?.id===e.pointerId)assistantTap=null;});
-        dialog.addEventListener('pointerleave',()=>orbFeedback(null,false));
+        dialog.addEventListener('pointerleave',()=>{if(!orbGesture)orbFeedback(null,false);});
         dialog.addEventListener('lostpointercapture',e=>finishOrbPointer(e,true));
       }
       dialog.addEventListener('click',e=>{
@@ -3544,6 +3544,30 @@ window.MM_FIREBASE_CONFIG = Object.freeze({
   let gathered = false;
   let bass=0,mid=0,treble=0,bassTarget=0,midTarget=0,trebleTarget=0;
   let probeX=0,probeY=0,probeTargetX=0,probeTargetY=0,probe=0,probeTarget=0,probePress=0,probePressTarget=0;
+  const stretchX={value:0,velocity:0,target:0},stretchY={value:0,velocity:0,target:0};
+  let grabbed=false,grabAnchorX=0,grabAnchorY=0,grabTargetX=0,grabTargetY=0,grabStartX=0,grabStartY=0;
+  let grabBaseX=0,grabBaseY=0,rippleX=0,rippleY=0,rippleAmplitude=0,rippleAge=10;
+  // Exact damped oscillator: release keeps its momentum at every display cadence.
+  function elasticStep(axis,dt,frequency,damping){
+    const decay=damping*frequency,w=frequency*Math.sqrt(1-damping*damping);
+    const x=axis.value-axis.target,v=axis.velocity,envelope=Math.exp(-decay*dt);
+    const c=Math.cos(w*dt),sn=Math.sin(w*dt);
+    axis.value=axis.target+envelope*(x*c+(v+decay*x)/w*sn);
+    axis.velocity=envelope*(v*c-(decay*v+frequency*frequency*x)/w*sn);
+    if(Math.abs(axis.value-axis.target)<.00001&&Math.abs(axis.velocity)<.0001){axis.value=axis.target;axis.velocity=0;}
+  }
+  function resetElastic(){
+    grabbed=false;stretchX.value=stretchX.velocity=stretchX.target=stretchY.value=stretchY.velocity=stretchY.target=0;
+    grabAnchorX=grabAnchorY=grabTargetX=grabTargetY=0;rippleAmplitude=0;rippleAge=10;
+  }
+  function releaseElastic(){
+    if(grabbed){
+      rippleX=grabAnchorX;rippleY=grabAnchorY;
+      rippleAmplitude=Math.min(1,.18+Math.hypot(stretchX.value,stretchY.value)*.7+Math.hypot(stretchX.velocity,stretchY.velocity)*.025);
+      rippleAge=0;
+    }
+    grabbed=false;stretchX.target=stretchY.target=0;
+  }
   let assistantActive = false, assistantListening = false, audioLevel = 0, audioTarget = 0, audioAt = 0;
   let holding = false, releasing = false, quietUntil = 0;
   // This is a backing-pixel policy, not a frame-rate limit. UI remains full resolution.
@@ -3770,7 +3794,7 @@ window.MM_FIREBASE_CONFIG = Object.freeze({
     uniform vec3 u_focus;
     uniform float u_time,u_morph,u_voice,u_pixel;
     uniform vec3 u_bands;
-    uniform vec4 u_probe;
+    uniform vec4 u_probe,u_grab,u_ripple;
     varying vec3 v_color;
     varying float v_alpha;
     ${fieldFunctions}
@@ -3795,8 +3819,11 @@ window.MM_FIREBASE_CONFIG = Object.freeze({
       float macro=volumeNoise(n*3.1+vec3(drift,-drift*.6,drift*.35));
       float detail=volumeNoise(n*8.6+vec3(6.4,-drift*.5,drift*.3));
       float fine=volumeNoise(n*19.2+vec3(-drift*.3,3.7,drift*.2));
-      float folds=(macro-.5)*.23+(detail-.5)*.095+(fine-.5)*.035;
-      float filaments=pow(.5+.5*sin(n.z*19.0+macro*8.0+n.y*3.0),5.0);
+      float wavePhase=n.x*6.8+n.y*4.0+n.z*4.5-u_time*.24+macro*3.0;
+      float crossPhase=n.y*9.0-n.x*3.0+n.z*6.4+u_time*.18+detail*2.0;
+      float wave=sin(wavePhase),crossWave=sin(crossPhase);
+      float folds=(macro-.5)*.32+(detail-.5)*.14+(fine-.5)*.045+wave*.040+crossWave*.026;
+      float filaments=pow(.5+.5*sin(n.z*14.0+macro*5.0+n.y*4.0-u_time*.20),3.0);
       float ridges=pow(.5+.5*sin(theta*3.0+n.z*5.0-u_time*1.6),3.0);
       float lifted=smoothstep(.68,.98,seed);
       float audio=(u_voice*.045+u_bands.x*.14)*ridges
@@ -3806,10 +3833,25 @@ window.MM_FIREBASE_CONFIG = Object.freeze({
       float dust=mote*(.025+.14*pow(phase,3.0))*(.35+detail);
       float shell=1.0+folds+(seed-.5)*mix(.012,.07,mote)+dust+audio+jitter;
       vec2 projected=n.xy*shell/(1.0-n.z*.10);
+      // Front/back sheets form travelling creases inside the silhouette as well.
+      float face=pow(abs(n.z),.65);
+      projected+=vec2(wave*.115+crossWave*.035,crossWave*.095-wave*.035)*face;
+      vec2 gripDelta=projected-u_grab.xy;
+      float gripWidth=mix(2.4,.95,exp(-dot(u_grab.xy,u_grab.xy)*4.0));
+      float grip=exp(-dot(gripDelta,gripDelta)*gripWidth);
+      vec2 pull=u_grab.zw;
+      float strain=length(pull);
+      vec2 perpendicular=vec2(-pull.y,pull.x)/max(strain,.0001);
+      projected+=pull*(.10+.90*grip);
+      projected-=perpendicular*dot(gripDelta,perpendicular)*min(strain,.9)*grip*.13;
+      // Let go: a wave travels out from the held patch, then fades naturally.
+      float distanceToRelease=length(projected-u_ripple.xy),age=u_ripple.w;
+      float envelope=exp(-pow((distanceToRelease-age*1.7)/.30,2.0))*exp(-age*2.6)*(1.0-exp(-age*20.0));
+      projected+=normalize(projected+vec2(.0001))*sin(distanceToRelease*12.0-age*9.0)*envelope*u_ripple.z*.12;
       vec2 diff=projected-u_probe.xy;
       float local=(exp(-dot(diff,diff)*9.0)+.26*exp(-dot(u_probe.xy,u_probe.xy)*4.0))*u_probe.z;
-      projected+=normalize(projected+vec2(.0001))*local*(.055+.10*u_probe.w);
-      projected+=vec2(-diff.y,diff.x)*local*.055;
+      projected+=normalize(projected+vec2(.0001))*local*(.13+.08*u_probe.w);
+      projected+=vec2(-diff.y,diff.x)*local*.095;
       float radial=length(projected);
       float side=projected.x<0.0?1.0:-1.0;
       vec2 rest=vec2(side>0.0?-.155:.19,0.0);
@@ -3836,13 +3878,13 @@ window.MM_FIREBASE_CONFIG = Object.freeze({
       gl_Position=vec4(position*vec2(2.0*u_resolution.y/u_resolution.x,2.0),0.0,1.0);
       float limb=pow(max(0.0,1.0-abs(n.z)),2.1);
       float corona=smoothstep(.44,.88,radial);
-      float depth=mix(.34,1.0,smoothstep(-.7,.5,n.z));
-      float light=(.075+.38*filaments+limb*.90+corona*.075)*depth;
+      float depth=mix(.42,1.0,smoothstep(-.7,.5,n.z));
+      float light=(.18+.62*filaments+limb*.72+corona*.06)*depth;
       light*=mix(1.0,.48*smoothstep(.18,.65,detail)*(.25+limb),mote);
       v_alpha=light*smoothstep(.32,.88,m)*(1.0+local*.9+u_voice*lifted*.6);
       vec3 teal=vec3(.21,.58,.55),cyan=vec3(.43,.76,.81),blue=vec3(.22,.37,.65);
       vec3 pigment=mix(teal,blue,.40+.32*sin(theta+.7+macro));
-      v_color=mix(pigment*.90,cyan,smoothstep(.30,1.0,limb)*(.40+.45*seed));
+      v_color=mix(pigment*.95,cyan,clamp(smoothstep(.30,1.0,limb)*(.40+.45*seed)+filaments*.18,0.0,1.0));
       v_color=mix(v_color,vec3(.59,.84,.86),smoothstep(.97,1.0,seed)*.65);
       float speck=mix(1.05,2.15,seed)+filaments*.2+lifted*u_bands.z*.35;
       gl_PointSize=max(1.0,speck*u_pixel);
@@ -3861,7 +3903,7 @@ window.MM_FIREBASE_CONFIG = Object.freeze({
   `;
   // Curved rows form the fine woven surface; sparse motes lift beyond its silhouette.
   // Fixed seeds keep the grain stable between frames instead of temporal sparkle.
-  const seedData=[],rows=saveData?80:144,equator=saveData?120:240;
+  const seedData=[],rows=saveData?68:104,equator=saveData?112:184;
   let seedIndex=0;
   const appendSeed=(longitude,z,mote=false)=>{
     const i=++seedIndex,seed=(i*.7548776662466927)%1,phase=.01+.98*((i*.5698402909980532)%1);
@@ -3874,7 +3916,7 @@ window.MM_FIREBASE_CONFIG = Object.freeze({
       appendSeed(longitude,Math.cos(latitude));
     }
   }
-  const moteCount=saveData?1000:3600;
+  const moteCount=saveData?900:2200;
   for(let i=0;i<moteCount;i++)appendSeed((i*2.399963229728653)%(Math.PI*2),.76*(1-2*(i+.5)/moteCount),true);
   const particleSeeds=new Float32Array(seedData),particleCount=particleSeeds.length/4;
   seedData.length=0;
@@ -3885,9 +3927,9 @@ window.MM_FIREBASE_CONFIG = Object.freeze({
   }
   function syncOrbHitArea(){
     const hit=document.querySelector('#assistant-orb-hit');if(!hit)return;
-    const g=orbGeometry(),r=g.radius*1.23;
-    hit.style.left=(g.x-r)+'px';hit.style.top=(g.y-r)+'px';
-    hit.style.width=hit.style.height=(r*2)+'px';
+    const g=orbGeometry(),r=g.radius*1.65,left=Math.max(0,g.x-r),top=Math.max(0,g.y-r);
+    hit.style.left=left+'px';hit.style.top=top+'px';
+    hit.style.width=(Math.min(width,g.x+r)-left)+'px';hit.style.height=(g.y+r-top)+'px';
   }
 
   function webGLRenderer() {
@@ -3938,7 +3980,7 @@ window.MM_FIREBASE_CONFIG = Object.freeze({
       gl.bindBuffer(gl.ARRAY_BUFFER,pointsBuffer);
       gl.bufferData(gl.ARRAY_BUFFER,particleSeeds,gl.STATIC_DRAW);
       const particlePosition=gl.getAttribLocation(pointsProgram,'a_particle');
-      const pu={};for(const name of ['resolution','time','morph','voice','focus','bands','probe','pixel'])pu[name]=gl.getUniformLocation(pointsProgram,'u_'+name);
+      const pu={};for(const name of ['resolution','time','morph','voice','focus','bands','probe','grab','ripple','pixel'])pu[name]=gl.getUniformLocation(pointsProgram,'u_'+name);
       compiled.forEach(shader => gl.deleteShader(shader));
       compiled.length = 0;
       return {
@@ -3963,6 +4005,8 @@ window.MM_FIREBASE_CONFIG = Object.freeze({
             gl.uniform1f(pu.morph,assistantMix);gl.uniform1f(pu.voice,audioLevel);
             gl.uniform3f(pu.focus,fx,fy,fr);gl.uniform3f(pu.bands,bass,mid,treble);
             gl.uniform4f(pu.probe,probeX,probeY,probe,probePress);
+            gl.uniform4f(pu.grab,grabAnchorX,grabAnchorY,stretchX.value,stretchY.value);
+            gl.uniform4f(pu.ripple,rippleX,rippleY,rippleAmplitude,rippleAge);
             gl.uniform1f(pu.pixel,Math.max(.9,canvas.height/height));
             gl.enable(gl.BLEND);gl.blendFunc(gl.SRC_ALPHA,gl.ONE);
             gl.drawArrays(gl.POINTS,0,particleCount);gl.disable(gl.BLEND);
@@ -4059,16 +4103,26 @@ window.MM_FIREBASE_CONFIG = Object.freeze({
             const j=i*4,seed=particleSeeds[j+2],theta=particleSeeds[j]+time*.018;
             const z=particleSeeds[j+1],lat=Math.sqrt(1-z*z);
             const nx=Math.cos(theta)*lat,ny=Math.sin(theta)*lat;
-            const fold=.035*Math.sin(theta*5+z*7-time*.10)+.020*Math.sin(theta*9-z*5+time*.065);
+            const wave=Math.sin(nx*6.8+ny*4+z*4.5-time*.24),crossWave=Math.sin(ny*9-nx*3+z*6.4+time*.18);
+            const fold=.060*Math.sin(theta*5+z*7-time*.10)+.035*Math.sin(theta*9-z*5+time*.065)+wave*.04+crossWave*.026;
             const lift=(audioLevel*.045+bass*.14)*Math.pow(.5+.5*Math.sin(theta*3+z*5-time*1.6),3);
             const shell=1+fold+(seed-.5)*.052+lift;
             let ox=nx*shell/(1-z*.1),oy=ny*shell/(1-z*.1);
+            const face=Math.pow(Math.abs(z),.65);
+            ox+=(wave*.115+crossWave*.035)*face;oy+=(crossWave*.095-wave*.035)*face;
+            const gx=ox-grabAnchorX,gy=oy-grabAnchorY,gripWidth=2.4-1.45*Math.exp(-(grabAnchorX*grabAnchorX+grabAnchorY*grabAnchorY)*4),influence=Math.exp(-(gx*gx+gy*gy)*gripWidth);
+            ox+=stretchX.value*(.1+.9*influence);oy+=stretchY.value*(.1+.9*influence);
+            const waveDistance=Math.hypot(ox-rippleX,oy-rippleY);
+            const waveEnvelope=Math.exp(-Math.pow((waveDistance-rippleAge*1.7)/.30,2))*Math.exp(-rippleAge*2.6)*(1-Math.exp(-rippleAge*20));
+            const recoil=Math.sin(waveDistance*12-rippleAge*9)*waveEnvelope*rippleAmplitude*.12;
+            ox*=1+recoil;oy*=1+recoil;
             const dx=ox-probeX,dy=oy-probeY,local=(Math.exp(-(dx*dx+dy*dy)*9)+.26*Math.exp(-(probeX*probeX+probeY*probeY)*4))*probe;
-            ox*=1+local*(.055+.10*probePress);oy*=1+local*(.055+.10*probePress);
+            ox*=1+local*(.13+.08*probePress);oy*=1+local*(.13+.08*probePress);
             const homeY=(ny*.7+.5)*h,homeX=(.35+Math.sin(homeY/h*4.7+t*.7)*.34+(seed-.5)*.04)*w;
             const px=mix(homeX,cx+ox*r),py=mix(homeY,centreY-oy*r);
             const limb=Math.pow(1-Math.abs(z),2.7);
-            ctx.globalAlpha=(.02+limb*.64)*fade;
+            const filament=Math.pow(.5+.5*Math.sin(z*14+ny*4-time*.20),3);
+            ctx.globalAlpha=(.08+filament*.25+limb*.64)*fade;
             const size=1+seed*.4;ctx.fillRect(px,py,size,size);
           }
         }
@@ -4151,6 +4205,12 @@ window.MM_FIREBASE_CONFIG = Object.freeze({
     const probeEase=1-Math.exp(-delta*9);
     probe+=(probeTarget-probe)*probeEase;probePress+=(probePressTarget-probePress)*probeEase;
     probeX+=(probeTargetX-probeX)*probeEase;probeY+=(probeTargetY-probeY)*probeEase;
+    const anchorEase=1-Math.exp(-delta*18);
+    grabAnchorX+=(grabTargetX-grabAnchorX)*anchorEase;grabAnchorY+=(grabTargetY-grabAnchorY)*anchorEase;
+    elasticStep(stretchX,delta,grabbed?24:11,grabbed?.78:.36);
+    elasticStep(stretchY,delta,grabbed?24:11,grabbed?.78:.36);
+    rippleAge=Math.min(10,rippleAge+delta);
+    if(rippleAge>3)rippleAmplitude=0;
     time += delta * (1 + energy * .9);
     const ease = 1 - Math.exp(-delta * 4.5);
     energy += (target[0] - energy) * ease;
@@ -4184,6 +4244,7 @@ window.MM_FIREBASE_CONFIG = Object.freeze({
     lastPaint = performance.now();
     sampleTime = sampleCount = lateFrames = 0;
     if (reducedMotion.matches) {
+      resetElastic();
       assistantMix=assistantTarget;assistantVelocity=0;audioLevel=bass=mid=treble=probe=probePress=0;
       energy = target[0];
       luminosity = target[1];
@@ -4243,7 +4304,7 @@ window.MM_FIREBASE_CONFIG = Object.freeze({
     assistantActive=!!active;assistantTarget=assistantActive?1:0;
     // The gesture hands over to the same renderer; releasing the finger does
     // not dismiss the listening form. Only the assistant close opens it again.
-    if(!assistantActive){assistantListening=false;audioTarget=bassTarget=midTarget=trebleTarget=probeTarget=probePressTarget=0;}
+    if(!assistantActive){releaseElastic();assistantListening=false;audioTarget=bassTarget=midTarget=trebleTarget=probeTarget=probePressTarget=0;}
     quietUntil=performance.now()+1800;
     if(reducedMotion.matches){assistantMix=assistantTarget;assistantVelocity=0;draw();}
   }
@@ -4258,13 +4319,29 @@ window.MM_FIREBASE_CONFIG = Object.freeze({
   }
   function orbHitTest(point){
     if(!assistantActive||!point||!Number.isFinite(point.x)||!Number.isFinite(point.y))return false;
-    const g=orbGeometry();return Math.hypot(point.x-g.x,point.y-g.y)<=g.radius*1.23;
+    const g=orbGeometry(),x=(point.x-g.x)/g.radius,y=(g.y-point.y)/g.radius;
+    const lobe=Math.hypot(x-grabAnchorX-stretchX.value,y-grabAnchorY-stretchY.value)<.48;
+    return Math.hypot(x,y)<=1.23||(Math.hypot(stretchX.value,stretchY.value)>.08&&lobe);
   }
   function orbPointer(point,options={}){
-    if(!options.active||!assistantActive||reducedMotion.matches){probeTarget=probePressTarget=0;return;}
+    if(!options.active||!assistantActive||reducedMotion.matches){
+      releaseElastic();probeTarget=probePressTarget=0;
+      if(reducedMotion.matches)resetElastic();return;
+    }
     if(!point||!Number.isFinite(point.x)||!Number.isFinite(point.y))return;
-    const g=orbGeometry();probeTargetX=Math.max(-1.5,Math.min(1.5,(point.x-g.x)/g.radius));
-    probeTargetY=Math.max(-1.5,Math.min(1.5,(g.y-point.y)/g.radius));
+    const g=orbGeometry(),px=(point.x-g.x)/g.radius,py=(g.y-point.y)/g.radius;
+    probeTargetX=Math.max(-1.5,Math.min(1.5,px));probeTargetY=Math.max(-1.5,Math.min(1.5,py));
+    if(options.pressed){
+      if(!grabbed){
+        grabbed=true;grabStartX=px;grabStartY=py;
+        grabTargetX=probeTargetX;grabTargetY=probeTargetY;
+        grabBaseX=stretchX.value;grabBaseY=stretchY.value;
+        if(Math.hypot(stretchX.value,stretchY.value)<.001){grabAnchorX=grabTargetX;grabAnchorY=grabTargetY;}
+      }
+      const dx=px-grabStartX,dy=py-grabStartY,length=Math.hypot(dx,dy),resistance=1/(1+length/2.4);
+      const tx=grabBaseX+dx*resistance,ty=grabBaseY+dy*resistance,limit=Math.max(1,Math.hypot(tx,ty));
+      stretchX.target=tx/limit;stretchY.target=ty/limit;
+    }else releaseElastic();
     probeTarget=1;probePressTarget=options.pressed?1:0;
   }
   // All points are CSS pixels relative to #experience. Gestures own timing;
@@ -4288,7 +4365,7 @@ window.MM_FIREBASE_CONFIG = Object.freeze({
   if(window.visualViewport)on(window.visualViewport,'resize',()=>{syncOrbHitArea();draw();},{passive:true});
   on(document, 'visibilitychange', () => {
     if (document.hidden) {
-      release();
+      release();resetElastic();
       attraction = attractionVelocity = 0;audioLevel=audioTarget=bass=mid=treble=bassTarget=midTarget=trebleTarget=probe=probeTarget=probePress=probePressTarget=0;
     }
     resume();
