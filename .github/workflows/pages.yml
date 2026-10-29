@@ -1,0 +1,70 @@
+name: Verify and publish MyMoney
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: pages-${{ github.ref }}
+  cancel-in-progress: false
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v7
+        with:
+          node-version: '24'
+          cache: npm
+      - uses: actions/setup-python@v7
+        with:
+          python-version: '3.13'
+      - run: npm ci
+      - run: npm test
+      - run: npm run build
+      - name: Version offline cache
+        run: |
+          python3 - <<'PY'
+          import os,re
+          from pathlib import Path
+          p=Path('app/sw.js')
+          cache='mymoney-local-shell-'+os.environ['GITHUB_SHA'][:12]
+          p.write_text(re.sub(r"const CACHE='[^']+';", "const CACHE='"+cache+"';",p.read_text()))
+          PY
+      - name: Install browser checks
+        run: |
+          python3 -m pip install -r requirements-test.txt
+          python3 -m playwright install --with-deps chromium
+      - run: python3 tests/retina_browser_test.py
+      - run: python3 tests/assistant-feedback-browser.py
+      - uses: actions/upload-artifact@v4
+        if: failure()
+        with:
+          name: visual-check-failure
+          path: tests/artifacts/
+          retention-days: 7
+      - uses: actions/upload-pages-artifact@v3
+        if: github.event_name != 'pull_request'
+        with:
+          path: app
+  deploy:
+    if: github.event_name != 'pull_request'
+    needs: build
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.publish.outputs.page_url }}
+    steps:
+      - uses: actions/deploy-pages@v5
+        id: publish
