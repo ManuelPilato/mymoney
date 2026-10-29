@@ -1,0 +1,2 @@
+# Local wrangler dev only. Copy to .dev.vars; never commit the real file.
+VAPID_PRIVATE_KEY=REPLACE_WITH_YOUR_PRIVATE_KEY
